@@ -21,18 +21,11 @@ div class=card_class id=dom_id(post)
           span.job-hunting-badge.stage
             i.fas.fa-tasks.me-1
             = post.contentable.selection_stage_ja
-          - if post.contentable.result_passed?
-            span.job-hunting-badge.result.passed
-              i.fas.fa-check-circle.me-1
-              | 通過
-          - elsif post.contentable.result_failed?
-            span.job-hunting-badge.result.failed
-              i.fas.fa-times-circle.me-1
-              | 不通過
-          - else
-            span.job-hunting-badge.result.pending
-              i.fas.fa-clock.me-1
-              | 選考中
+          - result_icon = post.contentable.result_passed? ? "fa-check-circle" : (post.contentable.result_failed? ? "fa-times-circle" : "fa-clock")
+          - result_class = post.contentable.result
+          span class="job-hunting-badge result #{result_class}"
+            i class="fas #{result_icon} me-1"
+            = post.contentable.result_ja
 
     .card-text.mb-3.line-height-relaxed
       = simple_format(h(post.content))

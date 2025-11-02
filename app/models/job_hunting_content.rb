@@ -28,39 +28,23 @@ class JobHuntingContent < ApplicationRecord
 
   # 日本語表示用のヘルパーメソッド
   def selection_stage_ja
-    {
-      "es" => "ES",
-      "first_interview" => "一次面接",
-      "second_interview" => "二次面接",
-      "final_interview" => "最終面接",
-      "other" => "その他"
-    }[selection_stage]
+    I18n.t("activerecord.attributes.job_hunting_content.selection_stages.#{selection_stage}")
   end
 
   def result_ja
-    {
-      "passed" => "通過",
-      "failed" => "不通過",
-      "pending" => "選考中"
-    }[result]
+    I18n.t("activerecord.attributes.job_hunting_content.results.#{result}")
   end
 
   # セレクトボックス用の選択肢
   def self.selection_stages_for_select
-    [
-      [ "ES", "es" ],
-      [ "一次面接", "first_interview" ],
-      [ "二次面接", "second_interview" ],
-      [ "最終面接", "final_interview" ],
-      [ "その他", "other" ]
-    ]
+    selection_stages.keys.map do |stage|
+      [I18n.t("activerecord.attributes.job_hunting_content.selection_stages.#{stage}"), stage]
+    end
   end
 
   def self.results_for_select
-    [
-      [ "通過", "passed" ],
-      [ "不通過", "failed" ],
-      [ "選考中", "pending" ]
-    ]
+    results.keys.map do |result_value|
+      [I18n.t("activerecord.attributes.job_hunting_content.results.#{result_value}"), result_value]
+    end
   end
 end

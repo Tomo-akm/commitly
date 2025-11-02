@@ -1,16 +1,6 @@
-- if @general_content
-  - content = @general_content
-  - param_name = :general_content
-- elsif @job_hunting_content
-  - content = @job_hunting_content
-  - param_name = :job_hunting_content
-
-- if @post.new_record?
-  - url = posts_path
-  - method = :post
-- else
-  - url = post_path(@post)
-  - method = :patch
+- content = @general_content || @job_hunting_content
+- param_name = @general_content ? :general_content : :job_hunting_content
+- url = @post.new_record? ? posts_path : post_path(@post)
 
 = form_with(model: content, url: url, scope: param_name) do |form|
   / typeパラメータを渡す（新規作成時のみ）
