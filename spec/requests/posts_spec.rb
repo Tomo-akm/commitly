@@ -99,6 +99,27 @@ RSpec.describe "Posts", type: :request do
         expect(created_post.contentable.result).to eq("pending")
       end
 
+      it "企業名が自動的にタグとして追加される" do
+        post posts_path, params: valid_attributes
+        created_post = Post.last
+        expect(created_post.tags.pluck(:name)).to include("テスト")
+      end
+
+      it "企業名から法人格が除去されてタグ化される" do
+        post posts_path, params: {
+          type: 'job_hunting',
+          job_hunting_content: {
+            company_name: "株式会社サンプル企業",
+            selection_stage: "es",
+            result: "pending",
+            content: "ESを提出しました"
+          }
+        }
+        created_post = Post.last
+        expect(created_post.tags.pluck(:name)).to include("サンプル企業")
+        expect(created_post.tags.pluck(:name)).not_to include("株式会社サンプル企業")
+      end
+
       it "posts_pathにリダイレクトする" do
         post posts_path, params: valid_attributes
         expect(response).to redirect_to(posts_path)

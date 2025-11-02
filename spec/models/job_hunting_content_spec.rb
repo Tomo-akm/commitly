@@ -112,4 +112,55 @@ RSpec.describe JobHuntingContent, type: :model do
       expect(options.first).to eq([ "通過", "passed" ])
     end
   end
+
+  describe '企業名の自動タグ化' do
+    it '保存時に企業名が自動的にタグとして追加される' do
+      post = create(:post, :job_hunting)
+      job_hunting_content = post.contentable
+      job_hunting_content.update(company_name: "株式会社テスト")
+      post.touch # Postのafter_commitをトリガー
+
+      expect(post.reload.tags.pluck(:name)).to include("テスト")
+    end
+
+    it '企業名から株式会社などの法人格が除去される' do
+      post = create(:post, :job_hunting)
+      job_hunting_content = post.contentable
+
+      job_hunting_content.update(company_name: "株式会社サンプル")
+      post.touch
+      expect(post.reload.tags.pluck(:name)).to include("サンプル")
+
+      job_hunting_content.update(company_name: "有限会社テスト")
+      post.touch
+      expect(post.reload.tags.pluck(:name)).to include("テスト")
+
+      job_hunting_content.update(company_name: "合同会社デモ")
+      post.touch
+      expect(post.reload.tags.pluck(:name)).to include("デモ")
+    end
+
+    it '(株)などの省略形も除去される' do
+      post = create(:post, :job_hunting)
+      job_hunting_content = post.contentable
+      job_hunting_content.update(company_name: "(株)サンプル")
+      post.touch
+
+      expect(post.reload.tags.pluck(:name)).to include("サンプル")
+      expect(post.reload.tags.pluck(:name)).not_to include("(株)サンプル")
+    end
+
+    it '同じ企業名の投稿は同じタグを共有する' do
+      post1 = create(:post, :job_hunting)
+      post1.contentable.update(company_name: "株式会社テスト")
+      post1.touch
+
+      post2 = create(:post, :job_hunting)
+      post2.contentable.update(company_name: "テスト株式会社")
+      post2.touch
+
+      expect(post1.reload.tags.pluck(:name)).to eq(post2.reload.tags.pluck(:name))
+      expect(Tag.where(name: "テスト").count).to eq(1)
+    end
+  end
 end
