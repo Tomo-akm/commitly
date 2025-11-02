@@ -8,7 +8,8 @@ RSpec.describe Post, type: :model do
     end
 
     it 'requires content' do
-      post = build(:post, content: nil)
+      general_content = build(:general_content, content: nil)
+      post = build(:post, contentable: general_content)
       expect(post).not_to be_valid
     end
 
