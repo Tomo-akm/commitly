@@ -12,7 +12,7 @@ class Post < ApplicationRecord
   validates_associated :contentable
 
   # 就活投稿の場合、企業名を自動でタグ化
-  after_commit :create_company_tag_for_job_hunting, on: [:create, :update]
+  after_commit :create_company_tag_for_job_hunting, on: [ :create, :update ]
 
   # スコープ
   scope :general, -> { where(contentable_type: "GeneralContent") }
