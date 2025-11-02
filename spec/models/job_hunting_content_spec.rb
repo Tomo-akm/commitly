@@ -159,7 +159,7 @@ RSpec.describe JobHuntingContent, type: :model do
       post2.contentable.update(company_name: "テスト株式会社")
       post2.touch
 
-      expect(post1.reload.tags.pluck(:name)).to eq(post2.reload.tags.pluck(:name))
+      expect(post1.reload.tags.pluck(:name)).to match_array(post2.reload.tags.pluck(:name))
       expect(Tag.where(name: "テスト").count).to eq(1)
     end
   end

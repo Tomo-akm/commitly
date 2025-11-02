@@ -78,7 +78,7 @@ class Post < ApplicationRecord
     return if normalized_name.blank?
 
     # 既存の企業名タグを削除（更新時）
-    tags.destroy(*tags.to_a) if tags.present?
+    tags.clear if tags.present?
 
     tag = Tag.find_or_create_by(name: normalized_name.downcase)
     tags << tag unless tags.include?(tag)

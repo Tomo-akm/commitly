@@ -77,11 +77,15 @@ class PostsController < ApplicationController
       @job_hunting_content = @post.contentable
     end
 
-    if @post.contentable.update(contentable_params)
-      redirect_to @post, notice: "コミットをmergeしました✨", status: :see_other
-    else
-      render :edit, status: :unprocessable_entity
+    # contentableとpostの両方を保存（トランザクション内で）
+    ActiveRecord::Base.transaction do
+      @post.contentable.update!(contentable_params)
+      @post.save!  # after_commitコールバックを発火させる
     end
+
+    redirect_to @post, notice: "コミットをmergeしました✨", status: :see_other
+  rescue ActiveRecord::RecordInvalid
+    render :edit, status: :unprocessable_entity
   end
 
   # DELETE /posts/1 or /posts/1.json
