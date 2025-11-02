@@ -22,8 +22,14 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    @general_content = GeneralContent.new
     @post = Post.new
+    @post_type = params[:type] || "general"
+
+    if @post_type == "job_hunting"
+      @job_hunting_content = JobHuntingContent.new
+    else
+      @general_content = GeneralContent.new
+    end
   end
 
   # GET /posts/1/edit
@@ -38,14 +44,22 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @general_content = GeneralContent.new(general_content_params)
-    @post = current_user.posts.build(contentable: @general_content)
+    @post_type = params[:type] || "general"
 
-    # タグの設定
-    @post.tag_names = params.dig(:post, :tag_names) if params.dig(:post, :tag_names).present?
+    if @post_type == "job_hunting"
+      @job_hunting_content = JobHuntingContent.new(job_hunting_content_params)
+      @post = current_user.posts.build(contentable: @job_hunting_content)
+      success_message = "就活記録をpushしました"
+    else
+      @general_content = GeneralContent.new(general_content_params)
+      @post = current_user.posts.build(contentable: @general_content)
+      # タグの設定（通常投稿のみ）
+      @post.tag_names = params.dig(:post, :tag_names) if params.dig(:post, :tag_names).present?
+      success_message = "つぶやきをpushしました"
+    end
 
     if @post.save
-      redirect_to posts_path, notice: "コミットをpushしました"
+      redirect_to posts_path, notice: success_message
     else
       flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
       render :new, status: :unprocessable_entity
@@ -92,6 +106,11 @@ class PostsController < ApplicationController
     # 通常投稿用のパラメータ
     def general_content_params
       params.expect(general_content: [ :content ])
+    end
+
+    # 就活投稿用のパラメータ
+    def job_hunting_content_params
+      params.expect(job_hunting_content: [ :company_name, :selection_stage, :result, :content ])
     end
 
     # contentable の型に応じてパラメータを返す

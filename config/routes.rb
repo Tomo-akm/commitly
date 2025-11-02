@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
-  resources :job_hunting_contents, only: [ :new, :create ]
   resources :tags, only: [ :index, :show ]
   get "home/index"
   get "profile", to: "profiles#show"

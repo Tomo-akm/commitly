@@ -1,13 +1,23 @@
-- content_for :title, "つぶやき commit"
+- if @post_type == 'job_hunting'
+  - content_for :title, "就活記録 commit"
+- else
+  - content_for :title, "つぶやき commit"
 
 .container
   .row.justify-content-center
     .col-lg-6
-      h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in つぶやき commit
+      - if @post_type == 'job_hunting'
+        h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in 就活記録 commit
+      - else
+        h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in つぶやき commit
 
       .mb-4.text-center
-        = link_to "つぶやき", new_post_path, class: "btn btn-primary me-2"
-        = link_to "就活記録", new_job_hunting_content_path, class: "btn btn-outline-primary"
+        - if @post_type == 'job_hunting'
+          = link_to "つぶやき", new_post_path, class: "btn btn-outline-primary me-2"
+          = link_to "就活記録", new_post_path(type: 'job_hunting'), class: "btn btn-primary"
+        - else
+          = link_to "つぶやき", new_post_path, class: "btn btn-primary me-2"
+          = link_to "就活記録", new_post_path(type: 'job_hunting'), class: "btn btn-outline-primary"
 
       .card.card-primary.fade-in
         .card-body.p-4

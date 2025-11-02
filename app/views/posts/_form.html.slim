@@ -1,23 +1,22 @@
 - if @general_content
   - content = @general_content
   - param_name = :general_content
-  - if @post.new_record?
-    - url = posts_path
-    - method = :post
-  - else
-    - url = post_path(@post)
-    - method = :patch
 - elsif @job_hunting_content
   - content = @job_hunting_content
   - param_name = :job_hunting_content
-  - if @post.new_record?
-    - url = job_hunting_contents_path
-    - method = :post
-  - else
-    - url = post_path(@post)
-    - method = :patch
+
+- if @post.new_record?
+  - url = posts_path
+  - method = :post
+- else
+  - url = post_path(@post)
+  - method = :patch
 
 = form_with(model: content, url: url, scope: param_name) do |form|
+  / typeパラメータを渡す（新規作成時のみ）
+  - if @post.new_record? && @job_hunting_content
+    = hidden_field_tag :type, 'job_hunting'
+
   / 就活投稿の場合は追加フィールドを表示
   - if @job_hunting_content
     .form-group
