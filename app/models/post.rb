@@ -27,7 +27,12 @@ class Post < ApplicationRecord
 
   # カスタム検索用のransacker
   ransacker :content_search do
-    Arel.sql("(SELECT content FROM general_contents WHERE general_contents.id = posts.contentable_id AND posts.contentable_type = 'GeneralContent') || (SELECT content FROM job_hunting_contents WHERE job_hunting_contents.id = posts.contentable_id AND posts.contentable_type = 'JobHuntingContent')")
+    Arel.sql("CASE
+      WHEN posts.contentable_type = 'GeneralContent'
+        THEN (SELECT content FROM general_contents WHERE general_contents.id = posts.contentable_id)
+      WHEN posts.contentable_type = 'JobHuntingContent'
+        THEN (SELECT content FROM job_hunting_contents WHERE job_hunting_contents.id = posts.contentable_id)
+    END")
   end
 
   # タグ名の配列を受け取ってタグを設定
