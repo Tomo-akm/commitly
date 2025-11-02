@@ -38,13 +38,13 @@ class JobHuntingContent < ApplicationRecord
   # セレクトボックス用の選択肢
   def self.selection_stages_for_select
     selection_stages.keys.map do |stage|
-      [I18n.t("activerecord.attributes.job_hunting_content.selection_stages.#{stage}"), stage]
+      [ I18n.t("activerecord.attributes.job_hunting_content.selection_stages.#{stage}"), stage ]
     end
   end
 
   def self.results_for_select
     results.keys.map do |result_value|
-      [I18n.t("activerecord.attributes.job_hunting_content.results.#{result_value}"), result_value]
+      [ I18n.t("activerecord.attributes.job_hunting_content.results.#{result_value}"), result_value ]
     end
   end
 end
