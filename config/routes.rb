@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "replies/create"
+  get "replies/destroy"
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations",
@@ -6,6 +8,7 @@ Rails.application.routes.draw do
   }
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
+    resources :replies, only: [ :create, :destroy ]
   end
   resources :tags, only: [ :index, :show ]
   get "home/index"

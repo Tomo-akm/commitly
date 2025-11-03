@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :replies, dependent: :destroy
 
   validates :name, presence: true
   validates :internship_count,

@@ -18,6 +18,8 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+    @replies = @post.replies.where(parent_id: nil).includes(:user).order(created_at: :desc)
+    @reply = @post.replies.build # 新規リプライフォーム用
   end
 
   # GET /posts/new

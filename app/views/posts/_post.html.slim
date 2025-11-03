@@ -10,8 +10,9 @@
         i.far.fa-clock.me-1
         = post.created_at.strftime("%Y/%m/%d %H:%M")
 
-    .card-text.mb-3.line-height-relaxed
-      = simple_format(h(post.content))
+    = link_to post_path(post), class: "text-decoration-none text-dark" do
+      .card-text.mb-3.line-height-relaxed
+        = simple_format(h(post.content))
 
     / タグといいねボタン
     .d-flex.justify-content-between.align-items-center

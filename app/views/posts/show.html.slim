@@ -1,7 +1,8 @@
 .container
   .row.justify-content-center
     .col-lg-8
-      .card.card-primary.fade-in
+      / --- 既存の投稿詳細 ---
+      .card.card-primary.fade-in.mb-4
         .card-body.p-4
           .d-flex.justify-content-between.align-items-center.mb-2
             h2.h5.mb-0.font-semibold commit詳細
@@ -16,3 +17,32 @@
             - if user_signed_in? && @post.user == current_user
               = link_to "rebase", edit_post_path(@post), class: "btn btn-gradient-primary"
               = button_to "revert", @post, method: :delete, class: "btn btn-danger", data: { confirm: "本当にrevertしますか？" }
+      .card.card-primary.fade-in
+        .card-header.bg-primary.text-white
+          h3.h5.mb-0.font-semibold
+            i.far.fa-comments.me-2
+            | 返信 (#{@post.replies.count})
+        .card-body.p-4
+
+          / 返信投稿フォーム
+          - if user_signed_in?
+            / フォーム用のTurbo Frame
+            = turbo_frame_tag "reply_form_post_#{@post.id}" do
+              = render 'replies/form', post: @post, reply: @reply
+          - else
+            .alert.alert-info.text-center.py-2
+              small
+                | 返信するには
+                = link_to "ログイン", new_user_session_path, class: "fw-bold"
+                |  が必要です。
+
+          hr.my-4.separator-gradient
+
+          / 返信一覧
+          / 一覧用のTurbo Frame
+          = turbo_frame_tag "replies_post_#{@post.id}" do
+            - if @replies.any?
+              .list-group.list-group-flush
+                = render @replies
+            - else
+              p.text-muted.text-center.mb-0 まだ返信はありません。
