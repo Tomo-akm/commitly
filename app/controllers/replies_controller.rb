@@ -1,7 +1,7 @@
 class RepliesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_post, only: [:create]
-  before_action :set_reply, only: [:destroy]
+  before_action :set_post, only: [ :create ]
+  before_action :set_reply, only: [ :destroy ]
 
   def create
     # 投稿に対する直接のリプライ
@@ -19,7 +19,7 @@ class RepliesController < ApplicationController
       # Turbo Stream を使って非同期にリプライを追加する場合
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to @post, notice: 'リプライを送信しました。' }
+        format.html { redirect_to @post, notice: "リプライを送信しました。" }
       end
     else
       # エラー処理 (例: Turbo Stream でフォームを再描画)
@@ -33,10 +33,10 @@ class RepliesController < ApplicationController
         end
         format.html do
           # エラーメッセージを表示して投稿詳細ページにリダイレクトなど
-          flash.now[:alert] = @reply.errors.full_messages.join(', ')
+          flash.now[:alert] = @reply.errors.full_messages.join(", ")
           # 詳細ページを再描画するために必要なデータを取得
           @replies = @post.replies.where(parent_id: nil).includes(:user).order(created_at: :desc) # トップレベルリプライのみ取得
-          render 'posts/show', status: :unprocessable_entity
+          render "posts/show", status: :unprocessable_entity
         end
       end
     end
@@ -48,10 +48,10 @@ class RepliesController < ApplicationController
       respond_to do |format|
         # Turbo Stream を使って非同期にリプライを削除
         format.turbo_stream { render turbo_stream: turbo_stream.remove(@reply) }
-        format.html { redirect_to @reply.post, notice: '返信を削除しました。', status: :see_other }
+        format.html { redirect_to @reply.post, notice: "返信を削除しました。", status: :see_other }
       end
     else
-      redirect_to @reply.post, alert: '返信の削除権限がありません。', status: :forbidden
+      redirect_to @reply.post, alert: "返信の削除権限がありません。", status: :forbidden
     end
   end
 
