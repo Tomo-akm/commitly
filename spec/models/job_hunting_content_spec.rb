@@ -114,53 +114,97 @@ RSpec.describe JobHuntingContent, type: :model do
   end
 
   describe '企業名の自動タグ化' do
-    it '保存時に企業名が自動的にタグとして追加される' do
-      post = create(:post, :job_hunting)
-      job_hunting_content = post.contentable
-      job_hunting_content.update(company_name: "株式会社テスト")
-      post.touch # Postのafter_commitをトリガー
+    context '新規作成時' do
+      it '企業名が自動的にタグとして追加される' do
+        user = create(:user)
+        job_content = build(:job_hunting_content, company_name: "株式会社テスト")
+        post = build(:post, user: user, contentable: job_content)
 
-      expect(post.reload.tags.pluck(:name)).to include("テスト")
+        expect {
+          post.save!
+        }.to change { Tag.count }.by(1)
+
+        expect(post.tags.count).to eq(1)
+        expect(post.tags.first.name).to eq("テスト".downcase)
+      end
+
+      it '企業名から株式会社などの法人格が除去される' do
+        user = create(:user)
+
+        # 株式会社
+        job_content1 = build(:job_hunting_content, company_name: "株式会社サンプル")
+        post1 = create(:post, user: user, contentable: job_content1)
+        expect(post1.tags.pluck(:name)).to include("サンプル".downcase)
+
+        # 有限会社
+        job_content2 = build(:job_hunting_content, company_name: "有限会社テスト")
+        post2 = create(:post, user: user, contentable: job_content2)
+        expect(post2.tags.pluck(:name)).to include("テスト".downcase)
+
+        # 合同会社
+        job_content3 = build(:job_hunting_content, company_name: "合同会社デモ")
+        post3 = create(:post, user: user, contentable: job_content3)
+        expect(post3.tags.pluck(:name)).to include("デモ".downcase)
+      end
+
+      it '(株)などの省略形も除去される' do
+        user = create(:user)
+        job_content = build(:job_hunting_content, company_name: "(株)サンプル")
+        post = create(:post, user: user, contentable: job_content)
+
+        expect(post.tags.pluck(:name)).to include("サンプル".downcase)
+        expect(post.tags.pluck(:name)).not_to include("(株)サンプル".downcase)
+      end
     end
 
-    it '企業名から株式会社などの法人格が除去される' do
-      post = create(:post, :job_hunting)
-      job_hunting_content = post.contentable
+    context '更新時' do
+      it '企業名を更新してPostを保存するとタグも更新される' do
+        user = create(:user)
+        job_content = create(:job_hunting_content, company_name: "株式会社テスト")
+        post = create(:post, user: user, contentable: job_content)
 
-      job_hunting_content.update(company_name: "株式会社サンプル")
-      post.touch
-      expect(post.reload.tags.pluck(:name)).to include("サンプル")
+        expect(post.tags.first.name).to eq("テスト".downcase)
 
-      job_hunting_content.update(company_name: "有限会社テスト")
-      post.touch
-      expect(post.reload.tags.pluck(:name)).to include("テスト")
+        # 企業名を更新してPostを保存（after_saveをトリガー）
+        job_content.update!(company_name: "株式会社別会社")
+        post.save!
 
-      job_hunting_content.update(company_name: "合同会社デモ")
-      post.touch
-      expect(post.reload.tags.pluck(:name)).to include("デモ")
+        expect(post.reload.tags.count).to eq(1)
+        expect(post.tags.first.name).to eq("別会社".downcase)
+      end
     end
 
-    it '(株)などの省略形も除去される' do
-      post = create(:post, :job_hunting)
-      job_hunting_content = post.contentable
-      job_hunting_content.update(company_name: "(株)サンプル")
-      post.touch
+    context '複数の投稿' do
+      it '同じ企業名の投稿は同じタグを共有する' do
+        user = create(:user)
+        job_content1 = build(:job_hunting_content, company_name: "株式会社テスト")
+        post1 = create(:post, user: user, contentable: job_content1)
 
-      expect(post.reload.tags.pluck(:name)).to include("サンプル")
-      expect(post.reload.tags.pluck(:name)).not_to include("(株)サンプル")
+        job_content2 = build(:job_hunting_content, company_name: "テスト株式会社")
+        post2 = create(:post, user: user, contentable: job_content2)
+
+        expect(post1.tags.pluck(:name)).to match_array(post2.tags.pluck(:name))
+        expect(Tag.where(name: "テスト".downcase).count).to eq(1)
+      end
     end
 
-    it '同じ企業名の投稿は同じタグを共有する' do
-      post1 = create(:post, :job_hunting)
-      post1.contentable.update(company_name: "株式会社テスト")
-      post1.touch
+    context 'タグ作成失敗時' do
+      it '投稿もロールバックされる' do
+        user = create(:user)
+        job_content = build(:job_hunting_content, company_name: "株式会社テスト")
+        post = build(:post, user: user, contentable: job_content)
 
-      post2 = create(:post, :job_hunting)
-      post2.contentable.update(company_name: "テスト株式会社")
-      post2.touch
+        # Tag.find_or_create_by!が例外を投げるようにモック
+        allow(Tag).to receive(:find_or_create_by!).and_raise(ActiveRecord::RecordInvalid.new(Tag.new))
 
-      expect(post1.reload.tags.pluck(:name)).to match_array(post2.reload.tags.pluck(:name))
-      expect(Tag.where(name: "テスト").count).to eq(1)
+        expect {
+          post.save!
+        }.to raise_error(ActiveRecord::RecordInvalid)
+
+        # 投稿もロールバックされていることを確認
+        expect(Post.where(user: user).count).to eq(0)
+        expect(JobHuntingContent.where(company_name: "株式会社テスト").count).to eq(0)
+      end
     end
   end
 end

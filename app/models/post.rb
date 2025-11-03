@@ -11,8 +11,8 @@ class Post < ApplicationRecord
   # contentableのバリデーションも実行
   validates_associated :contentable
 
-  # 就活投稿の場合、企業名を自動でタグ化
-  after_commit :create_company_tag_for_job_hunting, on: [ :create, :update ]
+  # 就活投稿の場合、企業名を自動でタグ化（create/update両方）
+  after_save :update_company_tag_for_job_hunting, if: :job_hunting?
 
   # スコープ
   scope :general, -> { where(contentable_type: "GeneralContent") }
@@ -69,18 +69,17 @@ class Post < ApplicationRecord
 
   private
 
-  # 就活投稿の場合、企業名をタグとして追加
-  def create_company_tag_for_job_hunting
-    return unless job_hunting?
+  # 就活投稿の場合、企業名をタグとして更新（create/update両方）
+  def update_company_tag_for_job_hunting
     return unless contentable.respond_to?(:normalized_company_name)
 
     normalized_name = contentable.normalized_company_name
     return if normalized_name.blank?
 
-    # 既存の企業名タグを削除（更新時）
-    tags.clear if tags.present?
+    # 企業名タグを作成または取得（失敗時は例外を投げる）
+    tag = Tag.find_or_create_by!(name: normalized_name.downcase)
 
-    tag = Tag.find_or_create_by(name: normalized_name.downcase)
-    tags << tag unless tags.include?(tag)
+    # 既存のタグをクリアして新しいタグを設定
+    self.tags = [ tag ]
   end
 end
