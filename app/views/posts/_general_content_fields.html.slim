@@ -5,5 +5,5 @@
 / タグフィールド（通常投稿専用）
 .form-group
   = label_tag "post[tag_names]", "タグ", class: "form-label"
-  = text_field_tag "post[tag_names]", post.tag_names, class: "form-input", placeholder: "就活, 面接, エンジニア（カンマ区切り）"
-  .form-help タグをカンマ区切りで入力してください。例：就活, 面接, エンジニア
+  = text_field_tag "post[tag_names]", post.tag_names, class: "form-input", placeholder: "Ruby, Rails, プログラミング（カンマ区切り）"
+  .form-help タグをカンマ区切りで入力してください。例：Ruby, Rails, プログラミング
