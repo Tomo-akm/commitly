@@ -1,7 +1,0 @@
-/ 1. 新しいリプライをリプライ一覧の先頭（prepend）に追加
-/    "replies_post_..." は show.html.slim で指定した一覧の turbo_frame_tag ID です
-= turbo_stream.prepend "replies_post_#{@reply.post.id}", partial: "replies/reply", locals: { reply: @reply }
-
-/ 2. 投稿フォームを空の新しいフォームで置き換え
-/    "reply_form_post_..." は show.html.slim で指定したフォームの turbo_frame_tag ID です
-= turbo_stream.replace "reply_form_post_#{@reply.post.id}", partial: "replies/form", locals: { post: @reply.post, reply: @reply.post.replies.build }
