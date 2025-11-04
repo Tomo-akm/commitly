@@ -36,7 +36,7 @@
       / 検索フォーム（Ransack）
       = search_form_for @q, local: true, class: "mb-4" do |f|
         .input-group
-          = f.search_field :content_cont, placeholder: "投稿内容で検索...", class: "form-control"
+          = f.search_field :content_search_cont, placeholder: "投稿内容で検索...", class: "form-control"
           button.btn.btn-primary type="submit"
             i.fas.fa-search
             |  検索

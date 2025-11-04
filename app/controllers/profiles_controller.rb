@@ -3,7 +3,9 @@ class ProfilesController < ApplicationController
 
   def show
     @user = params[:id] ? User.find(params[:id]) : (current_user if user_signed_in?)
-    @posts = @user.posts.order(created_at: :desc)
+    @posts = @user.posts
+                  .includes(:contentable, :likes, :tags)
+                  .order(created_at: :desc)
     prepare_heatmap_data
   end
 

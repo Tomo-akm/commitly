@@ -1,18 +1,13 @@
 .container
   .row.justify-content-center
     .col-lg-8
-      .card.card-primary.fade-in
-        .card-body.p-4
-          .d-flex.justify-content-between.align-items-center.mb-2
-            h2.h5.mb-0.font-semibold commit詳細
-            span.text-muted.text-sm
-              i.far.fa-clock.me-1
-              = @post.created_at.strftime("%Y/%m/%d %H:%M")
-          hr.my-3
-          p.card-text.text-lg.line-height-relaxed.mb-4 = simple_format(h(@post.content))
-          hr.my-3
+      / 投稿カードを表示
+      = render @post
+
+      / 詳細ページ用の追加アクション
+      .card.card-primary.fade-in.mt-3
+        .card-body.p-3
           .d-flex.flex-wrap.gap-2.justify-content-center
-            = link_to "commit logへ", posts_path, class: "btn btn-secondary"
-            - if user_signed_in? && @post.user == current_user
-              = link_to "rebase", edit_post_path(@post), class: "btn btn-gradient-primary"
-              = button_to "revert", @post, method: :delete, class: "btn btn-danger", data: { confirm: "本当にrevertしますか？" }
+            = link_to posts_path, class: "btn btn-secondary" do
+              i.fas.fa-list.me-1
+              | commit logへ

@@ -1,13 +1,17 @@
-- content_for :title, "new commit"
+- content_for :title, @post.contentable.title
 
 .container
   .row.justify-content-center
     .col-lg-6
-      h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in new commit
+      h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in = @post.contentable.title
+
+      .mb-4.text-center
+        = link_to "つぶやき", new_post_path, class: "btn #{@post.general? ? 'btn-primary' : 'btn-outline-primary'} me-2"
+        = link_to "就活記録", new_post_path(type: 'job_hunting'), class: "btn #{@post.job_hunting? ? 'btn-primary' : 'btn-outline-primary'}"
 
       .card.card-primary.fade-in
         .card-body.p-4
-          = render "form", post: @post
+          = render "form"
 
           hr.my-3
           .d-flex.justify-content-center.gap-2

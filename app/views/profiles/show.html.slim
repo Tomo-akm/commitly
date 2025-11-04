@@ -71,56 +71,23 @@
           = render "heatmap", user: @user, date: @date, date_6_months_ago: @date_6_months_ago, active_user_counts: @active_user_counts_6_months
 
       / User's Posts
-      .card.card-primary.fade-in
-        .card-body.p-4
-          .d-flex.justify-content-between.align-items-center.mb-2
-            h3.h5.mb-0.font-semibold
-              i.fas.fa-book.me-2
-              | commit log (#{@posts.count}件)
-          hr.my-3
+      .mb-4
+        h3.h4.font-bold.text-dark.mb-3
+          i.fas.fa-book.me-2
+          | commit log
+          span.text-muted.ms-2.font-normal.text-base = "(#{@posts.count}件)"
 
-          - if @posts.any?
-            - @posts.each do |post|
-              .border.rounded.p-3.mb-3.bg-gray-100
-                / ヘッダー（投稿日時）
-                .d-flex.justify-content-end.align-items-center.mb-2
-                  span.text-muted.text-sm
-                    i.far.fa-clock.me-1
-                    = post.created_at.strftime("%Y/%m/%d %H:%M")
-
-                / 投稿内容
-                .mb-2.line-height-relaxed
-                  = simple_format(h(post.content))
-
-                / タグ表示
-                - if post.tags.any?
-                  .mb-3
-                    .d-flex.flex-wrap.gap-1
-                      - post.tags.each do |tag|
-                        = link_to tag_path(tag.id), class: "text-decoration-none" do
-                          span.badge.bg-light.text-dark ##{tag.name}
-
-                / フッター（いいねボタンとアクションボタン）
-                .d-flex.justify-content-between.align-items-center.pt-2.border-top
-                  / いいねボタン
-                  .d-flex.align-items-center
-                    = render 'shared/like_button', post: post
-
-                  / アクションボタン（自分の投稿のみ表示）
-                  - if user_signed_in? && post.user == current_user
-                    .d-flex.gap-2
-                      = link_to edit_post_path(post), class: "btn btn-outline-secondary btn-sm" do
-                        i.fas.fa-edit.me-1
-                        | rebase
-                      = button_to post, method: :delete, class: "btn btn-outline-danger btn-sm", data: { confirm: "本当にrevertしますか？" } do
-                        i.fas.fa-trash-alt.me-1
-                        | revert
-          - else
-            .text-center.py-5.text-muted
-              i.far.fa-sticky-note.display-4.mb-3
-              p.mb-0 まだ投稿がありません
-              p.text-sm 最初の投稿をしてみましょう！
-              - if user_signed_in?
-                = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2"
-              - else
-                = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }
+      - if @posts.any?
+        .card-list
+          - @posts.each do |post|
+            = render post
+      - else
+        .card.card-primary.fade-in
+          .card-body.p-5.text-center
+            i.far.fa-sticky-note.display-4.mb-3.text-muted
+            p.mb-0.text-muted まだ投稿がありません
+            p.text-sm.text-muted 最初の投稿をしてみましょう！
+            - if user_signed_in?
+              = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2"
+            - else
+              = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }

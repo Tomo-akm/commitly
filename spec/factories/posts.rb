@@ -1,7 +1,15 @@
 FactoryBot.define do
   factory :post do
-    content { Faker::Lorem.paragraph }
     association :user
+    association :contentable, factory: :general_content
+
+    trait :general do
+      association :contentable, factory: :general_content
+    end
+
+    trait :job_hunting do
+      association :contentable, factory: :job_hunting_content
+    end
 
     trait :with_tags do
       after(:create) do |post|
