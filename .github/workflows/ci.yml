@@ -60,9 +60,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: chinokatsu
+          POSTGRES_USER: commitly
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: chinokatsu_test
+          POSTGRES_DB: commitly_test
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -90,18 +90,18 @@ jobs:
         env:
           RAILS_ENV: test
           DB_HOST: localhost
-          DB_USERNAME: chinokatsu
+          DB_USERNAME: commitly
           DB_PASSWORD: password
-          DB_DATABASE: chinokatsu_test
+          DB_DATABASE: commitly_test
         run: bin/rails db:test:prepare
 
       - name: Run RSpec tests
         env:
           RAILS_ENV: test
           DB_HOST: localhost
-          DB_USERNAME: chinokatsu
+          DB_USERNAME: commitly
           DB_PASSWORD: password
-          DB_DATABASE: chinokatsu_test
+          DB_DATABASE: commitly_test
           # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
 

@@ -14,17 +14,26 @@
       .card-text.mb-3.line-height-relaxed
         = simple_format(h(post.content))
 
-    / タグといいねボタン
-    .d-flex.justify-content-between.align-items-center
-      .d-flex.flex-wrap.gap-1
-        - if post.tags.any?
+    / タグ表示
+    - if post.tags.any?
+      .mb-3
+        .d-flex.flex-wrap.gap-1
           - post.tags.each do |tag|
-            = link_to tag_path(tag.name), class: "text-decoration-none" do
-              span.badge.bg-light.text-dark.me-1 ##{tag.name}
-      = render 'shared/like_button', post: post
+            = link_to tag_path(tag.id), class: "text-decoration-none" do
+              span.badge.bg-light.text-dark ##{tag.name}
 
-    / アクションボタン（編集・削除）
-    - if user_signed_in? && post.user == current_user
-      .d-flex.gap-2.justify-content-end.mt-2
-        = link_to "rebase", edit_post_path(post), class: "btn btn-outline-secondary btn-sm"
-        = button_to "revert", post, method: :delete, class: "btn btn-outline-danger btn-sm", data: { confirm: "本当にrevertしますか？" }
+    / フッター（いいねボタンとアクションボタン）
+    .d-flex.justify-content-between.align-items-center.pt-2.border-top
+      / いいねボタン
+      .d-flex.align-items-center
+        = render 'shared/like_button', post: post
+
+      / アクションボタン（自分の投稿のみ表示）
+      - if user_signed_in? && post.user == current_user
+        .d-flex.gap-2
+          = link_to edit_post_path(post), class: "btn btn-outline-secondary btn-sm" do
+            i.fas.fa-edit.me-1
+            | rebase
+          = button_to post, method: :delete, class: "btn btn-outline-danger btn-sm", data: { confirm: "本当にrevertしますか？" } do
+            i.fas.fa-trash-alt.me-1
+            | revert

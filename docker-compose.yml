@@ -6,12 +6,12 @@ volumes:
 services:
   db:
     image: postgres:16
-    container_name: chinokatsu_db
+    container_name: commitly_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: chinokatsu
+      POSTGRES_USER: commitly
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: chinokatsu_development
+      POSTGRES_DB: commitly_development
       TZ: Asia/Tokyo
     volumes:
       - db-store:/var/lib/postgresql/data
@@ -19,18 +19,18 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U chinokatsu"]
+      test: ["CMD-SHELL", "pg_isready -U commitly"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - chinokatsu_network
+      - commitly_network
 
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: chinokatsu_web
+    container_name: commitly_web
     restart: unless-stopped
     depends_on:
       db:
@@ -38,9 +38,9 @@ services:
     environment:
       RAILS_ENV: development
       DB_HOST: db
-      DB_USERNAME: chinokatsu
+      DB_USERNAME: commitly
       DB_PASSWORD: password
-      DB_DATABASE: chinokatsu_development
+      DB_DATABASE: commitly_development
     volumes:
       - .:/webapp
       - bundle:/usr/local/bundle
@@ -57,8 +57,8 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - chinokatsu_network
+      - commitly_network
 
 networks:
-  chinokatsu_network:
+  commitly_network:
     driver: bridge

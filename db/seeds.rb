@@ -464,6 +464,6 @@ Tag.order(posts_count: :desc).limit(10).each_with_index do |tag, index|
   puts "  #{index + 1}. #{tag.name} (#{tag.posts_count}件)"
 end
 puts "="*70
-puts "🎉 Welcome to Chinokatsu - 琉球大学知能情報コース向け就活SNS！"
+puts "🎉 Welcome to Commitly - 琉球大学知能情報コース向け就活SNS！"
 puts "みんなで就活とプログラミング学習を頑張りましょう！💪✨"
 puts "="*70

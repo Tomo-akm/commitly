@@ -9,17 +9,13 @@
   = link_to "← 投稿一覧に戻る", posts_path, class: "btn btn-outline-secondary me-2 mb-3"
   = link_to "タグ一覧", tags_path, class: "btn btn-outline-secondary mb-3"
 
-  / 検索・ソートフォーム
-  = search_form_for @q, url: tag_path(@tag.name), local: true, class: "mb-4" do |f|
-    .row
-      .col-md-8
-        = f.search_field :content_cont, placeholder: "投稿内容で検索...", class: "form-control"
-      .col-md-2
-        = f.select :s, options_for_select([['新しい順', 'created_at desc'], ['古い順', 'created_at asc']], params.dig(:q, :s)), { prompt: '並び順' }, { class: 'form-select' }
-      .col-md-2
-        button.btn.btn-outline-secondary.w-100 type="submit"
-          i.fas.fa-search
-          |  検索
+  / 検索フォーム
+  = search_form_for @q, url: tag_path(@tag.id), local: true, class: "mb-4" do |f|
+    .input-group
+      = f.search_field :content_cont, placeholder: "投稿内容で検索...", class: "form-control"
+      button.btn.btn-outline-secondary type="submit"
+        i.fas.fa-search
+        |  検索
 
   .card-list
     - @posts.each do |post|

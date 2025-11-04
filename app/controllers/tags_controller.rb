@@ -5,7 +5,7 @@ class TagsController < ApplicationController
   end
 
   def show
-    @tag = Tag.find_by!(name: params[:id])
+    @tag = Tag.find(params[:id])
     @q = @tag.posts.ransack(params[:q])
     @posts = @q.result(distinct: true).order(created_at: :desc).page(params[:page]).per(10)
   end

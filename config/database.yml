@@ -7,8 +7,8 @@ default: &default
 development:
   <<: *default
   host: <%= ENV.fetch("DB_HOST") { "db" } %>
-  database: <%= ENV.fetch("DB_DATABASE") { "chinokatsu_development" } %>
-  username: <%= ENV.fetch("DB_USERNAME") { "chinokatsu" } %>
+  database: <%= ENV.fetch("DB_DATABASE") { "commitly_development" } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
   password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
 
 # Warning: The database defined as "test" will be erased and
@@ -17,8 +17,8 @@ development:
 test:
   <<: *default
   host: <%= ENV.fetch("DB_HOST") { "db" } %>
-  database: <%= ENV.fetch("DB_DATABASE") { "chinokatsu_test" } %>
-  username: <%= ENV.fetch("DB_USERNAME") { "chinokatsu" } %>
+  database: <%= ENV.fetch("DB_DATABASE") { "commitly_test" } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
   password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
 
 # Production uses Render's DATABASE_URL

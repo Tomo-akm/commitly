@@ -13,7 +13,7 @@
           - if @popular_tags.any?
             - @popular_tags.each do |tag|
               .d-flex.justify-content-between.align-items-center.mb-1.p-2.rounded.hover-scale.transition-all
-                = link_to tag_path(tag.name), class: "text-decoration-none" do
+                = link_to tag_path(tag.id), class: "text-decoration-none" do
                   span.badge-modern ##{tag.name}
                 span.text-muted.text-sm.font-semibold = tag.posts_count
             .separator-gradient.my-2

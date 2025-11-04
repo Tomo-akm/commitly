@@ -6,9 +6,18 @@ class LikesController < ApplicationController
     @like = @post.likes.build(user: current_user)
 
     if @like.save
-      render partial: "shared/like_button", locals: { post: @post }
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "like_button_#{@post.id}",
+            partial: "shared/like_button",
+            locals: { post: @post }
+          )
+        end
+        format.html { redirect_to @post }
+      end
     else
-      render partial: "shared/like_button", locals: { post: @post }, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 
@@ -17,9 +26,18 @@ class LikesController < ApplicationController
 
     if @like.user_id == current_user.id
       @like.destroy
-      render partial: "shared/like_button", locals: { post: @post }
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "like_button_#{@post.id}",
+            partial: "shared/like_button",
+            locals: { post: @post }
+          )
+        end
+        format.html { redirect_to @post }
+      end
     else
-      render partial: "shared/like_button", locals: { post: @post }, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 

@@ -60,8 +60,10 @@
     }
 
     &.hiding {
-      animation: slideOutRight $transition-speed-slow $transition-timing-ease-out forwards;
+      animation: slideOutRight $transition-speed-slow $transition-timing-ease-out forwards !important;
       pointer-events: none;
+      // Bootstrap の fade トランジションを無効化
+      transition: none !important;
     }
 
     &.hidden {

@@ -37,7 +37,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: "コミットをpushしました" }
+        format.html { redirect_to posts_path, notice: "コミットをpushしました" }
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }
