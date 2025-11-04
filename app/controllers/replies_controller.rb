@@ -8,13 +8,6 @@ class RepliesController < ApplicationController
     @reply = @post.replies.build(reply_params)
     @reply.user = current_user
 
-    # # 任意: リプライへのリプライの場合 (ルーティング追加が必要)
-    # if params[:reply_id]
-    #   @parent_reply = Reply.find(params[:reply_id])
-    #   @reply.parent = @parent_reply
-    #   @reply.post = @parent_reply.post # 親リプライと同じ投稿に関連付ける
-    # end
-
     if @reply.save
       # Turbo Stream を使って非同期にリプライを追加する場合
       respond_to do |format|
