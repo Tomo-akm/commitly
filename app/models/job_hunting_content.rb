@@ -1,6 +1,11 @@
 class JobHuntingContent < ApplicationRecord
   has_one :post, as: :contentable, dependent: :destroy
 
+  # プレゼンテーション用の定数
+  TYPE_NAME = "job_hunting"
+  TITLE = "就活記録 commit"
+  SUCCESS_MESSAGE = "就活記録をpushしました"
+
   # enum定義
   enum :selection_stage, {
     es: 0,
@@ -62,4 +67,9 @@ class JobHuntingContent < ApplicationRecord
     normalized = normalized.gsub(/\s*\(株\)$/, "")
     normalized.strip
   end
+
+  # プレゼンテーション用メソッド（ポリモーフィックアクセス用）
+  def type_name = TYPE_NAME
+  def title = TITLE
+  def success_message = SUCCESS_MESSAGE
 end

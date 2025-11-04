@@ -207,4 +207,20 @@ RSpec.describe JobHuntingContent, type: :model do
       end
     end
   end
+
+  describe 'プレゼンテーション用メソッド' do
+    let(:job_hunting_content) { build(:job_hunting_content) }
+
+    it 'type_nameで投稿タイプ名を返すこと' do
+      expect(job_hunting_content.type_name).to eq("job_hunting")
+    end
+
+    it 'titleで就活投稿用のタイトルを返すこと' do
+      expect(job_hunting_content.title).to eq("就活記録 commit")
+    end
+
+    it 'success_messageで就活投稿用の成功メッセージを返すこと' do
+      expect(job_hunting_content.success_message).to eq("就活記録をpushしました")
+    end
+  end
 end

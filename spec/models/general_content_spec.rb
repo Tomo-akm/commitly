@@ -39,4 +39,20 @@ RSpec.describe GeneralContent, type: :model do
       expect { general_content.destroy }.to change(Post, :count).by(-1)
     end
   end
+
+  describe 'プレゼンテーション用メソッド' do
+    let(:general_content) { build(:general_content) }
+
+    it 'type_nameで投稿タイプ名を返すこと' do
+      expect(general_content.type_name).to eq("general")
+    end
+
+    it 'titleで通常投稿用のタイトルを返すこと' do
+      expect(general_content.title).to eq("つぶやき commit")
+    end
+
+    it 'success_messageで通常投稿用の成功メッセージを返すこと' do
+      expect(general_content.success_message).to eq("つぶやきをpushしました")
+    end
+  end
 end
