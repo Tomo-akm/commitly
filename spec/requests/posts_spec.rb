@@ -241,7 +241,6 @@ RSpec.describe "Posts", type: :request do
       end
 
       it "企業名を更新するとタグも更新される" do
-        original_company = post.contentable.company_name
         patch post_path(post), params: {
           job_hunting_content: {
             company_name: "株式会社新しい会社",
