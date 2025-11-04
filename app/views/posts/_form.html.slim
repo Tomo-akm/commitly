@@ -1,36 +1,15 @@
-- content = @general_content || @job_hunting_content
-- param_name = @general_content ? :general_content : :job_hunting_content
-- url = @post.new_record? ? posts_path : post_path(@post)
+- post = local_assigns[:post] || @post
+- contentable = post.contentable
+- param_name = contentable.class.name.underscore.to_sym
+- url = post.new_record? ? posts_path : post_path(post)
 
-= form_with(model: content, url: url, scope: param_name) do |form|
+= form_with(model: contentable, url: url, scope: param_name) do |form|
   / typeパラメータを渡す（新規作成時のみ）
-  - if @post.new_record? && @job_hunting_content
-    = hidden_field_tag :type, 'job_hunting'
+  - if post.new_record?
+    = hidden_field_tag :type, contentable.type_name
 
-  / 就活投稿の場合は追加フィールドを表示
-  - if @job_hunting_content
-    .form-group
-      = form.label :company_name, class: "form-label required"
-      = form.text_field :company_name, class: "form-input", placeholder: "例：株式会社〇〇"
-
-    .form-group
-      = form.label :selection_stage, class: "form-label required"
-      = form.select :selection_stage, JobHuntingContent.selection_stages_for_select, { prompt: "選択してください" }, class: "form-select"
-
-    .form-group
-      = form.label :result, class: "form-label required"
-      = form.select :result, JobHuntingContent.results_for_select, { prompt: "選択してください" }, class: "form-select"
-
-  .form-group
-    = form.label :content, class: "form-label required"
-    = form.text_area :content, class: "form-textarea", rows: 5, placeholder: "就活のcommitメッセージを書いてください"
-
-  / 通常投稿の場合のみタグを表示
-  - if @general_content
-    .form-group
-      = label_tag "post[tag_names]", "タグ", class: "form-label"
-      = text_field_tag "post[tag_names]", @post.tag_names, class: "form-input", placeholder: "就活, 面接, エンジニア（カンマ区切り）"
-      .form-help タグをカンマ区切りで入力してください。例：就活, 面接, エンジニア
+  / contentable用のフィールドを動的に読み込み
+  = render "posts/#{contentable.class.name.underscore}_fields", form: form, post: post
 
   .text-center
-    = form.submit (@post.new_record? ? "push する" : "merge する"), class: "btn btn-gradient-primary btn-lg"
+    = form.submit (post.new_record? ? "push する" : "merge する"), class: "btn btn-gradient-primary btn-lg"

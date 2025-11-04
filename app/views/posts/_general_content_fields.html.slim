@@ -1,0 +1,9 @@
+.form-group
+  = form.label :content, class: "form-label required"
+  = form.text_area :content, class: "form-textarea", rows: 5, placeholder: "commitメッセージを書いてください"
+
+/ タグフィールド（通常投稿専用）
+.form-group
+  = label_tag "post[tag_names]", "タグ", class: "form-label"
+  = text_field_tag "post[tag_names]", post.tag_names, class: "form-input", placeholder: "就活, 面接, エンジニア（カンマ区切り）"
+  .form-help タグをカンマ区切りで入力してください。例：就活, 面接, エンジニア

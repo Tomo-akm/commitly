@@ -151,6 +151,122 @@ RSpec.describe "Posts", type: :request do
     end
   end
 
+  describe "GET /posts/:id/edit" do
+    context "通常投稿の編集" do
+      let(:post) { create(:post, :general, user: user) }
+
+      it "編集ページが表示される" do
+        get edit_post_path(post)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("commit rebase")
+      end
+
+      it "contentableの内容が表示される" do
+        post.contentable.update(content: "編集前のテスト投稿")
+        get edit_post_path(post)
+        expect(response.body).to include("編集前のテスト投稿")
+      end
+
+      it "タグフィールドが表示される" do
+        get edit_post_path(post)
+        expect(response.body).to include("タグ")
+      end
+    end
+
+    context "就活投稿の編集" do
+      let(:post) { create(:post, :job_hunting, user: user) }
+
+      it "編集ページが表示される" do
+        get edit_post_path(post)
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("commit rebase")
+      end
+
+      it "contentableの内容が表示される" do
+        get edit_post_path(post)
+        expect(response.body).to include(post.contentable.company_name)
+      end
+    end
+  end
+
+  describe "PATCH /posts/:id" do
+    context "通常投稿の更新" do
+      let(:post) { create(:post, :general, user: user) }
+
+      it "contentを更新できる" do
+        expect {
+          patch post_path(post), params: {
+            general_content: { content: "更新後のコンテンツ" },
+            post: { tag_names: "更新, テスト" }
+          }
+        }.to change { post.reload.contentable.content }.to("更新後のコンテンツ")
+
+        expect(response).to redirect_to(post)
+      end
+
+      it "タグを更新できる" do
+        patch post_path(post), params: {
+          general_content: { content: "テスト投稿" },
+          post: { tag_names: "Ruby, Rails" }
+        }
+        expect(post.reload.tags.pluck(:name)).to contain_exactly("ruby", "rails")
+      end
+
+      it "バリデーションエラーの場合は編集ページを再表示" do
+        patch post_path(post), params: {
+          general_content: { content: "" }
+        }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "就活投稿の更新" do
+      let(:post) { create(:post, :job_hunting, user: user) }
+
+      it "contentableを更新できる" do
+        expect {
+          patch post_path(post), params: {
+            job_hunting_content: {
+              company_name: "更新後の会社",
+              selection_stage: "final_interview",
+              result: "passed",
+              content: "最終面接に合格しました"
+            }
+          }
+        }.to change { post.reload.contentable.company_name }.to("更新後の会社")
+
+        expect(post.reload.contentable.selection_stage).to eq("final_interview")
+        expect(post.reload.contentable.result).to eq("passed")
+        expect(response).to redirect_to(post)
+      end
+
+      it "企業名を更新するとタグも更新される" do
+        original_company = post.contentable.company_name
+        patch post_path(post), params: {
+          job_hunting_content: {
+            company_name: "株式会社新しい会社",
+            selection_stage: post.contentable.selection_stage,
+            result: post.contentable.result,
+            content: post.contentable.content
+          }
+        }
+        expect(post.reload.tags.pluck(:name)).to include("新しい会社")
+      end
+
+      it "バリデーションエラーの場合は編集ページを再表示" do
+        patch post_path(post), params: {
+          job_hunting_content: {
+            company_name: "",
+            selection_stage: "es",
+            result: "pending",
+            content: "テスト"
+          }
+        }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
   describe "GET /posts" do
     context "ransacker検索" do
       let!(:general_post) { create(:post, :general) }

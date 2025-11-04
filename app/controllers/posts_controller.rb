@@ -22,44 +22,20 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    @post = Post.new
-    @post_type = params[:type] || "general"
-
-    if @post_type == "job_hunting"
-      @job_hunting_content = JobHuntingContent.new
-    else
-      @general_content = GeneralContent.new
-    end
+    @post = current_user.posts.build_with_type(params[:type])
   end
 
   # GET /posts/1/edit
   def edit
-    # contentable の型に応じてインスタンス変数を設定
-    if @post.general?
-      @general_content = @post.contentable
-    elsif @post.job_hunting?
-      @job_hunting_content = @post.contentable
-    end
+    # @postが既にset_postで設定されているため、追加の処理は不要
   end
 
   # POST /posts or /posts.json
   def create
-    @post_type = params[:type] || "general"
+    @post = current_user.posts.build_with_type(params[:type])
 
-    if @post_type == "job_hunting"
-      @job_hunting_content = JobHuntingContent.new(job_hunting_content_params)
-      @post = current_user.posts.build(contentable: @job_hunting_content)
-      success_message = "就活記録をpushしました"
-    else
-      @general_content = GeneralContent.new(general_content_params)
-      @post = current_user.posts.build(contentable: @general_content)
-      # タグの設定（通常投稿のみ）
-      @post.tag_names = params.dig(:post, :tag_names) if params.dig(:post, :tag_names).present?
-      success_message = "つぶやきをpushしました"
-    end
-
-    if @post.save
-      redirect_to posts_path, notice: success_message
+    if @post.update_with_form_params(contentable_params, params[:post] || {})
+      redirect_to posts_path, notice: @post.contentable.success_message
     else
       flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
       render :new, status: :unprocessable_entity
@@ -68,24 +44,11 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
-    # contentable の型に応じてインスタンス変数を設定
-    if @post.general?
-      @general_content = @post.contentable
-      # 通常投稿のみタグを更新
-      @post.tag_names = params.dig(:post, :tag_names) if params.dig(:post, :tag_names).present?
-    elsif @post.job_hunting?
-      @job_hunting_content = @post.contentable
+    if @post.update_with_form_params(contentable_params, params[:post] || {})
+      redirect_to @post, notice: "コミットをmergeしました✨", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
-
-    # contentableとpostの両方を保存（トランザクション内で）
-    ActiveRecord::Base.transaction do
-      @post.contentable.update!(contentable_params)
-      @post.save!  # after_commitコールバックを発火させる
-    end
-
-    redirect_to @post, notice: "コミットをmergeしました✨", status: :see_other
-  rescue ActiveRecord::RecordInvalid
-    render :edit, status: :unprocessable_entity
   end
 
   # DELETE /posts/1 or /posts/1.json
@@ -105,16 +68,6 @@ class PostsController < ApplicationController
       unless @post.user == current_user
         redirect_to @post, alert: "このコミットをrebase・revertする権限がありません。"
       end
-    end
-
-    # 通常投稿用のパラメータ
-    def general_content_params
-      params.expect(general_content: [ :content ])
-    end
-
-    # 就活投稿用のパラメータ
-    def job_hunting_content_params
-      params.expect(job_hunting_content: [ :company_name, :selection_stage, :result, :content ])
     end
 
     # contentable の型に応じてパラメータを返す

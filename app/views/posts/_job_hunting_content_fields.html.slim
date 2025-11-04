@@ -1,0 +1,15 @@
+.form-group
+  = form.label :company_name, class: "form-label required"
+  = form.text_field :company_name, class: "form-input", placeholder: "例：株式会社〇〇"
+
+.form-group
+  = form.label :selection_stage, class: "form-label required"
+  = form.select :selection_stage, JobHuntingContent.selection_stages_for_select, { prompt: "選択してください" }, class: "form-select"
+
+.form-group
+  = form.label :result, class: "form-label required"
+  = form.select :result, JobHuntingContent.results_for_select, { prompt: "選択してください" }, class: "form-select"
+
+.form-group
+  = form.label :content, class: "form-label required"
+  = form.text_area :content, class: "form-textarea", rows: 5, placeholder: "就活のcommitメッセージを書いてください"
