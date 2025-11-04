@@ -11,6 +11,12 @@ class Post < ApplicationRecord
   # contentableのバリデーションも実行
   validates_associated :contentable
 
+  # Contentableタイプのマッピング
+  CONTENTABLE_TYPES = {
+    "general" => GeneralContent,
+    "job_hunting" => JobHuntingContent
+  }.freeze
+
   # 就活投稿の場合、企業名を自動でタグ化（create/update両方）
   after_save :update_company_tag_for_job_hunting, if: :job_hunting?
 
@@ -65,6 +71,43 @@ class Post < ApplicationRecord
 
   def job_hunting?
     contentable_type == "JobHuntingContent"
+  end
+
+  # タイプに応じてcontentableを構築
+  def build_contentable(type = "general")
+    type = "general" if type.blank?
+    contentable_class = CONTENTABLE_TYPES[type]
+    raise ArgumentError, "不明な投稿タイプ: #{type}" unless contentable_class
+
+    self.contentable = contentable_class.new
+  end
+
+  # クラスメソッド：タイプに応じてPostとcontentableを構築
+  def self.build_with_type(type = "general")
+    type = "general" if type.blank?
+    new.tap do |post|
+      post.build_contentable(type)
+    end
+  end
+
+  # フォームパラメータで更新（contentable + 追加パラメータ）
+  def update_with_form_params(contentable_params, additional_params = {})
+    contentable.assign_attributes(contentable_params)
+
+    # 通常投稿のみタグを適用
+    self.tag_names = additional_params[:tag_names] if general? && additional_params[:tag_names].present?
+
+    # バリデーションチェック（validates_associated :contentable を含む）
+    return false unless valid?
+
+    # バリデーション成功時のみ保存
+    transaction do
+      contentable.save!
+      save!
+    end
+    true
+  rescue ActiveRecord::RecordInvalid
+    false
   end
 
   private
