@@ -22,16 +22,17 @@
             .flex-grow-1
               = form_with(url: posts_path, method: :post, class: "x-reply-form") do |f|
                 = hidden_field_tag 'post[parent_id]', @post.id
-                .d-flex.align-items-center.gap-2
+                .d-flex.align-items-start.gap-2
                   = text_area_tag 'general_content[content]', '',
                     class: 'form-control x-reply-input',
                     rows: 1,
                     placeholder: 'Post your reply',
-                    required: true
+                    required: true,
+                    data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
                   = f.submit 'Reply', class: 'btn btn-reply'
 
       / リプライ一覧
       - if @post.replies.any?
-        - @post.replies.order(created_at: :asc).each do |reply|
-          .ms-4.mb-3
-            = render reply
+        .replies-container.mt-4
+          - @post.replies.order(created_at: :asc).each do |reply|
+            = render 'posts/components/reply_item', reply: reply
