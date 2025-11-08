@@ -11,7 +11,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
             span.text-dark.font-medium = post.user.name
             span.text-muted.text-xs
               i.far.fa-clock.me-1
-              = post.created_at.strftime("%Y/%m/%d %H:%M")
+              = japanese_time_ago(post.created_at)
 
       / 自分の投稿の場合のみ3点メニュー表示
       - if user_signed_in? && post.user == current_user
