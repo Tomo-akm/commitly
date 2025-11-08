@@ -4,7 +4,10 @@ class ProfilesController < ApplicationController
   before_action :require_own_likes_access, only: [ :likes ]
 
   def show
-    @posts = @user.posts.order(created_at: :desc)
+    @user = params[:id] ? User.find(params[:id]) : (current_user if user_signed_in?)
+    @posts = @user.posts
+                  .includes(:contentable, :likes, :tags)
+                  .order(created_at: :desc)
     prepare_heatmap_data
   end
 

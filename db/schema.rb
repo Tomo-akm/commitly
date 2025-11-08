@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_23_143025) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "general_contents", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "job_hunting_contents", force: :cascade do |t|
+    t.string "company_name", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.integer "result", null: false
+    t.integer "selection_stage", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_name"], name: "index_job_hunting_contents_on_company_name"
+    t.index ["result"], name: "index_job_hunting_contents_on_result"
+    t.index ["selection_stage"], name: "index_job_hunting_contents_on_selection_stage"
+  end
 
   create_table "likes", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -35,10 +53,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_23_143025) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.text "content"
+    t.bigint "contentable_id", null: false
+    t.string "contentable_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
