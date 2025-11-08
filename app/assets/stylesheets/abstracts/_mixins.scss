@@ -406,3 +406,26 @@
     opacity: 0.5;
   }
 }
+
+// --------------------------------------------------------------------------
+// Custom Scrollbar - カスタムスクロールバー
+// --------------------------------------------------------------------------
+
+@mixin custom-scrollbar($width: 6px, $thumb-color: rgba(0, 0, 0, 0.2), $thumb-hover-color: rgba(0, 0, 0, 0.3)) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: calc($width / 2);
+
+    &:hover {
+      background: $thumb-hover-color;
+    }
+  }
+}
