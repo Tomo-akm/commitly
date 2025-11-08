@@ -1,0 +1,15 @@
+/ 投稿カードを削除
+= turbo_stream.remove @post
+
+/ リプライの場合、親投稿のリプライボタンを更新
+- if @post.reply? && @post.parent
+  = turbo_stream.replace "reply_button_#{@post.parent.id}" do
+    = render 'posts/components/reply_button', post: @post.parent
+
+/ フラッシュメッセージを表示
+= turbo_stream.prepend "flash-messages" do
+  .toast.show.text-bg-success role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast"
+    .toast-body
+      i.fas.fa-check-circle
+      span コミットをrevertしました↩️
+    button.btn-close type="button" data-bs-dismiss="toast" aria-label="閉じる"

@@ -68,13 +68,17 @@ class PostsController < ApplicationController
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy!
-    redirect_to posts_path, notice: "コミットをrevertしました↩️", status: :see_other
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to posts_path, notice: "コミットをrevertしました↩️", status: :see_other }
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.includes(:contentable, replies: [ :contentable, :user, :tags, :likes ]).find(params.expect(:id))
+      @post = Post.includes(:contentable, :parent, replies: [ :contentable, :user, :tags, :likes ]).find(params.expect(:id))
     end
 
     # Check if the current user owns the post
