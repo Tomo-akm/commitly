@@ -36,12 +36,12 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     # リプライの場合は強制的にGeneralContentに
-    is_reply = params[:post] && params[:post][:parent_id].present?
+    is_reply = params.dig(:post, :parent_id).present?
     type = is_reply ? "general" : params[:type]
     @post = current_user.posts.build_with_type(type)
 
     # リプライの場合、parent_idを設定
-    @post.parent_id = params[:post][:parent_id] if is_reply
+    @post.parent_id = params.dig(:post, :parent_id) if is_reply
 
     if @post.update_with_form_params(contentable_params, params[:post] || {})
       # リプライの場合は親投稿のshowページにリダイレクト
