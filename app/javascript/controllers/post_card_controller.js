@@ -11,6 +11,8 @@ export default class extends Controller {
       'form',                   // フォーム
       '[data-bs-toggle]',       // モーダルトリガー
       '.job-hunting-badge',     // 就活バッジ（将来的にクリッカブルにする可能性）
+      '.dropdown',              // ドロップダウンメニュー全体
+      '.dropdown-menu',         // ドロップダウンメニュー本体
     ].join(', '))
 
     if (!isInteractiveElement) {

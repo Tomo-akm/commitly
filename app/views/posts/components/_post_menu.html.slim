@@ -4,12 +4,11 @@
     type="button"
     data-bs-toggle="dropdown"
     aria-expanded="false"
-    onclick="event.stopPropagation();"
     aria-label="投稿メニューを開く"
   ]
     i.fas.fa-ellipsis-h
 
-  ul.dropdown-menu.dropdown-menu-end[onclick="event.stopPropagation();"]
+  ul.dropdown-menu.dropdown-menu-end
     li
       = link_to edit_post_path(post), class: "dropdown-item" do
         i.fas.fa-code-branch.me-2
