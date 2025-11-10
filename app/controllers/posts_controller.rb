@@ -52,7 +52,11 @@ class PostsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   rescue ActiveRecord::InvalidForeignKey
-    flash.now[:alert] = "指定された投稿が見つかりません。"
+    if params.dig(:post, :parent_id).present?
+      flash.now[:alert] = "指定された親投稿が見つかりません。"
+    else
+      flash.now[:alert] = "投稿の作成中にエラーが発生しました。"
+    end
     render :new, status: :unprocessable_entity
   end
 
