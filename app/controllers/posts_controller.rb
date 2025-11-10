@@ -38,9 +38,19 @@ class PostsController < ApplicationController
     # リプライの場合は強制的にGeneralContentに
     is_reply = params.dig(:post, :parent_id).present?
     type = is_reply ? "general" : params[:type]
-    @post = current_user.posts.build_with_type(type)
 
-    # リプライの場合、parent_idを設定
+    # リプライの場合は親投稿の存在を事前確認
+    if is_reply
+      parent_post = Post.find_by(id: params.dig(:post, :parent_id))
+      unless parent_post
+        flash.now[:alert] = "指定された親投稿が見つかりません。"
+        @post = current_user.posts.build_with_type(type)
+        render :new, status: :unprocessable_entity
+        return
+      end
+    end
+
+    @post = current_user.posts.build_with_type(type)
     @post.parent_id = params.dig(:post, :parent_id) if is_reply
 
     if @post.update_with_form_params(contentable_params, params[:post] || {})
