@@ -257,8 +257,8 @@ RSpec.describe Post, type: :model do
 
     describe '親投稿削除時の動作' do
       it '親投稿が削除されるとリプライも削除される' do
-        reply1 = create(:post, user: user, parent: parent_post)
-        reply2 = create(:post, user: user, parent: parent_post)
+        create(:post, user: user, parent: parent_post)
+        create(:post, user: user, parent: parent_post)
 
         expect { parent_post.destroy }.to change(Post, :count).by(-3) # 親+リプライ2つ
       end
