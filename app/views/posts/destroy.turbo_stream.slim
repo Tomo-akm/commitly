@@ -2,7 +2,7 @@
 = turbo_stream.remove @post
 
 / リプライの場合、親投稿のリプライボタンを更新
-- if @post.reply? && @post.parent
+- if @post.parent.present?
   = turbo_stream.replace "reply_button_#{@post.parent.id}" do
     = render 'posts/components/reply_button', post: @post.parent
 
