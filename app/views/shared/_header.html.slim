@@ -18,12 +18,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle.text-white href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
               i.fas.fa-user-circle.me-2
-              = current_user&.email
+              = current_user&.name
             ul.dropdown-menu.dropdown-menu-end
               li
                 = link_to "プロフィール", profile_path, class: "dropdown-item"
-              li
-                = link_to "ユーザー編集", edit_user_registration_path, class: "dropdown-item"
               li
                 hr.dropdown-divider
               li
