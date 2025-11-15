@@ -61,7 +61,7 @@ class PostsController < ApplicationController
     @viewing_post_id = request.referer&.match(/\/posts\/(\d+)/)&.[](1)&.to_i
 
     # 表示中の投稿を削除した場合はリダイレクト
-    if @viewing_post_id && @viewing_post_id == @post.id
+    if @viewing_post_id == @post.id
       redirect_to posts_path, notice: @message, status: :see_other
       return
     end
