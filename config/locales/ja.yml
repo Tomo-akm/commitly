@@ -5,7 +5,6 @@ ja:
         email: "メールアドレス"
         password: "パスワード"
         password_confirmation: "パスワード（確認用）"
-        current_password: "現在のパスワード"
         name: "名前"
       post:
         content: "内容"
@@ -61,18 +60,3 @@ ja:
         email: "メールアドレス"
         password: "パスワード"
         password_confirmation: "パスワード確認"
-        current_password: "現在のパスワード"
-  
-  # Custom translations for user edit form
-  user_edit:
-    title: "ユーザー情報編集"
-    password_leave_blank: "変更しない場合は空白のままにしてください"
-    password_minimum: "文字以上"
-    current_password_help: "変更を確認するために現在のパスワードが必要です"
-    update_button: "更新"
-    back_button: "戻る"
-    cancel_account: "アカウント削除"
-    unhappy: "ご不満ですか？"
-    cancel_account_button: "アカウントを削除する"
-    cancel_confirmation: "本当によろしいですか？"
-    currently_waiting: "確認待ち："
