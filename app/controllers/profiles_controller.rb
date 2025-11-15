@@ -25,7 +25,7 @@ class ProfilesController < ApplicationController
   private
 
   def profile_params
-    params.require(:user).permit(:favorite_language, :research_lab, :internship_count, :personal_message)
+    params.expect(user: [ :name, :favorite_language, :research_lab, :internship_count, :personal_message ])
   end
 
   def prepare_heatmap_data
