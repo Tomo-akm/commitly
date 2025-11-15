@@ -1,9 +1,4 @@
 span id="reply_button_#{post.id}" data-controller="reply" data-reply-post-id-value=post.id data-reply-post-content-value=post.content data-reply-user-name-value=post.user.name
-  - if user_signed_in?
-    button.btn.btn-sm.btn-outline-secondary.reply-button type="button" data-action="click->reply#openModal" aria-label="リプライする"
-      i.fa-regular.fa-comment
-      span.ms-1= post.replies.size
-  - else
-    button.btn.btn-sm.btn-outline-secondary.reply-button.not-authenticated[data-bs-toggle="tooltip" title="ログインしてください"] disabled=true aria-label="リプライする（ログインが必要）"
-      i.fa-regular.fa-comment
-      span.ms-1= post.replies.size
+  button.btn.btn-sm.btn-outline-secondary.reply-button type="button" data-action="click->reply#openModal" aria-label="リプライする"
+    i.fa-regular.fa-comment
+    span.ms-1= post.replies.size

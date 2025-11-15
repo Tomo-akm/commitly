@@ -174,7 +174,7 @@
     text-align: center;
   }
 
-  &:hover:not(.not-authenticated) {
+  &:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -183,20 +183,15 @@
     }
   }
 
-  &:active:not(.not-authenticated) {
+  &:active {
     transform: translateY(0);
     box-shadow: none;
-  }
-
-  &.not-authenticated {
-    opacity: 0.7;
-    cursor: not-allowed !important;
   }
 }
 
 // いいねボタン固有のスタイル
 .like-button {
-  &:hover:not(.not-authenticated) {
+  &:hover {
     color: #dc3545;
     border-color: #dc3545;
     background-color: rgba(220, 53, 69, 0.1);
@@ -231,7 +226,7 @@
     text-align: left !important;
   }
 
-  &:hover:not(.not-authenticated) {
+  &:hover {
     color: #0d6efd;
     border-color: #0d6efd;
     background-color: rgba(13, 110, 253, 0.1);
