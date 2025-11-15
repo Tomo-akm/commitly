@@ -32,7 +32,7 @@
                   = f.submit 'Reply', class: 'btn btn-reply'
 
       / リプライ一覧
-      - if @post.replies.any?
+      - if @post.replies.present?
         .replies-container.mt-4
           - @post.replies.order(created_at: :asc).each do |reply|
             = render 'posts/components/reply_item', reply: reply
