@@ -65,7 +65,7 @@ RSpec.describe "Profiles", type: :request do
           }
         }
         follow_redirect!
-        expect(response.body).to include("プロフィールを更新しました")
+        expect(response.body).to include("プロフィールを更新しました。")
       end
     end
 
