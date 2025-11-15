@@ -23,14 +23,6 @@
       .reply-text.mb-2
         = simple_format(h(reply.content), class: 'mb-0')
 
-      / タグ表示（通常投稿のみ）
-      - if reply.general? && reply.tags.any?
-        .mb-2
-          .d-flex.flex-wrap.gap-1
-            - reply.tags.each do |tag|
-              = link_to tag_path(tag.id), class: "text-decoration-none" do
-                span.badge.bg-light.text-dark.small ##{tag.name}
-
       / アクションボタン
       .d-flex.align-items-center.gap-3.mt-2
         = render 'posts/components/like_button', post: reply
