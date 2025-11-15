@@ -36,3 +36,6 @@
         .replies-container.mt-4
           - @post.replies.order(created_at: :asc).each do |reply|
             = render 'posts/components/reply_item', reply: reply
+
+/ 共通リプライモーダル（ページに1つだけ）
+= render 'posts/components/shared_reply_modal'

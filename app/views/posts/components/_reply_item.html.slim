@@ -35,7 +35,3 @@
       .d-flex.align-items-center.gap-3.mt-2
         = render 'posts/components/like_button', post: reply
         = render 'posts/components/reply_button', post: reply
-
-/ リプライモーダルを追加
-- if user_signed_in?
-  = render 'posts/components/reply_modal', post: reply

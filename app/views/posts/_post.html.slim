@@ -48,7 +48,3 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
     .d-flex.align-items-center.gap-2.pt-2.border-top
       = render 'posts/components/like_button', post: post
       = render 'posts/components/reply_button', post: post
-
-/ リプライモーダルを追加
-- if user_signed_in?
-  = render 'posts/components/reply_modal', post: post
