@@ -1,0 +1,40 @@
+/ ヘッダー
+.d-flex.justify-content-between.align-items-center.mb-5
+  div
+    h1.fw-bold.mb-1
+      i.fas.fa-file-alt.me-2.icon-primary
+      | ES一覧
+    p.text-muted.mb-0 作成したエントリーシートの一覧
+  = link_to new_vault_entry_sheet_path, class: "btn btn-primary" do
+    i.fas.fa-plus.me-2
+    | 新規ES作成
+
+/ ES一覧
+- if @entry_sheets.any?
+  .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+    - @entry_sheets.each do |es|
+      .col
+        .card.h-100
+          .card-body
+            .d-flex.justify-content-between.align-items-start.mb-3
+              h5.card-title.fw-bold.mb-0.text-primary-dark = es.company_name
+              = entry_sheet_status_badge(es)
+
+            - if es.deadline
+              = vault_datetime_with_icon es.deadline, icon: "clock", label: "締切"
+
+            p.card-text.text-muted.small.mb-0
+              = vault_datetime_with_icon es.created_at.to_date, icon: "calendar-plus", label: "作成"
+
+            - if es.submitted_at
+              = vault_datetime_with_icon es.submitted_at.to_date, icon: "paper-plane", label: "提出"
+
+          .card-footer.bg-white.border-0.pt-0
+            = vault_action_buttons es, show_path: vault_entry_sheet_path(es), edit_path: edit_vault_entry_sheet_path(es)
+
+  / ページネーション
+  .mt-4
+    = paginate @entry_sheets
+
+- else
+  = vault_empty_state icon: "folder-open", title: "ESがまだありません", message: "新しいESを作成して就活を管理しましょう", button_text: "新規ES作成", button_path: new_vault_entry_sheet_path

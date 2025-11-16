@@ -1,0 +1,50 @@
+= form_with model: [:vault, entry_sheet],
+  local: true,
+  data: { controller: "nested-form" },
+  class: "vault-entry-sheet-form" do |f|
+  .card.mb-4
+    .card-body.basic-info-section
+      .row
+        .col-md-6.mb-3.company-name-field
+          = f.label :company_name, "企業名", class: "form-label fw-bold text-primary-dark"
+          = f.text_field :company_name,
+            class: "form-control",
+            placeholder: "例: 株式会社サンプル",
+            required: true
+
+        .col-md-3.mb-3.deadline-field
+          = f.label :deadline, "締切", class: "form-label fw-bold text-primary-dark"
+          = f.datetime_local_field :deadline, class: "form-control"
+
+        .col-md-3.mb-3.status-field
+          = f.label :status, "ステータス", class: "form-label fw-bold text-primary-dark"
+          = f.select :status,
+            [['下書き', 'draft'], ['作成中', 'in_progress'], ['完成', 'completed'], ['提出済み', 'submitted'], ['通過', 'passed'], ['不合格', 'failed']],
+            {},
+            class: "form-select"
+
+  / ES項目
+  .card.mb-4
+    .vault-card-header
+      h5
+        i.fas.fa-list
+        | ES項目
+
+    .card-body
+      #entry-sheet-items[data-nested-form-target="container"]
+        = f.fields_for :entry_sheet_items do |item_form|
+          = render "vault/entry_sheets/item_fields", f: item_form, templates: @templates
+
+    .card-footer.bg-white.border-0
+      button.btn.add-item-button.btn-secondary[
+        type="button"
+        data-action="click->nested-form#addItem"
+      ]
+        i.fas.fa-plus.me-2
+        | 項目を追加
+
+  .d-flex.gap-2
+    = f.submit entry_sheet.new_record? ? "作成" : "更新", class: "btn btn-primary"
+    = link_to "キャンセル",
+      entry_sheet.new_record? ? vault_entry_sheets_path : vault_entry_sheet_path(entry_sheet),
+      class: "btn btn-outline-primary"
