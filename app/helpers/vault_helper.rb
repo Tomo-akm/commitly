@@ -30,13 +30,13 @@ module VaultHelper
         content_tag(:h3, title, class: "text-muted"),
         content_tag(:p, message, class: "text-muted mb-4")
       ]
-      
+
       if button_text && button_path
         parts << link_to(button_path, class: "btn btn-primary") do
-          safe_join([content_tag(:i, "", class: "fas fa-plus me-2"), button_text])
+          safe_join([ content_tag(:i, "", class: "fas fa-plus me-2"), button_text ])
         end
       end
-      
+
       safe_join(parts)
     end
   end
@@ -45,18 +45,18 @@ module VaultHelper
   def vault_action_buttons(resource, show_path:, edit_path:, size: :sm, layout: :horizontal)
     content_tag :div, class: "d-flex gap-2" do
       detail_btn = link_to(show_path, class: "btn btn-#{size} #{layout == :horizontal ? 'flex-grow-1' : ''} btn-outline-primary") do
-        safe_join([content_tag(:i, "", class: "fas fa-eye me-1"), "詳細"])
+        safe_join([ content_tag(:i, "", class: "fas fa-eye me-1"), "詳細" ])
       end
-      
+
       edit_btn = link_to(edit_path, class: "btn btn-#{size} btn-outline-secondary") do
         content_tag(:i, "", class: "fas fa-edit")
       end
-      
+
       delete_btn = link_to(show_path, data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-#{size} btn-outline-danger") do
         content_tag(:i, "", class: "fas fa-trash")
       end
-      
-      safe_join([detail_btn, edit_btn, delete_btn])
+
+      safe_join([ detail_btn, edit_btn, delete_btn ])
     end
   end
 
@@ -65,7 +65,7 @@ module VaultHelper
     return "" unless datetime
 
     content_tag :small, class: "text-muted" do
-      parts = [content_tag(:i, "", class: "fas fa-#{icon} me-1")]
+      parts = [ content_tag(:i, "", class: "fas fa-#{icon} me-1") ]
       parts << "#{label}: " if label
       parts << datetime.strftime("%Y/%m/%d %H:%M")
       safe_join(parts)
