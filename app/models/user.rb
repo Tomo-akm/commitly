@@ -7,6 +7,30 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :active_follows, class_name:  "Follow",
+           foreign_key: "follower_id",
+           dependent:   :destroy
+  has_many :passive_follows, class_name:  "Follow",
+           foreign_key: "followed_id",
+           dependent:   :destroy
+  has_many :following, through: :active_follows, source: :followed
+  has_many :followers, through: :passive_follows, source: :follower
+
+  # ユーザーをフォローする
+  def follow(other_user)
+    following << other_user unless self == other_user
+  end
+
+  # ユーザーをフォロー解除する
+  def unfollow(other_user)
+    following.delete(other_user)
+  end
+
+  # 現在のユーザーがフォローしてたらtrueを返す
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
 
   validates :name, presence: true
   validates :internship_count,

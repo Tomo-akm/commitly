@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
+  resources :users, only: [] do
+    resources :follows, only: [ :create, :destroy ]
+  end
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
@@ -13,6 +16,8 @@ Rails.application.routes.draw do
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
+  get "users/:id/following", to: "profiles#following", as: "following_user"
+  get "users/:id/followers", to: "profiles#followers", as: "followers_user"
 
 
   # API endpoints for heatmap data

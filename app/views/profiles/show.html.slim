@@ -1,3 +1,4 @@
+
 .container
   .row.justify-content-center
     .col-lg-8
@@ -8,8 +9,16 @@
             h2.h3.mb-0.font-bold.d-flex.align-items-center
               i.fas.fa-user-circle.me-2
               = @user.name
-            - if user_signed_in? && @user == current_user
-              = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+            .d-flex.gap-2
+              - if user_signed_in?
+                - if @user == current_user
+                  = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+                - else
+                  - if current_user.following?(@user)
+                    - follow = current_user.active_follows.find_by(followed_id: @user.id)
+                    = button_to "フォロー解除", user_follow_path(@user, follow), method: :delete, class: "btn btn-sm btn-danger"
+                  - else
+                    = button_to "フォローする", user_follows_path(@user), method: :post, class: "btn btn-sm btn-primary"
         .card-body.p-4
           .profile-info-item
             .profile-icon
@@ -60,6 +69,38 @@
               i.fas.fa-calendar-check
             .profile-label 登録日
             .profile-value = @user.created_at.strftime("%Y年%m月%d日")
+
+          .separator-gradient
+
+          - if user_signed_in?
+            = link_to following_user_path(@user), class: "text-decoration-none text-dark" do
+              .profile-info-item
+                .profile-icon
+                  i.fas.fa-users
+                .profile-label フォロー中
+                .profile-value = @user.following.count
+          - else
+            .profile-info-item
+              .profile-icon
+                i.fas.fa-users
+              .profile-label フォロー中
+              .profile-value = @user.following.count
+
+          .separator-gradient
+
+          - if user_signed_in?
+            = link_to followers_user_path(@user), class: "text-decoration-none text-dark" do
+              .profile-info-item
+                .profile-icon
+                  i.fas.fa-user-friends
+                .profile-label フォロワー
+                .profile-value = @user.followers.count
+          - else
+            .profile-info-item
+              .profile-icon
+                i.fas.fa-user-friends
+              .profile-label フォロワー
+              .profile-value = @user.followers.count
 
       / Activity Heatmap
       .card.card-primary.mb-4.fade-in
