@@ -1,0 +1,8 @@
+/ Activity Heatmap
+.card.card-primary.mb-4.fade-in
+  .card-header.bg-info.text-white.p-3
+    h3.h5.mb-0.font-semibold
+      i.far.fa-calendar-alt.me-2
+      | 投稿活動チャート
+  .card-body.p-4
+    = render "heatmap", user: @user, date: @date, date_6_months_ago: @date_6_months_ago, active_user_counts: @active_user_counts_6_months

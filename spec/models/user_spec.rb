@@ -29,6 +29,18 @@ RSpec.describe User, type: :model do
       association = described_class.reflect_on_association(:posts)
       expect(association.macro).to eq(:has_many)
     end
+
+    it 'has many likes' do
+      association = described_class.reflect_on_association(:likes)
+      expect(association.macro).to eq(:has_many)
+    end
+
+    it 'has many liked_posts through likes' do
+      association = described_class.reflect_on_association(:liked_posts)
+      expect(association.macro).to eq(:has_many)
+      expect(association.options[:through]).to eq(:likes)
+      expect(association.options[:source]).to eq(:post)
+    end
   end
 
   describe '#posts' do
@@ -40,6 +52,29 @@ RSpec.describe User, type: :model do
 
       expect(user.posts).to include(post1, post2)
       expect(user.posts).not_to include(other_post)
+    end
+  end
+
+  describe '#liked_posts' do
+    it 'returns posts liked by the user' do
+      user = create(:user)
+      other_user = create(:user)
+      liked_post1 = create(:post, user: other_user)
+      liked_post2 = create(:post, user: other_user)
+      not_liked_post = create(:post, user: other_user)
+
+      create(:like, user: user, post: liked_post1)
+      create(:like, user: user, post: liked_post2)
+
+      expect(user.liked_posts).to include(liked_post1, liked_post2)
+      expect(user.liked_posts).not_to include(not_liked_post)
+    end
+
+    it 'returns empty array when user has not liked any posts' do
+      user = create(:user)
+      create(:post)
+
+      expect(user.liked_posts).to be_empty
     end
   end
 
