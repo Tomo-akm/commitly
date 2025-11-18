@@ -16,9 +16,11 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index, :show ]
   get "home/index"
   get "profile", to: "profiles#show"
+  get "profile/likes", to: "profiles#likes", as: "profile_likes"
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
+  get "users/:id/profile/likes", to: "profiles#likes", as: "user_profile_likes"
 
 
   # API endpoints for heatmap data
