@@ -8,7 +8,7 @@
           span 戻る
 
       / 投稿カードを表示
-      = render @post
+      = render 'shared/post', post: @post
 
       / リプライ投稿フォーム（ログインしている場合のみ）
       - if user_signed_in?
