@@ -31,6 +31,7 @@ class User < ApplicationRecord
     following.include?(other_user)
   end
 
+  has_many :liked_posts, through: :likes, source: :post
 
   validates :name, presence: true
   validates :internship_count,

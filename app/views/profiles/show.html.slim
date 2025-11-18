@@ -1,134 +1,51 @@
-
 .container
   .row.justify-content-center
     .col-lg-8
-      / User Profile Information
-      .card.card-primary.mb-4.fade-in.card-decorative
-        .card-header.bg-primary.text-white.p-4
-          .d-flex.justify-content-between.align-items-center
-            h2.h3.mb-0.font-bold.d-flex.align-items-center
-              i.fas.fa-user-circle.me-2
-              = @user.name
-            .d-flex.gap-2
-              - if user_signed_in?
-                - if @user == current_user
-                  = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
-                - else
-                  - if current_user.following?(@user)
-                    - follow = current_user.active_follows.find_by(followed_id: @user.id)
-                    = button_to "フォロー解除", user_follow_path(@user, follow), method: :delete, class: "btn btn-sm btn-danger"
-                  - else
-                    = button_to "フォローする", user_follows_path(@user), method: :post, class: "btn btn-sm btn-primary"
-        .card-body.p-4
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-id-card
-            .profile-label 名前
-            .profile-value = @user.name
+      = render "profile_header"
+      = render "heatmap_card"
 
-          .separator-gradient
-
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-code
-            .profile-label 好きな言語
-            .profile-value = @user.favorite_language.present? ? @user.favorite_language : "ー"
-
-          .separator-gradient
-
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-flask
-            .profile-label 希望・所属研究室
-            .profile-value = @user.research_lab.present? ? @user.research_lab : "ー"
-
-          .separator-gradient
-
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-briefcase
-            .profile-label インターン・説明会参加回数
-            .profile-value = @user.internship_count.present? ? "#{@user.internship_count}回" : "ー"
-
-          .separator-gradient
-
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-comment-dots
-            .profile-label 一言
-            .profile-value
-              - if @user.personal_message.present?
-                = simple_format(h(@user.personal_message), {}, wrapper_tag: "span")
-              - else
-                | ー
-
-          .separator-gradient
-
-          .profile-info-item
-            .profile-icon
-              i.fas.fa-calendar-check
-            .profile-label 登録日
-            .profile-value = @user.created_at.strftime("%Y年%m月%d日")
-
-          .separator-gradient
-
-          - if user_signed_in?
-            = link_to following_user_path(@user), class: "text-decoration-none text-dark" do
-              .profile-info-item
-                .profile-icon
-                  i.fas.fa-users
-                .profile-label フォロー中
-                .profile-value = @user.following.count
-          - else
-            .profile-info-item
-              .profile-icon
-                i.fas.fa-users
-              .profile-label フォロー中
-              .profile-value = @user.following.count
-
-          .separator-gradient
-
-          - if user_signed_in?
-            = link_to followers_user_path(@user), class: "text-decoration-none text-dark" do
-              .profile-info-item
-                .profile-icon
-                  i.fas.fa-user-friends
-                .profile-label フォロワー
-                .profile-value = @user.followers.count
-          - else
-            .profile-info-item
-              .profile-icon
-                i.fas.fa-user-friends
-              .profile-label フォロワー
-              .profile-value = @user.followers.count
-
-      / Activity Heatmap
-      .card.card-primary.mb-4.fade-in
-        .card-header.bg-info.text-white.p-3
-          h3.h5.mb-0.font-semibold
-            i.far.fa-calendar-alt.me-2
-            | 投稿活動チャート
-        .card-body.p-4
-          = render "heatmap", user: @user, date: @date, date_6_months_ago: @date_6_months_ago, active_user_counts: @active_user_counts_6_months
-
-      / User's Posts
-      .mb-4
-        h3.h4.font-bold.text-dark.mb-3
-          i.fas.fa-book.me-2
-          | commit log
-          span.text-muted.ms-2.font-normal.text-base = "(#{@posts.count}件)"
-
-      - if @posts.any?
-        .card-list
-          - @posts.each do |post|
-            = render post
-      - else
+      / Posts Section with Tabs
+      - if user_signed_in? && @user == current_user
         .card.card-primary.fade-in
-          .card-body.p-5.text-center
-            i.far.fa-sticky-note.display-4.mb-3.text-muted
-            p.mb-0.text-muted まだ投稿がありません
-            p.text-sm.text-muted 最初の投稿をしてみましょう！
-            - if user_signed_in?
-              = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2"
+          = turbo_frame_tag "profile_content" do
+            = render "profile_tabs"
+
+            / タブコンテンツ
+            .card-body.p-4.slide-in-left
+              .d-flex.justify-content-between.align-items-center.mb-2
+                h3.h5.mb-0.font-semibold
+                  i.fas.fa-book.me-2
+                  | commit log (#{@posts.count}件)
+              hr.my-3
+
+              - if @posts.any?
+                .card-list
+                  - @posts.each do |post|
+                    = render 'shared/post', post: post
+              - else
+                .text-center.py-5.text-muted
+                  i.far.fa-sticky-note.display-4.mb-3
+                  p.mb-0 まだ投稿がありません
+                  p.text-sm 最初の投稿をしてみましょう！
+                  - if user_signed_in?
+                    = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top" }
+                  - else
+                    = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top", confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }
+      - else
+        / タブなしバージョン（他人のプロフィール）
+        .card.card-primary.fade-in
+          .card-body.p-4
+            .d-flex.justify-content-between.align-items-center.mb-2
+              h3.h5.mb-0.font-semibold
+                i.fas.fa-book.me-2
+                | commit log (#{@posts.count}件)
+            hr.my-3
+
+            - if @posts.any?
+              .card-list
+                - @posts.each do |post|
+                  = render 'shared/post', post: post
             - else
-              = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }
+              .text-center.py-5.text-muted
+                i.far.fa-sticky-note.display-4.mb-3
+                p.mb-0 まだ投稿がありません

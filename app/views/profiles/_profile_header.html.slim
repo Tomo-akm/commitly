@@ -1,0 +1,99 @@
+/ User Profile Information
+.card.card-primary.mb-4.fade-in.card-decorative
+  .card-header.bg-primary.text-white.p-4
+    .d-flex.justify-content-between.align-items-center
+      h2.h3.mb-0.font-bold.d-flex.align-items-center
+        i.fas.fa-user-circle.me-2
+        = @user.name
+      .d-flex.gap-2
+        - if user_signed_in?
+          - if @user == current_user
+            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+          - else
+            - if current_user.following?(@user)
+              - follow = current_user.active_follows.find_by(followed_id: @user.id)
+              = button_to "フォロー解除", user_follow_path(@user, follow), method: :delete, class: "btn btn-sm btn-danger"
+            - else
+              = button_to "フォローする", user_follows_path(@user), method: :post, class: "btn btn-sm btn-primary"
+  .card-body.p-4
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-id-card
+      .profile-label 名前
+      .profile-value = @user.name
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-code
+      .profile-label 好きな言語
+      .profile-value = @user.favorite_language.present? ? @user.favorite_language : "ー"
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-flask
+      .profile-label 希望・所属研究室
+      .profile-value = @user.research_lab.present? ? @user.research_lab : "ー"
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-briefcase
+      .profile-label インターン・説明会参加回数
+      .profile-value = @user.internship_count.present? ? "#{@user.internship_count}回" : "ー"
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-comment-dots
+      .profile-label 一言
+      .profile-value
+        - if @user.personal_message.present?
+          = simple_format(h(@user.personal_message), {}, wrapper_tag: "span")
+        - else
+          | ー
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-calendar-check
+      .profile-label 登録日
+      .profile-value = @user.created_at.strftime("%Y年%m月%d日")
+
+    .separator-gradient
+
+    - if user_signed_in?
+      = link_to following_user_path(@user), class: "text-decoration-none text-dark" do
+        .profile-info-item
+          .profile-icon
+            i.fas.fa-users
+          .profile-label フォロー中
+          .profile-value = @user.following.count
+    - else
+      .profile-info-item
+        .profile-icon
+          i.fas.fa-users
+        .profile-label フォロー中
+        .profile-value = @user.following.count
+
+    .separator-gradient
+
+    - if user_signed_in?
+      = link_to followers_user_path(@user), class: "text-decoration-none text-dark" do
+        .profile-info-item
+          .profile-icon
+            i.fas.fa-user-friends
+          .profile-label フォロワー
+          .profile-value = @user.followers.count
+    - else
+      .profile-info-item
+        .profile-icon
+          i.fas.fa-user-friends
+        .profile-label フォロワー
+        .profile-value = @user.followers.count
