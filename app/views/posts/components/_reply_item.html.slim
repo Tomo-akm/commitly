@@ -1,0 +1,29 @@
+/ リプライアイテム（X風スレッド表示）
+.reply-item id=dom_id(reply) data-controller="post-card" data-post-url=post_path(reply) data-action="click->post-card#navigate" style="cursor: pointer;"
+  .d-flex.gap-3.position-relative
+    / 左側：アイコン
+    .reply-thread-container
+      .icon-circle.bg-gradient-secondary.icon-sm
+        i.fas.fa-user
+
+    / 右側：リプライ本体
+    .reply-content.flex-grow-1
+      / ユーザー情報とタイムスタンプ
+      .d-flex.align-items-center.justify-content-between.mb-2
+        .d-flex.align-items-center.gap-1
+          = link_to user_profile_path(reply.user), class: "text-decoration-none" do
+            span.fw-semibold.text-dark = reply.user.name
+          span.text-muted.small · #{japanese_time_ago(reply.created_at)}
+
+        / 自分のリプライの場合のみ3点メニュー
+        - if user_signed_in? && reply.user == current_user
+          = render 'posts/components/post_menu', post: reply
+
+      / リプライ本文
+      .reply-text.mb-2
+        = simple_format(h(reply.content), class: 'mb-0')
+
+      / アクションボタン
+      .d-flex.align-items-center.gap-3.mt-2
+        = render 'posts/components/like_button', post: reply
+        = render 'posts/components/reply_button', post: reply

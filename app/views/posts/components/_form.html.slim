@@ -7,9 +7,12 @@
   / typeパラメータを渡す（新規作成時のみ）
   - if post.new_record?
     = hidden_field_tag :type, contentable.type_name
+    / リプライの場合、parent_idを渡す
+    - if post.parent_id.present?
+      = hidden_field_tag 'post[parent_id]', post.parent_id
 
   / contentable用のフィールドを動的に読み込み
-  = render "posts/#{contentable.class.name.underscore}_fields", form: form, post: post
+  = render "posts/components/#{contentable.class.name.underscore}_fields", form: form, post: post
 
   .text-center
     = form.submit (post.new_record? ? "push する" : "merge する"), class: "btn btn-gradient-primary btn-lg"

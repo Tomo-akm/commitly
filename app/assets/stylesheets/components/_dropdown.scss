@@ -1,0 +1,102 @@
+// ============================================
+// ドロップダウンメニュー コンポーネント
+// ============================================
+
+.post-menu-trigger {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  position: relative;
+  padding: 0 !important;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(0);
+    transition: transform 0.2s ease;
+  }
+
+  &:hover::before {
+    transform: scale(1);
+  }
+
+  &:focus,
+  &:focus-visible,
+  &:active:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  &:active::before {
+    transform: scale(0.95);
+  }
+
+  i {
+    font-size: 1.125rem;
+    color: #6c757d;
+    transition: color 0.2s ease;
+    z-index: 1;
+  }
+
+  &:hover i {
+    color: #495057;
+  }
+}
+
+// ドロップダウンメニューのスタイル（headerと統一）
+.post-menu-trigger + .dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  min-width: 10rem;
+
+  .dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: all 0.15s ease-in-out;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+
+    i {
+      width: 1.25rem;
+      text-align: center;
+      transition: transform 0.15s ease-in-out;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateX(5px);
+
+      i {
+        transform: scale(1.1);
+      }
+    }
+
+    &.text-danger:hover {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+  }
+
+  .dropdown-divider {
+    margin: 0;
+    opacity: 0.1;
+  }
+}

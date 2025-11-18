@@ -10,14 +10,16 @@
 @import "bootstrap";
 
 // 3. Components - コンポーネント
-@import "components/buttons";
+@import "components/buttons";        // 全ボタンスタイル（like, reply, back含む）
 @import "components/cards";
 @import "components/forms";
 @import "components/navbar";
 @import "components/heatmap";
 @import "components/toast";
-@import "components/like_button";
+@import "components/dropdown";       // ドロップダウンメニュー（3点メニュー等）
+@import "components/reply";          // リプライフォーム・モーダル
 @import "components/job_hunting";
+@import "components/vault";          // ES管理（Vault）
 
 // 4. Utilities - ユーティリティクラス
 @import "utilities/utilities";

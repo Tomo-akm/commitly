@@ -1,0 +1,43 @@
+= form_with model: [:vault, template],
+  local: true,
+  class: "vault-template-form" do |f|
+  .card.mb-4
+    .card-body
+      .row
+        .col-md-6.mb-3
+          = f.label :tag, "タグ", class: "form-label fw-bold text-primary-dark"
+          = f.select :tag,
+            EntrySheetItemTemplate.tags_for_select,
+            { include_blank: "選択してください" },
+            { class: "form-select", required: true }
+          small.text-muted タグで分類すると後で探しやすくなります
+
+        .col-md-6.mb-3
+          = f.label :title, "タイトル", class: "form-label fw-bold text-primary-dark"
+          = f.text_field :title,
+            class: "form-control",
+            placeholder: "例: サークル活動について",
+            required: true
+
+      .mb-3[
+        data-controller="char-counter"
+        data-char-counter-limit-value="0"
+      ]
+        .d-flex.justify-content-between.align-items-center.mb-2
+          = f.label :content, "内容", class: "form-label fw-bold mb-0 text-primary-dark"
+          small.text-muted.char-counter
+            span.count[data-char-counter-target="count"] = template.content.to_s.length
+            |  文字
+        = f.text_area :content,
+          class: "form-control",
+          rows: 10,
+          placeholder: "テンプレートの内容を入力してください",
+          required: true,
+          data: { controller: "autosize-textarea", action: "input->autosize-textarea#resize input->char-counter#update", char_counter_target: "textarea" }
+        small.text-muted この内容がテンプレートとして保存されます
+
+  .d-flex.gap-2
+    = f.submit template.new_record? ? "作成" : "更新", class: "btn btn-primary"
+    = link_to "キャンセル",
+      vault_entry_sheet_item_templates_path,
+      class: "btn btn-outline-primary"

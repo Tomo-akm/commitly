@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :entry_sheets, dependent: :destroy
+  has_many :entry_sheet_item_templates, dependent: :destroy
 
   validates :name, presence: true
   validates :internship_count,

@@ -143,3 +143,132 @@
     width: 100%;
   }
 }
+
+// ============================================
+// インタラクションボタン（いいね・リプライ）
+// ============================================
+
+.like-button,
+.reply-button {
+  position: relative;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: none !important;
+  min-width: 4rem;
+
+  i {
+    transition: transform 0.2s ease, color 0.2s ease;
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  span {
+    font-size: 0.875rem;
+    pointer-events: none;
+    min-width: 1rem;
+    text-align: center;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    i {
+      transform: scale(1.2);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+// いいねボタン固有のスタイル
+.like-button {
+  &:hover {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+
+    i {
+      color: #dc3545;
+    }
+  }
+
+  &.liked {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.1) !important;
+
+    i {
+      color: #dc3545 !important;
+    }
+
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.15) !important;
+      color: #dc3545 !important;
+    }
+  }
+}
+
+// リプライボタン固有のスタイル
+.reply-button {
+  justify-content: flex-start !important;
+  text-align: left !important;
+
+  span {
+    text-align: left !important;
+  }
+
+  &:hover {
+    color: #0d6efd;
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
+
+    i {
+      color: #0d6efd;
+    }
+  }
+}
+
+// ============================================
+// 戻るボタン
+// ============================================
+
+.back-button {
+  padding: 0.5rem 0;
+  color: #6c757d;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  transition: all 0.2s ease;
+
+  i {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    color: #495057;
+    background: transparent;
+
+    i {
+      transform: translateX(-3px);
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

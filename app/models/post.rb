@@ -1,9 +1,11 @@
 class Post < ApplicationRecord
   belongs_to :user
   belongs_to :contentable, polymorphic: true
+  belongs_to :parent, class_name: "Post", optional: true
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags
   has_many :likes, dependent: :destroy
+  has_many :replies, class_name: "Post", foreign_key: :parent_id, dependent: :destroy
 
   # contentable へのdelegation
   delegate :content, to: :contentable
@@ -24,6 +26,7 @@ class Post < ApplicationRecord
   scope :general, -> { where(contentable_type: "GeneralContent") }
   scope :job_hunting, -> { where(contentable_type: "JobHuntingContent") }
   scope :with_tag, ->(tag_name) { joins(:tags).where(tags: { name: tag_name }) }
+  scope :top_level, -> { where(parent_id: nil) } # リプライを除外（親投稿のみ）
 
   # Ransackの設定
   def self.ransackable_attributes(auth_object = nil)
@@ -71,6 +74,11 @@ class Post < ApplicationRecord
 
   def job_hunting?
     contentable_type == "JobHuntingContent"
+  end
+
+  # リプライかどうかを判定
+  def reply?
+    parent_id.present?
   end
 
   # タイプに応じてcontentableを構築

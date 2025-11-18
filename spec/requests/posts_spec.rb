@@ -293,4 +293,73 @@ RSpec.describe "Posts", type: :request do
       end
     end
   end
+
+  describe "リプライ機能" do
+    let!(:parent_post) { create(:post, user: user) }
+
+    describe "POST /posts (リプライの作成)" do
+      context "通常投稿へのリプライ" do
+        let(:valid_reply_attributes) do
+          {
+            general_content: {
+              content: "これはリプライです"
+            },
+            post: {
+              parent_id: parent_post.id,
+              tag_names: "返信, テスト"
+            }
+          }
+        end
+
+        it "リプライが作成される" do
+          expect {
+            post posts_path, params: valid_reply_attributes
+          }.to change(Post, :count).by(1)
+
+          reply = Post.last
+          expect(reply.parent).to eq(parent_post)
+          expect(reply.parent_id).to eq(parent_post.id)
+          expect(reply.general?).to be true
+        end
+
+        it "親投稿のrepliesに追加される" do
+          post posts_path, params: valid_reply_attributes
+          reply = Post.last
+
+          expect(parent_post.replies).to include(reply)
+        end
+
+        it "リプライもタグを持つことができる" do
+          post posts_path, params: valid_reply_attributes
+          reply = Post.last
+
+          expect(reply.tags.pluck(:name)).to contain_exactly("返信", "テスト")
+        end
+
+        it "親投稿のshowページにリダイレクトする" do
+          post posts_path, params: valid_reply_attributes
+          expect(response).to redirect_to(post_path(parent_post))
+        end
+      end
+
+      context "存在しない親投稿へのリプライ" do
+        let(:invalid_reply_attributes) do
+          {
+            general_content: {
+              content: "これはリプライです"
+            },
+            post: {
+              parent_id: 999999
+            }
+          }
+        end
+
+        it "エラーになる" do
+          expect {
+            post posts_path, params: invalid_reply_attributes
+          }.not_to change(Post, :count)
+        end
+      end
+    end
+  end
 end
