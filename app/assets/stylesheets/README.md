@@ -1,6 +1,6 @@
 # スタイルシートモジュール - 使用ガイド
 
-このディレクトリには、chinokatsuプロダクトのスタイルシートモジュールが含まれています。Color Huntのティール・ミントグリーンテーマを基調とした統一感のあるデザインシステムです。
+このディレクトリには、commitlyプロダクトのスタイルシートモジュールが含まれています。Color Huntのティール・ミントグリーンテーマを基調とした統一感のあるデザインシステムです。
 
 ## 📁 ディレクトリ構造
 
@@ -151,7 +151,7 @@ app/assets/stylesheets/
 ```html
 <!-- 基本ナビバー -->
 <nav class="navbar">
-  <a href="/" class="navbar-brand">Chinokatsu</a>
+  <a href="/" class="navbar-brand">commitly</a>
 
   <button class="navbar-toggler">
     <span class="navbar-toggler-icon"></span>

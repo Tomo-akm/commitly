@@ -38,9 +38,6 @@ class User < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 },
             allow_blank: true
 
-  validate :university_email_domain, if: :email_changed?
-
-  ALLOWED_DOMAIN_REGEX = /\A[\w+\-.]+@[a-z\d\-]+\.u-ryukyu\.ac\.jp\z/i
   DEFAULT_INTERNSHIP_COUNT = 0
 
   # OmniAuth経由のユーザー作成または取得
@@ -67,14 +64,5 @@ class User < ApplicationRecord
   # OAuth認証データから名前を抽出
   def self.extract_name_from_auth(auth)
     auth.info.name.presence || auth.info.email.split("@").first
-  end
-
-  # 琉球大学ドメインのバリデーション
-  def university_email_domain
-    return if email.blank?
-
-    return if email.match?(ALLOWED_DOMAIN_REGEX)
-
-    errors.add(:email, "は琉球大学のメールアドレス（@*.u-ryukyu.ac.jp）のみ登録できます")
   end
 end

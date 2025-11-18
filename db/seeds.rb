@@ -402,7 +402,7 @@ additional_posts = [
   # 一般的な技術系投稿
   "今日のコーディング、Pythonでデータ解析してる🐍",
   "GitHubのコントリビューション増やしたい！",
-  "ハッカソンに参加してみたいな🚀",
+  "ハッカソンに参加してみたいな",
   "就活の合間にLeetCode解いてる💻",
   "先輩のポートフォリオ見て刺激を受けた✨",
   "今度の技術勉強会、誰か一緒に行く人いる？",
@@ -464,6 +464,6 @@ Tag.order(posts_count: :desc).limit(10).each_with_index do |tag, index|
   puts "  #{index + 1}. #{tag.name} (#{tag.posts_count}件)"
 end
 puts "="*70
-puts "🎉 Welcome to Chinokatsu - 琉球大学知能情報コース向け就活SNS！"
+puts "🎉 Welcome to Commitly - 琉球大学知能情報コース向け就活SNS！"
 puts "みんなで就活とプログラミング学習を頑張りましょう！💪✨"
 puts "="*70

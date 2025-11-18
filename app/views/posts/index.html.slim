@@ -1,4 +1,4 @@
-- content_for :title, "ちのgit"
+- content_for :title, "Commitly"
 
 .container
   .row
@@ -13,7 +13,7 @@
           - if @popular_tags.any?
             - @popular_tags.each do |tag|
               .d-flex.justify-content-between.align-items-center.mb-1.p-2.rounded.hover-scale.transition-all
-                = link_to tag_path(tag.name), class: "text-decoration-none" do
+                = link_to tag_path(tag.id), class: "text-decoration-none" do
                   span.badge-modern ##{tag.name}
                 span.text-muted.text-sm.font-semibold = tag.posts_count
             .separator-gradient.my-2
@@ -24,9 +24,9 @@
     / メインコンテンツ（モバイルでは1番目に表示）
     .col-lg-9.order-1.order-lg-2
       .text-center.mb-4.fade-in
-        h1.display-4.font-bold.text-primary ちのgit
+        h1.display-4.font-bold.text-primary Commitly
         p.lead.text-muted.mt-3
-          | 毎日コミットして、理想のmain branchに向かおう🚀
+          | 毎日コミットして、理想のmain branchに向かおう
           br
           | みんなの就活進捗をcommit logで確認しよう！
 
@@ -36,7 +36,7 @@
       / 検索フォーム（Ransack）
       = search_form_for @q, local: true, class: "mb-4" do |f|
         .input-group
-          = f.search_field :content_cont, placeholder: "投稿内容で検索...", class: "form-control"
+          = f.search_field :content_search_cont, placeholder: "投稿内容で検索...", class: "form-control"
           button.btn.btn-primary type="submit"
             i.fas.fa-search
             |  検索

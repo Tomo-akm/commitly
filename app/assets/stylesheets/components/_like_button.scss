@@ -1,0 +1,60 @@
+// ============================================
+// いいねボタン コンポーネント
+// ============================================
+
+.like-button {
+  position: relative;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid;
+
+  i {
+    transition: transform 0.2s ease, color 0.2s ease;
+    font-size: 1rem;
+    pointer-events: none; // ← これはOK（アイコンだけ無視）
+  }
+
+  span {
+    font-size: 0.875rem;
+    pointer-events: none; // ← OK
+  }
+
+  &:hover:not(.not-authenticated) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    i {
+      transform: scale(1.2);
+    }
+  }
+
+  &:active:not(.not-authenticated) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &.liked {
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.1) !important;
+
+    i {
+      color: #dc3545 !important;
+    }
+
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.15) !important;
+      color: #dc3545 !important;
+    }
+  }
+
+  &.not-authenticated {
+    opacity: 0.7;
+    cursor: not-allowed !important;
+  }
+}

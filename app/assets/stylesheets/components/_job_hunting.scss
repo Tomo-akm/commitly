@@ -1,0 +1,89 @@
+// ==========================================================================
+// Job Hunting Post Components - 就活投稿用スタイル
+// ==========================================================================
+
+// 通常投稿カードのボーダーカラー
+.general-card {
+  border-top: 4px solid #4DA1A9 !important;
+
+  // .card-decorativeの::beforeによるグラデーションボーダーを無効化
+  &::before {
+    display: none !important;
+  }
+}
+
+// 就活投稿カードのボーダーカラー
+.job-hunting-card {
+  border-top: 4px solid #79D7BE !important;
+
+  // .card-decorativeの::beforeによるグラデーションボーダーを無効化
+  &::before {
+    display: none !important;
+  }
+}
+
+// 就活情報エリア
+.job-hunting-info {
+  padding: 8px 0;
+}
+
+// コンパクトなバッジスタイル
+.job-hunting-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  // 企業名
+  &.company {
+    background-color: #e7f5ff;
+    color: #1864ab;
+    border: 1px solid #74c0fc;
+  }
+
+  // 選考段階
+  &.stage {
+    background-color: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffb74d;
+  }
+
+  // 結果
+  &.result {
+    &.passed {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #81c784;
+    }
+
+    &.failed {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #e57373;
+    }
+
+    &.pending {
+      background-color: #fff8e1;
+      color: #f57f17;
+      border: 1px solid #ffd54f;
+    }
+  }
+}
+
+// レスポンシブ対応
+@media (max-width: 576px) {
+  .job-hunting-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+
+    i {
+      font-size: 0.7rem;
+    }
+  }
+}

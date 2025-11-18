@@ -2,28 +2,22 @@
 / トースト通知コンポーネント
 / ============================================
 / 右上に固定されるトースト通知を表示
-/ Deviseのページでは非表示（フォーム内で個別にエラー表示するため）
 / ============================================
 
-- unless controller_name.in?(%w[sessions registrations passwords confirmations unlocks])
-  .toast-container
-    - flash_config = { \
-        notice:  { color: 'info',    icon: 'fas fa-info-circle' }, \
-        success: { color: 'success', icon: 'fas fa-check-circle' }, \
-        alert:   { color: 'warning', icon: 'fas fa-exclamation-triangle' }, \
-        error:   { color: 'danger',  icon: 'fas fa-times-circle' } \
-      }
+.toast-container
+  - flash_config = { \
+      notice:  { color: 'info',    icon: 'fas fa-info-circle' }, \
+      success: { color: 'success', icon: 'fas fa-check-circle' }, \
+      alert:   { color: 'warning', icon: 'fas fa-exclamation-triangle' }, \
+      error:   { color: 'danger',  icon: 'fas fa-times-circle' } \
+    }
 
-    / 各フラッシュメッセージを表示
-    - flash_config.each do |flash_key, config|
-      - message = flash[flash_key]
-      - if message.present?
-        .toast class="text-bg-#{config[:color]}" \
-               role="alert" \
-               aria-live="assertive" \
-               aria-atomic="true" \
-               data-controller="toast"
-          .toast-body
-            i class=config[:icon]
-            span = message
-          button.btn-close type="button" data-bs-dismiss="toast" aria-label="閉じる"
+  / 各フラッシュメッセージを表示
+  - flash_config.each do |flash_key, config|
+    - message = flash[flash_key]
+    - if message.present?
+      .toast.show class="text-bg-#{config[:color]}" role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast"
+        .toast-body
+          i class=config[:icon]
+          span = message
+        button.btn-close type="button" data-bs-dismiss="toast" aria-label="閉じる"

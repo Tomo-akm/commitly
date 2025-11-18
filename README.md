@@ -1,4 +1,4 @@
-# chinokatsu
+# commitly
 
 Rails アプリケーション
 
@@ -13,7 +13,7 @@ Rails アプリケーション
 1. リポジトリをクローン
 ```bash
 git clone <repository-url>
-cd chinokatsu
+cd commitly
 ```
 
 2. Dockerイメージをビルド
@@ -155,7 +155,7 @@ docker compose run --rm web bash
 
 ```bash
 # PostgreSQLコンテナに入る
-docker compose exec db psql -U chinokatsu -d chinokatsu_development
+docker compose exec db psql -U commitly -d commitly_development
 
 # データベースをリセット
 docker compose exec web bin/rails db:reset

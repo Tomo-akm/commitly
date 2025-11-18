@@ -113,43 +113,50 @@ RSpec.describe User, type: :model do
         expect(user.name).to eq('test')
       end
     end
+
+    context '一般的なメールアドレスの場合' do
+      let(:gmail_auth) do
+        OmniAuth::AuthHash.new({
+          provider: 'google_oauth2',
+          uid: '111222333',
+          info: {
+            email: 'user@gmail.com',
+            name: 'テストユーザー'
+          }
+        })
+      end
+
+      it 'Gmailアドレスでもユーザーを作成できる' do
+        expect {
+          User.from_omniauth(gmail_auth)
+        }.to change(User, :count).by(1)
+      end
+
+      it '正しい属性を設定する' do
+        user = User.from_omniauth(gmail_auth)
+        expect(user.email).to eq('user@gmail.com')
+        expect(user.name).to eq('テストユーザー')
+        expect(user.provider).to eq('google_oauth2')
+        expect(user.uid).to eq('111222333')
+      end
+    end
   end
 
   describe 'email validation' do
-    context '琉球大学のメールアドレスの場合' do
-      it 'eve.u-ryukyu.ac.jpを許可する' do
+    context '様々なメールアドレスの場合' do
+      it '琉球大学のメールアドレスを許可する' do
         user = build(:user, email: 'e215700@eve.u-ryukyu.ac.jp', password: 'password123')
         expect(user).to be_valid
       end
 
-      it 'cs.u-ryukyu.ac.jpを許可する' do
-        user = build(:user, email: 'taro@cs.u-ryukyu.ac.jp', password: 'password123')
-        expect(user).to be_valid
-      end
-
-      it 'ie.u-ryukyu.ac.jpを許可する' do
-        user = build(:user, email: 'hanako@ie.u-ryukyu.ac.jp', password: 'password123')
-        expect(user).to be_valid
-      end
-    end
-
-    context '琉球大学以外のメールアドレスの場合' do
-      it 'gmail.comを拒否する' do
+      it 'Gmailアドレスを許可する' do
         user = build(:user, email: 'test@gmail.com', password: 'password123')
-        expect(user).not_to be_valid
-        expect(user.errors[:email]).to include('は琉球大学のメールアドレス（@*.u-ryukyu.ac.jp）のみ登録できます')
+        expect(user).to be_valid
       end
 
-      it 'u-ryukyu.ac.jpに似たドメインを拒否する' do
-        user = build(:user, email: 'fake@evil-u-ryukyu.ac.jp', password: 'password123')
-        expect(user).not_to be_valid
-        expect(user.errors[:email]).to include('は琉球大学のメールアドレス（@*.u-ryukyu.ac.jp）のみ登録できます')
-      end
-
-      it '末尾が異なるドメインを拒否する' do
-        user = build(:user, email: 'test@u-ryukyu.ac.jp.fake.com', password: 'password123')
-        expect(user).not_to be_valid
-        expect(user.errors[:email]).to include('は琉球大学のメールアドレス（@*.u-ryukyu.ac.jp）のみ登録できます')
+      it 'その他のメールアドレスを許可する' do
+        user = build(:user, email: 'user@example.com', password: 'password123')
+        expect(user).to be_valid
       end
     end
   end
