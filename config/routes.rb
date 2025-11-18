@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     post "users", to: "users/registrations#create", as: :user_registration
     get "users/sign_up", to: "users/registrations#new", as: :new_user_registration
   end
-  }
   resources :users, only: [] do
     resources :follows, only: [ :create, :destroy ]
   end
