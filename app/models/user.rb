@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :entry_sheets, dependent: :destroy
   has_many :entry_sheet_item_templates, dependent: :destroy
+  has_many :liked_posts, through: :likes, source: :post
 
   validates :name, presence: true
   validates :internship_count,
