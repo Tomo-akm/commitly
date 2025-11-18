@@ -18,6 +18,10 @@
                     li = message
 
             .form-group
+              = form.label :name, "ユーザー名", class: "form-label"
+              = form.text_field :name, class: "form-input", placeholder: "例: 山田太郎"
+
+            .form-group
               = form.label :favorite_language, "好きな言語", class: "form-label"
               = form.text_field :favorite_language, class: "form-input", placeholder: "例: Ruby, Python, JavaScript"
 

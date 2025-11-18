@@ -3,7 +3,13 @@ Rails.application.routes.draw do
     sessions: "users/sessions",
     registrations: "users/registrations",
     omniauth_callbacks: "users/omniauth_callbacks"
-  }
+  }, skip: [ :registrations ]
+
+  # 新規登録のみ有効化（編集・削除機能は提供しない）
+  devise_scope :user do
+    post "users", to: "users/registrations#create", as: :user_registration
+    get "users/sign_up", to: "users/registrations#new", as: :new_user_registration
+  end
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
