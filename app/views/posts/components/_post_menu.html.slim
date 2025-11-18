@@ -1,0 +1,21 @@
+/ 3点リーダーメニューコンポーネント
+.dropdown
+  button.btn.btn-link.text-muted.p-0.post-menu-trigger[
+    type="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    aria-label="投稿メニューを開く"
+  ]
+    i.fas.fa-ellipsis-h
+
+  ul.dropdown-menu.dropdown-menu-end
+    li
+      = link_to edit_post_path(post), class: "dropdown-item" do
+        i.fas.fa-code-branch.me-2
+        | rebase
+    li
+      hr.dropdown-divider
+    li
+      = button_to post, method: :delete, form: { class: "d-inline", data: { turbo_frame: "_top" } }, class: "dropdown-item text-danger", data: { turbo_confirm: "本当にrevertしますか？" } do
+        i.fas.fa-undo.me-2
+        | revert

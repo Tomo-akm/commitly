@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_06_043802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,9 +56,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
     t.bigint "contentable_id", null: false
     t.string "contentable_type", null: false
     t.datetime "created_at", null: false
+    t.bigint "parent_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
+    t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -94,5 +96,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
   add_foreign_key "likes", "users"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
+  add_foreign_key "posts", "posts", column: "parent_id"
   add_foreign_key "posts", "users"
 end
