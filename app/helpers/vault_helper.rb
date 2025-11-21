@@ -21,12 +21,16 @@ module VaultHelper
   def vault_empty_state(icon:, title:, message:, button_text: nil, button_path: nil)
     content_tag :div, class: "text-center py-5" do
       parts = [
-        content_tag(:i, "", class: "fas fa-#{icon} fa-4x text-muted mb-4"),
+        content_tag(:i, "", class: "fas fa-#{icon} fa-3x text-muted mb-4"),
         content_tag(:h3, title, class: "text-muted"),
         content_tag(:p, message, class: "text-muted mb-4")
       ]
 
-      parts << action_button(button_text, button_path) if button_text && button_path
+      if button_text && button_path
+        parts << link_to(button_path, class: "btn btn-primary") do
+          safe_join([content_tag(:i, "", class: "fas fa-plus me-2"), button_text])
+        end
+      end
       safe_join(parts)
     end
   end
