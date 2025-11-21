@@ -35,6 +35,9 @@ export default class extends Controller {
 
     // 項目番号を更新
     this.updateItemNumbers()
+
+    // 新しい項目までスクロール
+    newItem.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   // 項目を削除（または非表示に）
