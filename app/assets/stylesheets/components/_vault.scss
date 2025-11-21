@@ -18,28 +18,46 @@
 // ステータスバッジは Bootstrap の .badge に以下のクラスを組み合わせる
 // 例: <span class="badge bg-draft">下書き</span>
 
-.bg-draft { background-color: rgba($neutral-500, 0.1) !important; color: $neutral-700 !important; }
-.bg-in-progress { background-color: rgba($primary, 0.1) !important; color: $primary-dark !important; }
-.bg-completed { background-color: rgba($secondary, 0.2) !important; color: $secondary-dark !important; }
-.bg-submitted { background-color: $primary !important; color: white !important; }
-.bg-passed { background-color: $success !important; color: white !important; }
-.bg-failed { background-color: rgba($error, 0.1) !important; color: $error-dark !important; }
+.bg-draft {
+  background-color: rgba($neutral-500, 0.1) !important;
+  color: $neutral-700 !important;
+}
+
+.bg-in-progress {
+  background-color: rgba($primary, 0.1) !important;
+  color: $primary-dark !important;
+}
+
+.bg-completed {
+  background-color: rgba($secondary, 0.2) !important;
+  color: $secondary-dark !important;
+}
+
+.bg-submitted {
+  background-color: $primary !important;
+  color: white !important;
+}
+
+.bg-passed {
+  background-color: $success !important;
+  color: white !important;
+}
+
+.bg-failed {
+  background-color: rgba($error, 0.1) !important;
+  color: $error-dark !important;
+}
 
 // ============================================
 // ES項目表示（詳細ページ）
 // ============================================
 
-.vault-item-card {
-  transition: all $transition-speed-base ease;
-  border-radius: $border-radius-lg;
-  padding: $spacing-5;
-  background-color: white;
-  border: 1px solid $neutral-100;
-  
-  &:hover {
-    box-shadow: $shadow-md;
-    transform: translateY(-2px);
-    border-color: transparent;
+.vault-item-row {
+  padding: $spacing-6 0;
+  border-bottom: 1px solid $neutral-300;
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
@@ -139,17 +157,32 @@
     align-items: end;
     gap: $spacing-4;
 
-    > div { flex: 1; }
-    .company-name-field { flex: 2; }
-    .deadline-field, .status-field { flex: 1; }
+    >div {
+      flex: 1;
+    }
+
+    .company-name-field {
+      flex: 2;
+    }
+
+    .deadline-field,
+    .status-field {
+      flex: 1;
+    }
   }
 
   .question-section .row {
     display: flex;
     gap: $spacing-4;
 
-    .question-field { flex: 2; }
-    .char-limit-field { flex: 0 0 auto; min-width: 150px; }
+    .question-field {
+      flex: 2;
+    }
+
+    .char-limit-field {
+      flex: 0 0 auto;
+      min-width: 150px;
+    }
   }
 }
 
@@ -199,7 +232,7 @@
     .basic-info-section .row {
       flex-direction: column;
 
-      > div {
+      >div {
         width: 100%;
       }
     }
@@ -208,7 +241,7 @@
       .template-import-section .row {
         flex-direction: column;
 
-        > div:last-child {
+        >div:last-child {
           width: 100%;
         }
       }
