@@ -41,21 +41,22 @@
 
   .card-body
     - if @entry_sheet_items.any?
-      - @entry_sheet_items.each_with_index do |item, index|
-        .mb-4 class=(index < @entry_sheet_items.size - 1 ? 'pb-4 border-bottom' : '')
-          .d-flex.justify-content-between.align-items-start.mb-3
-            h6.fw-bold.mb-0
-              span.badge.me-2.vault-badge-number = index + 1
-              span.text-primary-dark = item.title
-            - if item.char_limit
-              span.badge.vault-badge-char-count
-                i.fas.fa-text-width.me-1
-                | #{item.char_count}/#{item.char_limit}文字
-                - if item.over_limit?
-                  i.fas.fa-exclamation-triangle.ms-2.icon-warning
+      .d-flex.flex-column.gap-4
+        - @entry_sheet_items.each_with_index do |item, index|
+          .vault-item-card
+            .d-flex.justify-content-between.align-items-center.mb-3
+              .d-flex.align-items-center.gap-3
+                span.vault-badge-number = index + 1
+                h5.fw-bold.mb-0.text-primary-dark = item.title
+              - if item.char_limit
+                span.vault-badge-char-count
+                  i.fas.fa-text-width.me-1
+                  | #{item.char_count}/#{item.char_limit}文字
+                  - if item.over_limit?
+                    i.fas.fa-exclamation-triangle.ms-2.icon-warning
 
-          .vault-item-content-box
-            p.card-text.mb-0 style="white-space: pre-wrap;" = item.content
+            .vault-item-content-box
+              p.mb-0 style="white-space: pre-wrap;" = item.content
 
     - else
       .alert.mb-0.vault-info-box

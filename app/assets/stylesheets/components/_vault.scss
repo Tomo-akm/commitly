@@ -26,14 +26,69 @@
 .bg-failed { background-color: rgba($error, 0.1) !important; color: $error-dark !important; }
 
 // ============================================
-// Vault専用ボックス
+// ES項目表示（詳細ページ）
 // ============================================
+
+.vault-item-card {
+  transition: all $transition-speed-base ease;
+  border-radius: $border-radius-lg;
+  padding: $spacing-5;
+  background-color: white;
+  border: 1px solid $neutral-100;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+    border-color: transparent;
+  }
+}
+
+.vault-badge-number {
+  background: linear-gradient(135deg, $primary, $primary-dark);
+  color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  box-shadow: $shadow-sm;
+}
+
+.vault-badge-char-count {
+  background-color: $bg-secondary;
+  color: $primary-dark;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  border: 1px solid rgba($primary, 0.1);
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
 
 .vault-item-content-box {
   background-color: $bg-primary;
-  padding: $spacing-4;
+  padding: $spacing-5;
   border-radius: $border-radius-md;
-  border-left: 4px solid $primary;
+  line-height: $line-height-relaxed;
+  color: $neutral-700;
+  font-size: $font-size-base;
+  margin-top: $spacing-3;
+  border: 1px solid transparent;
+  transition: border-color $transition-speed-fast ease;
+
+  &:hover {
+    border-color: $neutral-300;
+  }
+
+  p {
+    margin-bottom: 0;
+    line-height: $line-height-relaxed;
+  }
 }
 
 // ============================================
@@ -46,6 +101,18 @@
   border-radius: $border-radius-base;
   margin-bottom: $spacing-6;
   border-left: 3px solid $secondary;
+
+  .btn {
+    background-color: $secondary-light;
+    color: $primary-dark;
+    border: 1px solid $secondary;
+
+    &:hover {
+      background-color: $secondary;
+      color: white;
+      border-color: $secondary-dark;
+    }
+  }
 }
 
 .char-counter {
