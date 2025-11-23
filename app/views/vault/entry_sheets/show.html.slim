@@ -1,0 +1,68 @@
+/ ヘッダー
+.d-flex.justify-content-between.align-items-center.mb-4
+  div
+    h1.fw-bold.mb-1.text-primary-dark = @entry_sheet.company_name
+    .d-flex.gap-2.align-items-center
+      = entry_sheet_status_badge(@entry_sheet)
+      - if @entry_sheet.deadline
+        = vault_datetime_with_icon @entry_sheet.deadline, icon: "clock", label: "締切"
+  .d-flex.gap-2
+    = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-primary" do
+      i.fas.fa-edit.me-2
+      | 編集
+    = link_to vault_entry_sheet_path(@entry_sheet), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-outline-danger shadow-sm" do
+      i.fas.fa-trash.me-2
+      | 削除
+
+/ メタ情報
+.card.mb-4
+  .card-body
+    .row
+      .col-md-4
+        p.mb-0
+          small.text-muted 作成日
+          br
+          strong.text-primary-dark = @entry_sheet.created_at.strftime('%Y/%m/%d %H:%M')
+      .col-md-4
+        p.mb-0
+          small.text-muted 最終更新
+          br
+          strong.text-primary-dark = @entry_sheet.updated_at.strftime('%Y/%m/%d %H:%M')
+      - if @entry_sheet.submitted_at
+        .col-md-4
+          p.mb-0
+            small.text-muted 提出日
+            br
+            strong.text-primary-dark = @entry_sheet.submitted_at.strftime('%Y/%m/%d %H:%M')
+
+/ ES項目
+.card.mb-4
+  = vault_card_header "ES項目", icon: "list"
+
+  .card-body
+    - if @entry_sheet_items.any?
+      - @entry_sheet_items.each_with_index do |item, index|
+        .vault-item-row
+          .d-flex.justify-content-between.align-items-center.mb-3
+            .d-flex.align-items-center.gap-3
+              span.vault-badge-number = index + 1
+              h5.fw-bold.mb-0.text-primary-dark = item.title
+            - if item.char_limit
+              span.vault-badge-char-count
+                i.fas.fa-text-width.me-1
+                | #{item.char_count}/#{item.char_limit}文字
+                - if item.over_limit?
+                  i.fas.fa-exclamation-triangle.ms-2.text-warning
+
+          .vault-item-content-box
+            p.mb-0.pre-w  rap = item.content
+
+    - else
+      .alert.alert-info.mb-0
+        i.fas.fa-info-circle.me-2
+        | ES項目がまだ追加されていません。編集から項目を追加してください。
+
+.mt-4
+  = link_to vault_entry_sheets_path, class: "btn btn-outline-primary" do
+    i.fas.fa-arrow-left.me-2
+    | 一覧に戻る

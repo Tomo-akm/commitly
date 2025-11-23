@@ -5,11 +5,12 @@
     .col-lg-6
       h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in commit rebase
 
+      / 戻るボタン
+      .mb-3
+        = link_to "javascript:history.back()", class: "back-button text-decoration-none d-inline-flex align-items-center" do
+          i.fas.fa-chevron-left.me-2
+          span 戻る
+
       .card.card-primary.fade-in
         .card-body.p-4
           = render "posts/components/form", post: @post
-
-          hr.my-3
-          .d-flex.justify-content-center.gap-2
-            = link_to "commit詳細へ", @post, class: "btn btn-secondary me-2"
-            = link_to "commit logへ", posts_path, class: "btn btn-secondary"

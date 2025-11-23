@@ -1,0 +1,264 @@
+// ============================================
+// Vault (ES管理) コンポーネント
+// ============================================
+//
+// 既存コンポーネント活用:
+// - カードヘッダー: .card-header.bg-primary (グラデ背景白文字) / .card-header (ライト背景)
+// - ボタン: .btn-primary, .btn-secondary, .btn-outline-*
+// - テキスト: .text-primary, .text-secondary, .text-*
+// - アイコン: .icon-primary, .icon-warning, .icon-secondary
+// - バッジ: .badge (Bootstrapデフォルト) + カスタムカラークラス
+//
+// Vault固有のスタイルのみ定義
+
+// ============================================
+// バッジシステム（Bootstrap .badge + 修飾子）
+// ============================================
+
+// ステータスバッジは Bootstrap の .badge に以下のクラスを組み合わせる
+// 例: <span class="badge bg-draft">下書き</span>
+
+.bg-draft {
+  background-color: rgba($neutral-500, 0.1) !important;
+  color: $neutral-700 !important;
+}
+
+.bg-in-progress {
+  background-color: rgba($primary, 0.1) !important;
+  color: $primary-dark !important;
+}
+
+.bg-completed {
+  background-color: rgba($secondary, 0.2) !important;
+  color: $secondary-dark !important;
+}
+
+.bg-submitted {
+  background-color: $primary !important;
+  color: white !important;
+}
+
+.bg-passed {
+  background-color: $success !important;
+  color: white !important;
+}
+
+.bg-failed {
+  background-color: rgba($error, 0.1) !important;
+  color: $error-dark !important;
+}
+
+// ============================================
+// ES項目表示（詳細ページ）
+// ============================================
+
+.vault-item-row {
+  padding: $spacing-6 0;
+  border-bottom: 1px solid $neutral-300;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.vault-badge-number {
+  background: linear-gradient(135deg, $primary, $primary-dark);
+  color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  box-shadow: $shadow-sm;
+}
+
+.vault-badge-char-count {
+  background-color: $bg-secondary;
+  color: $primary-dark;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  border: 1px solid rgba($primary, 0.1);
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
+
+.vault-item-content-box {
+  background-color: $bg-primary;
+  padding: $spacing-5;
+  border-radius: $border-radius-md;
+  line-height: $line-height-relaxed;
+  color: $neutral-700;
+  font-size: $font-size-base;
+  margin-top: $spacing-3;
+  border: 1px solid transparent;
+  transition: border-color $transition-speed-fast ease;
+
+  &:hover {
+    border-color: $neutral-300;
+  }
+
+  p {
+    margin-bottom: 0;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// ============================================
+// テンプレートインポート・フォーム
+// ============================================
+
+.vault-template-import {
+  background-color: rgba($primary, 0.05);
+  padding: $spacing-4;
+  border-radius: $border-radius-base;
+  margin-bottom: $spacing-6;
+  border-left: 3px solid $secondary;
+
+  .btn {
+    background-color: $secondary-light;
+    color: $primary-dark;
+    border: 1px solid $secondary;
+
+    &:hover {
+      background-color: $secondary;
+      color: white;
+      border-color: $secondary-dark;
+    }
+  }
+}
+
+.vault-template-content-truncate {
+  height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.char-counter {
+  font-size: $font-size-sm;
+  color: $neutral-500;
+
+  &.over-limit {
+    color: $error;
+    font-weight: $font-weight-bold;
+  }
+
+  .count {
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// ============================================
+// ESフォーム（レイアウト特化）
+// ============================================
+
+.vault-entry-sheet-form {
+  .basic-info-section .row {
+    display: flex;
+    align-items: end;
+    gap: $spacing-4;
+
+    >div {
+      flex: 1;
+    }
+
+    .company-name-field {
+      flex: 2;
+    }
+
+    .deadline-field,
+    .status-field {
+      flex: 1;
+    }
+  }
+
+  .question-section .row {
+    display: flex;
+    gap: $spacing-4;
+
+    .question-field {
+      flex: 2;
+    }
+
+    .char-limit-field {
+      flex: 0 0 auto;
+      min-width: 150px;
+    }
+  }
+}
+
+.add-item-button {
+  width: 100%;
+  padding: $spacing-3;
+  font-weight: $font-weight-semibold;
+  transition: all $transition-speed-fast ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary, 0.2);
+  }
+}
+
+// ES詳細表示
+.vault-entry-sheet-show {
+  .entry-sheet-item-display {
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: $spacing-4;
+    }
+
+    .item-content {
+      background-color: $bg-primary;
+      padding: $spacing-4;
+      border-radius: $border-radius-md;
+      line-height: $line-height-relaxed;
+    }
+  }
+
+  .item-separator {
+    border-top: 1px solid $neutral-300;
+    padding-top: $spacing-6;
+    margin-bottom: $spacing-6;
+  }
+}
+
+// ============================================
+// レスポンシブ調整
+// ============================================
+
+@include respond-below(md) {
+  .vault-entry-sheet-form {
+    .basic-info-section .row {
+      flex-direction: column;
+
+      >div {
+        width: 100%;
+      }
+    }
+
+    .entry-sheet-item {
+      .template-import-section .row {
+        flex-direction: column;
+
+        >div:last-child {
+          width: 100%;
+        }
+      }
+
+      .question-section .row {
+        flex-direction: column;
+
+        .char-limit-field {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

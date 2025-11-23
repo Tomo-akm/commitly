@@ -10,7 +10,7 @@
 
   ul.dropdown-menu.dropdown-menu-end
     li
-      = link_to edit_post_path(post), class: "dropdown-item" do
+      = link_to edit_post_path(post), class: "dropdown-item", data: { turbo_frame: "_top" } do
         i.fas.fa-code-branch.me-2
         | rebase
     li
