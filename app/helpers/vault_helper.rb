@@ -28,7 +28,7 @@ module VaultHelper
 
       if button_text && button_path
         parts << link_to(button_path, class: "btn btn-primary") do
-          safe_join([content_tag(:i, "", class: "fas fa-plus me-2"), button_text])
+          safe_join([ content_tag(:i, "", class: "fas fa-plus me-2"), button_text ])
         end
       end
       safe_join(parts)
