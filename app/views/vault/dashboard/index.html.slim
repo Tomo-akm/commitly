@@ -2,7 +2,7 @@
 .d-flex.justify-content-between.align-items-center.mb-5
   div
     h1.fw-bold.mb-1
-      i.fas.fa-home.me-2.icon-primary
+      i.fas.fa-home.me-2.text-primary
       | ダッシュボード
     p.text-muted.mb-0 就活の進捗とESを一元管理
   .d-flex.gap-2
@@ -32,21 +32,21 @@
                 td
                   .fw-bold = company[:company_name]
                 td
-                  span.badge.rounded-pill.vault-badge-stage = company[:selection_stage_ja]
+                  span.badge.rounded-pill.bg-light.text-dark = company[:selection_stage_ja]
                 td
                   - case company[:result]
                   - when 'passed'
-                    span.badge.rounded-pill.vault-badge-result-passed
+                    span.badge.rounded-pill.bg-success.text-white
                       i.fas.fa-check.me-1
                       |
                       = company[:result_ja]
                   - when 'failed'
-                    span.badge.rounded-pill.vault-badge-result-failed
+                    span.badge.rounded-pill.bg-danger.text-white
                       i.fas.fa-times.me-1
                       |
                       = company[:result_ja]
                   - when 'pending'
-                    span.badge.rounded-pill.vault-badge-result-pending
+                    span.badge.rounded-pill.bg-warning.text-dark
                       i.fas.fa-clock.me-1
                       |
                       = company[:result_ja]

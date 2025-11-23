@@ -2,7 +2,7 @@
 .d-flex.justify-content-between.align-items-center.mb-5
   div
     h1.fw-bold.mb-1
-      i.fas.fa-bookmark.me-2.icon-primary
+      i.fas.fa-bookmark.me-2.text-primary
       | テンプレート一覧
     p.text-muted.mb-0 よく使う回答をテンプレートとして保存
   = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-primary" do
@@ -15,9 +15,9 @@
     .card-body
       .d-flex.flex-wrap.gap-2.align-items-center
         span.fw-bold.text-primary-dark タグで絞り込み:
-        = link_to "すべて", vault_entry_sheet_item_templates_path, class: "badge rounded-pill text-decoration-none px-3 py-2 vault-tag-badge-filter #{'active' if params[:tag].blank?} #{'inactive' unless params[:tag].blank?}"
+        = link_to "すべて", vault_entry_sheet_item_templates_path, class: "badge rounded-pill text-decoration-none px-3 py-2 #{'bg-primary text-white' if params[:tag].blank?} #{'bg-light text-dark' unless params[:tag].blank?}"
         - @available_tags.each do |tag|
-          = link_to tag, vault_entry_sheet_item_templates_path(tag: tag), class: "badge rounded-pill text-decoration-none px-3 py-2 vault-tag-badge-filter #{'active' if params[:tag] == tag} #{'inactive' unless params[:tag] == tag}"
+          = link_to tag, vault_entry_sheet_item_templates_path(tag: tag), class: "badge rounded-pill text-decoration-none px-3 py-2 #{'bg-primary text-white' if params[:tag] == tag} #{'bg-light text-dark' unless params[:tag] == tag}"
 
 / テンプレート一覧
 - if @templates.any?
@@ -28,9 +28,9 @@
           .card-body
             .d-flex.justify-content-between.align-items-start.mb-3
               h5.card-title.fw-bold.mb-0.text-primary-dark = template.title
-              span.badge.rounded-pill.vault-tag-badge = template.tag
+              span.badge.rounded-pill.bg-secondary.text-white = template.tag
 
-            p.card-text.text-muted.small style="height: 80px; overflow: hidden; text-overflow: ellipsis;"
+            p.card-text.text-muted.small.vault-template-content-truncate
               = truncate(template.content, length: 100)
 
             p.card-text.mb-0

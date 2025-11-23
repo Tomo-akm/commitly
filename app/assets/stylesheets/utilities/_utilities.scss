@@ -527,3 +527,11 @@
 .slide-in-right {
   animation: slideInFromRight 0.4s ease-out;
 }
+
+// ============================================
+// テキストフォーマットユーティリティ
+// ============================================
+
+.pre-wrap {
+  white-space: pre-wrap !important;
+}

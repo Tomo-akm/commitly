@@ -52,13 +52,13 @@
                 i.fas.fa-text-width.me-1
                 | #{item.char_count}/#{item.char_limit}文字
                 - if item.over_limit?
-                  i.fas.fa-exclamation-triangle.ms-2.icon-warning
+                  i.fas.fa-exclamation-triangle.ms-2.text-warning
 
           .vault-item-content-box
-            p.mb-0 style="white-space: pre-wrap;" = item.content
+            p.mb-0.pre-w  rap = item.content
 
     - else
-      .alert.mb-0.vault-info-box
+      .alert.alert-info.mb-0
         i.fas.fa-info-circle.me-2
         | ES項目がまだ追加されていません。編集から項目を追加してください。
 

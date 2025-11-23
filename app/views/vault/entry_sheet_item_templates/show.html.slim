@@ -34,7 +34,7 @@
       i.fas.fa-file-alt.me-2
       | テンプレート内容
   .card-body
-    p.card-text.mb-0 style="white-space: pre-wrap;" = @template.content
+    p.card-text.mb-0.pre-wrap = @template.content
 
 .mt-4
   = link_to vault_entry_sheet_item_templates_path, class: "btn btn-outline-secondary" do

@@ -133,6 +133,12 @@
   }
 }
 
+.vault-template-content-truncate {
+  height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .char-counter {
   font-size: $font-size-sm;
   color: $neutral-500;
