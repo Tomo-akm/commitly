@@ -1,7 +1,6 @@
 class Vault::EntrySheetItemTemplatesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_template, only: [ :show, :edit, :update, :destroy, :use ]
-  before_action :check_ownership, only: [ :show, :edit, :update, :destroy, :use ]
   layout "vault"
 
   def index
@@ -69,13 +68,7 @@ class Vault::EntrySheetItemTemplatesController < ApplicationController
   private
 
   def set_template
-    @template = EntrySheetItemTemplate.find(params[:id])
-  end
-
-  def check_ownership
-    unless @template.user == current_user
-      redirect_to vault_entry_sheet_item_templates_path, alert: "このテンプレートにアクセスする権限がありません"
-    end
+    @template = current_user.entry_sheet_item_templates.find(params[:id])
   end
 
   def template_params

@@ -1,7 +1,6 @@
 class Vault::EntrySheetsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_entry_sheet, only: [ :show, :edit, :update, :destroy ]
-  before_action :check_ownership, only: [ :show, :edit, :update, :destroy ]
   layout "vault"
 
   def index
@@ -35,6 +34,7 @@ class Vault::EntrySheetsController < ApplicationController
     else
       flash.now[:alert] = "ESの作成に失敗しました: #{@entry_sheet.errors.full_messages.join(', ')}"
       @templates = current_user.entry_sheet_item_templates.order(:tag, :created_at)
+      @entry_sheet.entry_sheet_items.build if @entry_sheet.entry_sheet_items.empty?
       render :new, status: :unprocessable_entity
     end
   end
@@ -45,6 +45,7 @@ class Vault::EntrySheetsController < ApplicationController
     else
       flash.now[:alert] = "ESの更新に失敗しました: #{@entry_sheet.errors.full_messages.join(', ')}"
       @templates = current_user.entry_sheet_item_templates.order(:tag, :created_at)
+      @entry_sheet.entry_sheet_items.build if @entry_sheet.entry_sheet_items.empty?
       render :edit, status: :unprocessable_entity
     end
   end
@@ -57,13 +58,7 @@ class Vault::EntrySheetsController < ApplicationController
   private
 
   def set_entry_sheet
-    @entry_sheet = EntrySheet.find(params[:id])
-  end
-
-  def check_ownership
-    unless @entry_sheet.user == current_user
-      redirect_to vault_root_path, alert: "このESにアクセスする権限がありません"
-    end
+    @entry_sheet = current_user.entry_sheets.find(params[:id])
   end
 
   def entry_sheet_params
