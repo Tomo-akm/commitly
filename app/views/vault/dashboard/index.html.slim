@@ -5,9 +5,13 @@
       i.fas.fa-home.me-2.icon-primary
       | ダッシュボード
     p.text-muted.mb-0 就活の進捗とESを一元管理
-  = link_to new_vault_entry_sheet_path, class: "btn btn-primary" do
-    i.fas.fa-plus.me-2
-    | 新規ES作成
+  .d-flex.gap-2
+    = link_to new_vault_entry_sheet_path, class: "btn btn-primary" do
+      i.fas.fa-plus.me-2
+      | 新規ES作成
+    = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-outline-primary" do
+      i.fas.fa-file-alt.me-2
+      | テンプレート作成
 
 / 企業別選考進捗
 .card.mb-5
