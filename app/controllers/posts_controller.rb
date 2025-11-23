@@ -5,9 +5,9 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @q = Post.ransack(params[:q])
+    @q = Post.top_level.ransack(params[:q])  # リプライを除外
     @posts = @q.result(distinct: true)
-            .includes(:contentable, :likes, :user, :tags)  # N+1対策（contentable追加）
+            .includes(:contentable, :likes, :user, :tags, :replies)  # N+1対策（repliesも追加）
             .order(created_at: :desc)
             .page(params[:page])
             .per(10)
@@ -22,7 +22,10 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    @post = current_user.posts.build_with_type(params[:type])
+    # リプライの場合は強制的にGeneralContentに
+    type = params[:parent_id].present? ? "general" : params[:type]
+    @post = current_user.posts.build_with_type(type)
+    @post.parent_id = params[:parent_id]
   end
 
   # GET /posts/1/edit
@@ -32,13 +35,12 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = current_user.posts.build_with_type(params[:type])
+    parent_id = params.dig(:post, :parent_id)
 
-    if @post.update_with_form_params(contentable_params, params[:post] || {})
-      redirect_to posts_path, notice: @post.contentable.success_message
+    if parent_id.present?
+      create_reply(parent_id)
     else
-      flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
-      render :new, status: :unprocessable_entity
+      create_post
     end
   end
 
@@ -53,14 +55,66 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
+    @message = "コミットをrevertしました"
     @post.destroy!
-    redirect_to posts_path, notice: "コミットをrevertしました↩️", status: :see_other
+    # Refererから現在表示中の投稿IDを取得
+    @viewing_post_id = request.referer&.match(/\/posts\/(\d+)/)&.[](1)&.to_i
+
+    # 表示中の投稿を削除した場合はリダイレクト
+    if @viewing_post_id == @post.id
+      redirect_to posts_path, notice: @message, status: :see_other
+      return
+    end
+
+    # リプライ削除はTurbo Streamで部分更新
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to posts_path, notice: "コミットをrevertしました↩️", status: :see_other }
+    end
   end
 
   private
+    # リプライ作成処理
+    def create_reply(parent_id)
+      unless Post.exists?(parent_id)
+        flash.now[:alert] = "指定された親投稿が見つかりません。"
+        @post = current_user.posts.build_with_type("general")
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      @post = current_user.posts.build_with_type("general")
+      @post.parent_id = parent_id
+
+      if @post.update_with_form_params(contentable_params, params[:post] || {})
+        redirect_to post_path(@post.parent), notice: @post.contentable.success_message
+      else
+        flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
+        render :new, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::InvalidForeignKey
+      flash.now[:alert] = "指定された親投稿が見つかりません。"
+      render :new, status: :unprocessable_entity
+    end
+
+    # 通常投稿作成処理
+    def create_post
+      @post = current_user.posts.build_with_type(params[:type])
+
+      if @post.update_with_form_params(contentable_params, params[:post] || {})
+        redirect_to posts_path, notice: @post.contentable.success_message
+      else
+        flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
+        render :new, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::InvalidForeignKey
+      flash.now[:alert] = "投稿の作成中にエラーが発生しました。"
+      render :new, status: :unprocessable_entity
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.includes(:contentable).find(params.expect(:id))
+      @post = Post.includes(:contentable, :parent, replies: [ :contentable, :user, :tags, :likes ]).find(params.expect(:id))
     end
 
     # Check if the current user owns the post

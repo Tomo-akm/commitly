@@ -30,6 +30,18 @@ RSpec.describe Post, type: :model do
       expect(association.macro).to eq(:has_many)
       expect(association.options[:through]).to eq(:post_tags)
     end
+
+    it 'belongs to parent post (optional)' do
+      association = described_class.reflect_on_association(:parent)
+      expect(association.macro).to eq(:belongs_to)
+      expect(association.options[:optional]).to be true
+    end
+
+    it 'has many replies' do
+      association = described_class.reflect_on_association(:replies)
+      expect(association.macro).to eq(:has_many)
+      expect(association.options[:foreign_key]).to eq(:parent_id)
+    end
   end
 
   describe '#tags' do
@@ -193,6 +205,62 @@ RSpec.describe Post, type: :model do
         result = post.update_with_form_params({ content: '' })
         expect(result).to be false
         expect(post.errors).to be_present
+      end
+    end
+  end
+
+  describe 'リプライ機能' do
+    let(:user) { create(:user) }
+    let(:parent_post) { create(:post, user: user) }
+
+    describe '親投稿への紐付け' do
+      it '親投稿を持つリプライを作成できる' do
+        reply = create(:post, user: user, parent: parent_post)
+
+        expect(reply.parent).to eq(parent_post)
+        expect(reply.parent_id).to eq(parent_post.id)
+      end
+
+      it '親投稿を持たない通常の投稿も作成できる' do
+        post = create(:post, user: user, parent: nil)
+
+        expect(post.parent).to be_nil
+        expect(post.parent_id).to be_nil
+      end
+    end
+
+    describe '親投稿からのリプライ取得' do
+      it '親投稿から複数のリプライを取得できる' do
+        reply1 = create(:post, user: user, parent: parent_post)
+        reply2 = create(:post, user: user, parent: parent_post)
+        reply3 = create(:post, user: user, parent: parent_post)
+
+        expect(parent_post.replies).to contain_exactly(reply1, reply2, reply3)
+        expect(parent_post.replies.count).to eq(3)
+      end
+
+      it 'リプライが存在しない場合は空の配列を返す' do
+        expect(parent_post.replies).to be_empty
+      end
+    end
+
+    describe 'ネストしたリプライ' do
+      it 'リプライに対するリプライ（孫）も作成できる' do
+        reply = create(:post, user: user, parent: parent_post)
+        nested_reply = create(:post, user: user, parent: reply)
+
+        expect(nested_reply.parent).to eq(reply)
+        expect(reply.parent).to eq(parent_post)
+        expect(reply.replies).to include(nested_reply)
+      end
+    end
+
+    describe '親投稿削除時の動作' do
+      it '親投稿が削除されるとリプライも削除される' do
+        create(:post, user: user, parent: parent_post)
+        create(:post, user: user, parent: parent_post)
+
+        expect { parent_post.destroy }.to change(Post, :count).by(-3) # 親+リプライ2つ
       end
     end
   end

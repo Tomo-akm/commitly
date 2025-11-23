@@ -1,0 +1,10 @@
+/ flashメッセージを表示（トースト形式）
+= turbo_stream.prepend "flash-messages" do
+  .toast.show.text-bg-info role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast"
+    .toast-body
+      i.fas.fa-info-circle
+      span = @post.contentable.success_message
+    button.btn-close type="button" data-bs-dismiss="toast" aria-label="閉じる"
+
+/ リダイレクト
+= turbo_stream.action :redirect, @post.reply? ? post_path(@post.parent) : posts_path
