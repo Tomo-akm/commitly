@@ -1,0 +1,25 @@
+.container
+  .row.justify-content-center
+    .col-lg-8
+      .card.card-primary.mb-4.fade-in
+        .card-header.bg-primary.text-white.p-4
+          h2.h3.mb-0.font-bold
+            = @user.name
+          h3.h5.mb-0.font-semibold
+            = request.path.include?('following') ? 'フォロー中' : 'フォロワー'
+
+        .card-body.p-4
+          - if @users.any?
+            ul.list-group
+              - @users.each do |user|
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                  = link_to user.name, user_profile_path(user)
+                  - if user_signed_in? && current_user != user
+                    - if current_user.following?(user)
+                      - follow = current_user.active_follows.find_by(followed_id: user.id)
+                      = button_to "フォロー解除", user_follow_path(user, follow), method: :delete, class: "btn btn-sm btn-danger"
+                    - else
+                      = button_to "フォローする", user_follows_path(user), method: :post, class: "btn btn-sm btn-primary"
+          - else
+            .text-center.py-5.text-muted
+              p まだ誰もいません。
