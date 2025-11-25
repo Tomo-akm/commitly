@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_11_062647) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "conversations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "last_read_at"
+    t.bigint "room_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["room_id"], name: "index_entries_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_entries_on_user_id_and_room_id", unique: true
+    t.index ["user_id"], name: "index_entries_on_user_id"
+  end
 
   create_table "general_contents", force: :cascade do |t|
     t.text "content", null: false
@@ -42,6 +58,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.bigint "room_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_messages_on_created_at"
+    t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "post_tags", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "post_id", null: false
@@ -60,6 +87,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
     t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tags", force: :cascade do |t|
@@ -90,8 +122,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_142426) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "entries", "rooms"
+  add_foreign_key "entries", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "messages", "rooms"
+  add_foreign_key "messages", "users"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "users"

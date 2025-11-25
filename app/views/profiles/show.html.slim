@@ -8,8 +8,13 @@
             h2.h3.mb-0.font-bold.d-flex.align-items-center
               i.fas.fa-user-circle.me-2
               = @user.name
-            - if user_signed_in? && @user == current_user
-              = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+            - if user_signed_in?
+              - if @user == current_user
+                = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+              - else
+                = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-light" do
+                  i.fas.fa-comment.me-1
+                  | DMを送る
         .card-body.p-4
           .profile-info-item
             .profile-icon

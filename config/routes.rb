@@ -14,6 +14,13 @@ Rails.application.routes.draw do
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
 
+  # DM機能
+  resources :rooms, only: [ :index, :show, :create ] do
+    resources :messages, only: [ :create ]
+    member do
+      post :mark_as_read
+    end
+  end
 
   # API endpoints for heatmap data
   namespace :api do
