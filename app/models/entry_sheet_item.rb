@@ -1,6 +1,7 @@
 class EntrySheetItem < ApplicationRecord
   belongs_to :entry_sheet
   belongs_to :entry_sheet_item_template, optional: true
+  has_many :chats, as: :chattable, dependent: :destroy
 
   # バリデーション
   validates :title, presence: true

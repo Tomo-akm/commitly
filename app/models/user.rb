@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :entry_sheets, dependent: :destroy
   has_many :entry_sheet_item_templates, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
+  has_many :api_keys, dependent: :destroy
+  has_many :chats, dependent: :destroy
 
   validates :name, presence: true
   validates :internship_count,
@@ -36,6 +38,11 @@ class User < ApplicationRecord
 
   def email_required?
     super && provider.blank?
+  end
+
+  # APIキーを取得
+  def api_key_for(provider)
+    api_keys.find_by(provider: provider)
   end
 
   private
