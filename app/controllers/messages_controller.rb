@@ -10,6 +10,7 @@ class MessagesController < ApplicationController
       mark_room_as_read
       @messages = @room.messages.includes(:user).order(created_at: :asc)
       @message = Message.new
+      set_rooms_for_full_page
 
       respond_to do |format|
         format.turbo_stream
@@ -17,6 +18,7 @@ class MessagesController < ApplicationController
       end
     else
       @messages = @room.messages.includes(:user).order(created_at: :asc)
+      set_rooms_for_full_page
       flash.now[:alert] = "メッセージの送信に失敗しました"
       render "rooms/show", status: :unprocessable_entity
     end
@@ -36,5 +38,13 @@ class MessagesController < ApplicationController
 
   def message_params
     params.expect(message: [ :content ])
+  end
+
+  def set_rooms_for_full_page
+    @rooms = current_user.rooms
+                         .includes(:users, messages: :user)
+                         .left_joins(:messages)
+                         .group("rooms.id")
+                         .order("MAX(messages.created_at) DESC NULLS LAST")
   end
 end
