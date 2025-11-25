@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_11_062647) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_15_175350) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,45 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_062647) do
     t.index ["room_id"], name: "index_entries_on_room_id"
     t.index ["user_id", "room_id"], name: "index_entries_on_user_id_and_room_id", unique: true
     t.index ["user_id"], name: "index_entries_on_user_id"
+  end
+
+  create_table "entry_sheet_item_templates", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.string "tag", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "tag"], name: "index_entry_sheet_item_templates_on_user_id_and_tag"
+    t.index ["user_id"], name: "index_entry_sheet_item_templates_on_user_id"
+  end
+
+  create_table "entry_sheet_items", force: :cascade do |t|
+    t.integer "char_limit"
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.bigint "entry_sheet_id", null: false
+    t.bigint "entry_sheet_item_template_id"
+    t.integer "position", default: 0
+    t.text "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entry_sheet_id", "position"], name: "index_entry_sheet_items_on_entry_sheet_id_and_position"
+    t.index ["entry_sheet_id"], name: "index_entry_sheet_items_on_entry_sheet_id"
+    t.index ["entry_sheet_item_template_id"], name: "index_entry_sheet_items_on_entry_sheet_item_template_id"
+  end
+
+  create_table "entry_sheets", force: :cascade do |t|
+    t.string "company_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "deadline"
+    t.integer "status", default: 0, null: false
+    t.datetime "submitted_at"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["deadline"], name: "index_entry_sheets_on_deadline"
+    t.index ["user_id", "company_name"], name: "index_entry_sheets_on_user_id_and_company_name"
+    t.index ["user_id", "status"], name: "index_entry_sheets_on_user_id_and_status"
+    t.index ["user_id"], name: "index_entry_sheets_on_user_id"
   end
 
   create_table "general_contents", force: :cascade do |t|
@@ -83,9 +122,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_062647) do
     t.bigint "contentable_id", null: false
     t.string "contentable_type", null: false
     t.datetime "created_at", null: false
+    t.bigint "parent_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
+    t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -124,11 +165,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_11_062647) do
 
   add_foreign_key "entries", "rooms"
   add_foreign_key "entries", "users"
+  add_foreign_key "entry_sheet_item_templates", "users"
+  add_foreign_key "entry_sheet_items", "entry_sheet_item_templates"
+  add_foreign_key "entry_sheet_items", "entry_sheets"
+  add_foreign_key "entry_sheets", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
   add_foreign_key "messages", "rooms"
   add_foreign_key "messages", "users"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
+  add_foreign_key "posts", "posts", column: "parent_id"
   add_foreign_key "posts", "users"
 end

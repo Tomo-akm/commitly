@@ -43,7 +43,10 @@
 
       .card-list#posts
         - @posts.each do |post|
-          = render post
+          = render 'shared/post', post: post
 
       .d-flex.justify-content-center.mt-4
         = paginate @posts
+
+/ 共通リプライモーダル（ページに1つだけ）
+= render 'posts/components/shared_reply_modal'

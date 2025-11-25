@@ -1,0 +1,79 @@
+.card.mb-3.entry-sheet-item[
+  data-nested-form-target="item"
+  data-controller="template-loader"
+]
+  .card-body
+    .d-flex.justify-content-between.align-items-start.mb-3
+      h6.mb-0.fw-bold.text-primary-dark 項目 #{f.index + 1}
+      button.btn.btn-sm.btn-outline-danger[
+        type="button"
+        data-action="click->nested-form#removeItem"
+      ]
+        i.fas.fa-trash
+
+    / テンプレートインポート
+    .vault-template-import
+      label.form-label.small.mb-2.fw-semibold.text-primary-dark テンプレートから読み込む
+      .d-flex.gap-2.align-items-stretch
+        select.form-select.form-select-sm.flex-grow-1[data-template-select="true"]
+          option[value=""] 選択してください
+          - templates.group_by(&:tag).each do |tag, tag_templates|
+            optgroup[label=tag]
+              - tag_templates.each do |template|
+                option[
+                  value=template.id
+                  data-title=template.title
+                  data-content=template.content
+                ]
+                  = template.title
+        button.btn.btn-sm[
+          type="button"
+          data-action="click->template-loader#loadTemplate"
+        ]
+          i.fas.fa-download.me-1
+          | インポート
+
+    / 文字数カウンターのスコープを拡大
+    div[
+      data-controller="char-counter"
+      data-char-counter-limit-value=f.object.char_limit.to_i
+    ]
+      .question-section
+        .row
+          .col-md-8.mb-3.question-field
+            = f.label :title, "質問", class: "form-label"
+            = f.text_area :title,
+              class: "form-control",
+              rows: 2,
+              placeholder: "例: 学生時代に力を入れたことを教えてください（400字以内）",
+              required: true,
+              data: { controller: "autosize-textarea", action: "input->autosize-textarea#resize" }
+
+          .col-md-4.mb-3.char-limit-field
+            = f.label :char_limit, "文字数制限", class: "form-label"
+            = f.number_field :char_limit,
+              class: "form-control",
+              placeholder: "例: 400",
+              min: 1,
+              data: { action: "input->char-counter#updateLimit" }
+
+      .mb-3
+        .d-flex.justify-content-between.align-items-center.mb-2
+          = f.label :content, "回答", class: "form-label mb-0"
+          small.text-muted.char-counter
+            span.count[data-char-counter-target="count"] 0
+            | /
+            span[data-char-counter-target="limit"] = f.object.char_limit.to_i > 0 ? f.object.char_limit : "制限なし"
+            | 文字
+        = f.text_area :content,
+          class: "form-control",
+          rows: 5,
+          placeholder: "回答を入力してください",
+          required: true,
+          data: { controller: "autosize-textarea", action: "input->autosize-textarea#resize input->char-counter#update", char_counter_target: "textarea" }
+
+    = f.hidden_field :position
+    = f.hidden_field :entry_sheet_item_template_id
+    = f.hidden_field :_destroy,
+      value: "",
+      data: { nested_form_target: "destroyField" }

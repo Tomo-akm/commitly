@@ -1,0 +1,47 @@
+/ リプライモーダル（X風デザイン）
+.modal.fade id="replyModal#{post.id}" tabindex="-1" aria-labelledby="replyModalLabel#{post.id}" aria-hidden="true"
+  .modal-dialog.modal-dialog-centered.x-reply-modal
+    .modal-content
+      .modal-header.border-0.pb-2
+        button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+
+      .modal-body.pt-0.pb-4
+        / 元の投稿を表示
+        .d-flex.gap-3.mb-3.pb-3.position-relative
+          / 縦線
+          .reply-thread-line
+
+          / ユーザーアイコン
+          .icon-circle.bg-gradient-secondary.icon-md
+            i.fas.fa-user
+
+          / 投稿内容
+          .flex-grow-1
+            .d-flex.align-items-center.gap-2.mb-1
+              span.fw-semibold.text-dark = post.user.name
+            .text-dark.mb-2 = post.content
+            .text-muted.small
+              | Replying to
+              span.text-primary = post.user.name
+
+        / リプライフォーム
+        = form_with(url: posts_path, method: :post, class: "x-reply-modal-form") do |f|
+          = hidden_field_tag 'post[parent_id]', post.id
+
+          .d-flex.gap-3
+            / ユーザーアイコン
+            .icon-circle.bg-gradient-secondary.icon-md
+              i.fas.fa-user
+
+            / 入力エリア
+            .flex-grow-1
+              = text_area_tag 'general_content[content]', '',
+                class: 'form-control x-modal-reply-input border-0 p-0',
+                rows: 3,
+                placeholder: 'Post your reply',
+                required: true,
+                data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
+
+          / ボタンエリア
+          .d-flex.justify-content-end.mt-3.pt-3.border-top
+            = f.submit 'Reply', class: 'btn btn-reply-modal'

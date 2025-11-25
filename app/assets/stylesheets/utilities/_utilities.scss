@@ -107,7 +107,9 @@
 .font-bold { font-weight: $font-weight-bold !important; }
 
 .text-primary { color: $primary !important; }
+.text-primary-dark { color: $primary-dark !important; }
 .text-secondary { color: $secondary !important; }
+.text-secondary-dark { color: $secondary-dark !important; }
 .text-success { color: $success !important; }
 .text-warning { color: $warning !important; }
 .text-error { color: $error !important; }
@@ -301,6 +303,20 @@
   border-radius: $border-radius-full;
 }
 
+// アイコンサイズバリエーション
+.icon-sm {
+  width: 35px;
+  height: 35px;
+  font-size: 0.875rem;
+}
+
+.icon-md {
+  width: 40px;
+  height: 40px;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
 // ============================================
 // モダンなプロフィール・リスト表示
 // ============================================
@@ -476,4 +492,46 @@
   &:hover {
     box-shadow: 0 0 20px rgba($secondary, 0.3);
   }
+}
+
+// ============================================
+// タブスライドアニメーション
+// ============================================
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.4s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.4s ease-out;
+}
+
+// ============================================
+// テキストフォーマットユーティリティ
+// ============================================
+
+.pre-wrap {
+  white-space: pre-wrap !important;
 }

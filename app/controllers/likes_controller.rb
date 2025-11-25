@@ -10,7 +10,7 @@ class LikesController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             "like_button_#{@post.id}",
-            partial: "shared/like_button",
+            partial: "posts/components/like_button",
             locals: { post: @post }
           )
         end
@@ -30,7 +30,7 @@ class LikesController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             "like_button_#{@post.id}",
-            partial: "shared/like_button",
+            partial: "posts/components/like_button",
             locals: { post: @post }
           )
         end

@@ -3,16 +3,36 @@ Rails.application.routes.draw do
     sessions: "users/sessions",
     registrations: "users/registrations",
     omniauth_callbacks: "users/omniauth_callbacks"
-  }
+  }, skip: [ :registrations ]
+
+  # 新規登録のみ有効化（編集・削除機能は提供しない）
+  devise_scope :user do
+    post "users", to: "users/registrations#create", as: :user_registration
+    get "users/sign_up", to: "users/registrations#new", as: :new_user_registration
+  end
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
   resources :tags, only: [ :index, :show ]
   get "home/index"
   get "profile", to: "profiles#show"
+  get "profile/likes", to: "profiles#likes", as: "profile_likes"
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
+  get "users/:id/profile/likes", to: "profiles#likes", as: "user_profile_likes"
+
+  # Vault（就活記録エリア）
+  namespace :vault do
+    root "dashboard#index"
+
+    resources :entry_sheets
+    resources :entry_sheet_item_templates, path: "templates" do
+      member do
+        post :use
+      end
+    end
+  end
 
   # DM機能
   resources :rooms, only: [ :index, :show, :create ] do
