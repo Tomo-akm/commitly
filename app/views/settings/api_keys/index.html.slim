@@ -1,0 +1,105 @@
+.settings-api-keys
+  / ヘッダー
+  .d-flex.justify-content-between.align-items-center.mb-5
+    div
+      h1.fw-bold.mb-1
+        i.fas.fa-key.me-2.text-primary
+        | APIキー管理
+      p.text-muted.mb-0 AI機能で使用するAPIキーを管理します
+
+  / APIキー登録フォーム
+  .card.mb-4
+    .card-body
+      h5.card-title.fw-bold.mb-3
+        i.fas.fa-plus-circle.me-2.text-primary
+        | 新しいAPIキーを登録
+
+      = form_with model: @api_key, url: settings_api_keys_path do |f|
+        .row.g-3
+          .col-md-4
+            = f.label :provider, "プロバイダー", class: "form-label"
+            = f.select :provider, options_for_select([["OpenAI", "openai"], ["Anthropic (Claude)", "anthropic"], ["Google (Gemini)", "gemini"]], @api_key.provider), { include_blank: "選択してください" }, class: "form-select", required: true
+
+          .col-md-6
+            = f.label :api_key, "APIキー", class: "form-label"
+            = f.text_field :api_key, class: "form-control", placeholder: "sk-...", required: true
+
+          .col-md-2.d-flex.align-items-end
+            = f.submit "登録", class: "btn btn-primary w-100"
+
+        - if @api_key.errors.any?
+          .alert.alert-danger.mt-3.mb-0
+            ul.mb-0
+              - @api_key.errors.full_messages.each do |message|
+                li = message
+
+  / 登録済みAPIキー一覧
+  - if @api_keys.any?
+    .card
+      .card-body
+        h5.card-title.fw-bold.mb-3
+          i.fas.fa-list.me-2.text-primary
+          | 登録済みAPIキー
+
+        .table-responsive
+          table.table.table-hover.align-middle
+            thead.table-light
+              tr
+                th プロバイダー
+                th APIキー
+                th 登録日時
+                th.text-end 操作
+            tbody
+              - @api_keys.each do |api_key|
+                tr
+                  td
+                    = render "provider_badge", provider: api_key.provider
+                  td
+                    code.text-muted = mask_api_key(api_key.api_key)
+                  td
+                    span.text-muted.small
+                      i.fas.fa-calendar-alt.me-1
+                      = api_key.created_at.strftime("%Y/%m/%d %H:%M")
+                  td.text-end
+                    = button_to settings_api_key_path(api_key), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "本当に削除しますか？" } do
+                      i.fas.fa-trash-alt.me-1
+                      | 削除
+  - else
+    .alert.alert-info.mb-0
+      i.fas.fa-info-circle.me-2
+      | まだAPIキーが登録されていません。上のフォームから登録してください。
+
+  / ヘルプセクション
+  .card.mt-4
+    .card-body
+      h5.card-title.fw-bold.mb-3
+        i.fas.fa-question-circle.me-2.text-info
+        | APIキーの取得方法
+
+      .row
+        .col-md-4
+          .mb-3
+            h6.fw-bold
+              span.badge.bg-success.me-2 OpenAI
+            p.text-muted.small.mb-2 ChatGPT (GPT-4など)を使用できます
+            a.btn.btn-sm.btn-outline-primary href="https://platform.openai.com/api-keys" target="_blank"
+              i.fas.fa-external-link-alt.me-1
+              | APIキーを取得
+
+        .col-md-4
+          .mb-3
+            h6.fw-bold
+              span.badge.bg-warning.text-dark.me-2 Anthropic
+            p.text-muted.small.mb-2 Claude (Sonnet, Haikuなど)を使用できます
+            a.btn.btn-sm.btn-outline-primary href="https://console.anthropic.com/settings/keys" target="_blank"
+              i.fas.fa-external-link-alt.me-1
+              | APIキーを取得
+
+        .col-md-4
+          .mb-3
+            h6.fw-bold
+              span.badge.bg-info.me-2 Google
+            p.text-muted.small.mb-2 Gemini (Flash, Proなど)を使用できます
+            a.btn.btn-sm.btn-outline-primary href="https://aistudio.google.com/app/apikey" target="_blank"
+              i.fas.fa-external-link-alt.me-1
+              | APIキーを取得
