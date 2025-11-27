@@ -12,5 +12,14 @@ module Settings
         "***"
       end
     end
+
+    # プロバイダー選択肢
+    def provider_options
+      [
+        [ "OpenAI", "openai" ],
+        [ "Anthropic (Claude)", "anthropic" ],
+        [ "Google (Gemini)", "google" ]
+      ]
+    end
   end
 end

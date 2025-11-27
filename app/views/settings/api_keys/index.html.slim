@@ -18,7 +18,7 @@
         .row.g-3
           .col-md-4
             = f.label :provider, "プロバイダー", class: "form-label"
-            = f.select :provider, options_for_select([["OpenAI", "openai"], ["Anthropic (Claude)", "anthropic"], ["Google (Gemini)", "gemini"]], @api_key.provider), { include_blank: "選択してください" }, class: "form-select", required: true
+            = f.select :provider, options_for_select(provider_options, @api_key.provider), { include_blank: "選択してください" }, class: "form-select", required: true
 
           .col-md-6
             = f.label :api_key, "APIキー", class: "form-label"
@@ -98,7 +98,7 @@
         .col-md-4
           .mb-3
             h6.fw-bold
-              span.badge.bg-info.me-2 Gemini
+              span.badge.bg-info.me-2 Google (Gemini)
             p.text-muted.small.mb-2 Gemini (Flash, Proなど)を使用できます
             a.btn.btn-sm.btn-outline-primary href="https://aistudio.google.com/app/apikey" target="_blank"
               i.fas.fa-external-link-alt.me-1
