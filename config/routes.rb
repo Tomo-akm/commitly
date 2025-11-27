@@ -20,7 +20,6 @@ Rails.application.routes.draw do
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
-  get "users/:id/profile/likes", to: "profiles#likes", as: "user_profile_likes"
 
   # Vault（就活記録エリア）
   namespace :vault do

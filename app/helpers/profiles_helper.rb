@@ -22,7 +22,7 @@ module ProfilesHelper
 
   # いいねタブのパスを取得
   def likes_tab_path
-    params[:id] ? user_profile_likes_path(params[:id]) : profile_likes_path
+    profile_likes_path
   end
 
   # いいねタブがアクティブかどうか
