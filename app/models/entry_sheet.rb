@@ -1,7 +1,6 @@
 class EntrySheet < ApplicationRecord
   belongs_to :user
   has_many :entry_sheet_items, dependent: :destroy
-  has_many :chats, as: :chattable, dependent: :destroy
 
   # ステータスのenum定義
   enum :status, {

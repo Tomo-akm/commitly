@@ -40,11 +40,6 @@ class User < ApplicationRecord
     super && provider.blank?
   end
 
-  # APIキーを取得
-  def api_key_for(provider)
-    api_keys.find_by(provider: provider)
-  end
-
   private
 
   # OAuth認証データから名前を抽出

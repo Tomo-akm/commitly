@@ -27,6 +27,8 @@ module Settings
       @api_key.destroy!
 
       redirect_to settings_api_keys_path, notice: "APIキーを削除しました"
+    rescue ActiveRecord::RecordNotDestroyed
+      redirect_to settings_api_keys_path, alert: "APIキーの削除に失敗しました"
     end
 
     private
