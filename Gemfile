@@ -66,7 +66,7 @@ group :development, :test do
   gem "faker"
 
   # llm support
-  gem 'ruby_llm', '~> 1.9.1'
+  gem "ruby_llm", "~> 1.9.1"
 end
 
 group :development do
