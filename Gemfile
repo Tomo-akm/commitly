@@ -41,6 +41,9 @@ gem "solid_cable"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# LLM integration for AI features
+gem "ruby_llm", "~> 1.9.1"
+
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false
 
@@ -64,9 +67,6 @@ group :development, :test do
   gem "rspec-rails", "~> 8.0"
   gem "factory_bot_rails"
   gem "faker"
-
-  # llm support
-  gem "ruby_llm", "~> 1.9.1"
 end
 
 group :development do
