@@ -7,6 +7,9 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :entries, dependent: :destroy
+  has_many :rooms, through: :entries
+  has_many :messages, dependent: :destroy
   has_many :entry_sheets, dependent: :destroy
   has_many :entry_sheet_item_templates, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
@@ -36,6 +39,11 @@ class User < ApplicationRecord
 
   def email_required?
     super && provider.blank?
+  end
+
+  # 全未読メッセージ数
+  def total_unread_messages_count
+    entries.sum(&:unread_count)
   end
 
   private

@@ -1,0 +1,25 @@
+- other_user = room.other_user(current_user)
+- entry = current_user.entries.find_by(room: room)
+- unread = entry&.unread_count || 0
+- is_active = false
+
+= link_to room_path(other_user), data: { controller: "room-list-item", "room-list-item-room-id-value": room.id, action: "click->room-list-item#click", turbo_action: "advance" }, class: "list-group-item list-group-item-action border-0 p-3 hover-scale transition-all #{is_active ? 'active bg-light' : ''}", id: "room_#{room.id}" do
+  .d-flex.align-items-start
+    i.fas.fa-user-circle.text-primary.me-3.flex-shrink-0 style="font-size: 48px;"
+
+    .flex-grow-1.overflow-hidden
+      .d-flex.justify-content-between.align-items-start.mb-1
+        h6.mb-0.font-semibold class="#{unread > 0 ? 'fw-bold' : 'fw-normal'}" = other_user.name
+        - if room.latest_message
+          small.text-muted.flex-shrink-0.ms-2
+            = room.latest_message.created_at.strftime('%m/%d')
+
+      - if room.latest_message
+        p.mb-0.text-muted.text-sm.text-truncate class="#{unread > 0 ? 'fw-semibold' : ''}"
+          = truncate(room.latest_message.content, length: 40)
+      - else
+        p.mb-0.text-muted.text-sm.fst-italic まだメッセージがありません
+
+    - if unread > 0
+      .ms-2.flex-shrink-0
+        span.badge.bg-danger.rounded-pill = unread
