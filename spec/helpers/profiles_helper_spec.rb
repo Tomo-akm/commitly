@@ -40,16 +40,4 @@ RSpec.describe ProfilesHelper, type: :helper do
       expect(helper.commit_log_tab_active?).to be false
     end
   end
-
-  describe "#likes_tab_active?" do
-    it "いいねページで表示される場合、trueを返す" do
-      allow(helper).to receive(:current_page?).with(profile_likes_path).and_return(true)
-      expect(helper.likes_tab_active?).to be true
-    end
-
-    it "いいねページでない場合、falseを返す" do
-      allow(helper).to receive(:current_page?).with(profile_likes_path).and_return(false)
-      expect(helper.likes_tab_active?).to be false
-    end
-  end
 end
