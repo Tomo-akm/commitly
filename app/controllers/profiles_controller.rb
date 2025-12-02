@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!, except: [ :show ]
-  before_action :set_user, only: [ :show ]
+  before_action :set_user, only: [ :show, :likes ]
 
   def show
     @posts = @user.posts.includes(:contentable, :user, :likes, :tags).order(created_at: :desc)
@@ -8,7 +8,6 @@ class ProfilesController < ApplicationController
   end
 
   def likes
-    @user = current_user
     @liked_posts = current_user.liked_posts.includes(:contentable, :user, :tags, :likes).order(created_at: :desc)
     prepare_heatmap_data
   end
