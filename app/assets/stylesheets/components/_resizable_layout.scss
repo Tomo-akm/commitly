@@ -1,0 +1,75 @@
+.resizable-layout {
+  .resize-divider {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: ew-resize;
+    background-color: #e9ecef;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    z-index: 1040;
+    transition: background-color 0.2s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 2px;
+      height: 40px;
+      background-color: #adb5bd;
+      border-radius: 2px;
+    }
+
+    &:hover {
+      background-color: rgba(0, 123, 255, 0.15);
+      &::before {
+        background-color: #007bff;
+      }
+    }
+
+    &:active {
+      background-color: rgba(0, 123, 255, 0.25);
+      &::before {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  .side-panel {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: white;
+    border-left: 1px solid #dee2e6;
+    z-index: 1030;
+
+    .side-panel-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #dee2e6;
+      background: white;
+      flex-shrink: 0;
+    }
+
+    .side-panel-body {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+  }
+}
