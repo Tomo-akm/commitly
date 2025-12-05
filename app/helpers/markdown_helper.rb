@@ -26,7 +26,7 @@ module MarkdownHelper
     html = markdown.render(text)
 
     allowed_tags = %w[h1 h2 h3 h4 h5 h6 p br strong em del ul ol li a blockquote code pre table thead tbody tr th td hr]
-    allowed_attributes = %w[href target rel]
+    allowed_attributes = { "a" => %w[href target rel] }
 
     sanitize(html, tags: allowed_tags, attributes: allowed_attributes).html_safe
   end
