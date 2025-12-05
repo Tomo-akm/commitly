@@ -5,7 +5,7 @@ module MarkdownHelper
     return "" if text.blank?
 
     renderer = Redcarpet::Render::HTML.new(
-      filter_html: false,
+      filter_html: true,
       safe_links_only: true,
       with_toc_data: true,
       hard_wrap: true,
