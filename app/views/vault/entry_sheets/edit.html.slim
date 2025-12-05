@@ -1,5 +1,18 @@
-h1.fw-bold.mb-4
-  i.fas.fa-edit.me-2.text-primary
-  | ES編集
+div[id="turbo_streams_container"]
+  - @entry_sheet.entry_sheet_items.each do |item|
+    - if item.chat
+      div[id="turbo_stream_for_chat_#{item.chat.id}"]
+        = turbo_stream_from "chat_#{item.chat.id}"
 
-= render "form", entry_sheet: @entry_sheet
+.resizable-layout[data-controller="resizable-layout"]
+  h1.fw-bold.mb-4
+    i.fas.fa-edit.me-2.text-primary
+    | ES編集
+
+  = render "form", entry_sheet: @entry_sheet
+
+  .resize-divider[data-resizable-layout-target="divider" data-action="mousedown->resizable-layout#startResize"]
+
+  .side-panel[data-resizable-layout-target="sidePanel"]
+    - @entry_sheet.entry_sheet_items.each do |item|
+      = render "vault/entry_sheet_items/advice_panel", item: item
