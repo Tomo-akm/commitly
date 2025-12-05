@@ -21,13 +21,22 @@ class EntrySheetAdviceJob < ApplicationJob
       char_limit: current_char_limit
     )
 
+    chunk_count = 0
+    save_interval = 10  # 10チャンクごとにDB保存
+
     chat.ask(prompt) do |chunk|
       next unless chunk.content.present?
 
       message = chat.messages.last
       broadcast_first_message(message, entry_sheet_item.id) if message.content.blank? && message.role == "assistant"
-      message.broadcast_append_chunk(chunk.content)
+
+      chunk_count += 1
+      should_save = (chunk_count % save_interval).zero?
+      message.broadcast_append_chunk(chunk.content, save_to_db: should_save)
     end
+
+    # ストリーミング完了後、最終保存
+    chat.messages.last.save!
   rescue StandardError => e
     Rails.logger.error("ES添削エラー: #{e.message}")
     entry_sheet_item.chat&.destroy
