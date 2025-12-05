@@ -39,7 +39,6 @@ class EntrySheetAdviceJob < ApplicationJob
     chat.messages.last.save!
   rescue StandardError => e
     Rails.logger.error("ES添削エラー: #{e.message}")
-    entry_sheet_item.chat&.destroy
     raise
   end
 
