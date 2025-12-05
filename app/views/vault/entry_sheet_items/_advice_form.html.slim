@@ -1,6 +1,9 @@
 div[id="advice_form_#{item.id}"]
   - unless item.chat
     .mb-3
+      / クライアント側エラー表示用
+      div[id="advice_form_error_#{item.id}"]
+
       h6.fw-bold.mb-3
         i.fas.fa-sliders-h.me-2
         | AIモデルを選択

@@ -5,6 +5,8 @@ export default class extends Controller {
   static targets = ["titleField", "contentField", "charLimitField"]
 
   prepareSubmit(event) {
+    this.clearError()
+
     const card = this.findEntrySheetCard()
     if (!card) return this.handleError(event, '対応するフォームが見つかりません')
 
@@ -40,9 +42,27 @@ export default class extends Controller {
     this.charLimitFieldTarget.value = charLimitInput?.value || ''
   }
 
+  clearError() {
+    const errorContainer = document.getElementById(`advice_form_error_${this.itemIdValue}`)
+    if (errorContainer) {
+      errorContainer.innerHTML = ''
+    }
+  }
+
   handleError(event, message) {
     event.preventDefault()
-    alert(message)
+
+    const errorContainer = document.getElementById(`advice_form_error_${this.itemIdValue}`)
+    if (errorContainer) {
+      errorContainer.innerHTML = `
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `
+    }
+
     return false
   }
 }
