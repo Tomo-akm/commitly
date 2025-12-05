@@ -8,6 +8,16 @@ export default class extends Controller {
     this.sidePanelWidth = 600
   }
 
+  disconnect() {
+    // クリーンアップ：リスナーが残っている場合は削除
+    if (this.resizeHandler) {
+      document.removeEventListener("mousemove", this.resizeHandler)
+      document.removeEventListener("mouseup", this.stopResizeHandler)
+      this.resizeHandler = null
+      this.stopResizeHandler = null
+    }
+  }
+
   openPanel(event) {
     const itemId = event.currentTarget.dataset.itemId
     this.switchPanel(`advice-panel-${itemId}`)
@@ -70,6 +80,8 @@ export default class extends Controller {
     this.isResizing = false
     document.removeEventListener("mousemove", this.resizeHandler)
     document.removeEventListener("mouseup", this.stopResizeHandler)
+    this.resizeHandler = null
+    this.stopResizeHandler = null
     document.body.style.cursor = ""
     document.body.style.userSelect = ""
   }
