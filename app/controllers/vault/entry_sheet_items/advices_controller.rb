@@ -39,14 +39,27 @@ module Vault
           char_limit: params[:current_char_limit]
         }
 
-        return if @advice_params[:title].present? && @advice_params[:content].present?
+        if @advice_params[:title].blank? || @advice_params[:content].blank?
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "入力内容が不足しています"
+          return
+        end
 
-        render_error("入力内容が不足しています")
+        if @advice_params[:title].length > 100
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "タイトルが長すぎます。100文字以内で入力してください。"
+          return
+        end
+
+        if @advice_params[:content].length > 2000
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "内容が長すぎます。2000文字以内で入力してください。"
+          return
+        end
       end
 
       def find_model
         @model = find_available_model(params[:model_id])
-        render_error("利用可能なAIモデルがありません。APIキーを設定してください。") unless @model
+        unless @model
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "利用可能なAIモデルがありません。APIキーを設定してください。"
+        end
       end
 
       def find_available_model(model_id)
