@@ -9,12 +9,13 @@ export default class extends Controller {
   }
 
   disconnect() {
-    // クリーンアップ：リスナーが残っている場合は削除
-    if (this.resizeHandler) {
-      document.removeEventListener("mousemove", this.resizeHandler)
-      document.removeEventListener("mouseup", this.stopResizeHandler)
-      this.resizeHandler = null
-      this.stopResizeHandler = null
+    // リサイズ中の場合はクリーンアップ
+    if (this.isResizing) {
+      this.stopResize()
+    }
+    // パネルが開いている場合はbodyスタイルをリセット
+    if (this.panelOpen) {
+      this.hidePanel()
     }
   }
 
