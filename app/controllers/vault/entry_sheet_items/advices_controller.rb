@@ -52,11 +52,11 @@ module Vault
 
         error_message = if @advice_params[:title].blank? || @advice_params[:content].blank?
                           "入力内容が不足しています"
-                        elsif @advice_params[:title].length > 100
+        elsif @advice_params[:title].length > 100
                           "タイトルが長すぎます。100文字以内で入力してください。"
-                        else
+        else
                           "内容が長すぎます。2000文字以内で入力してください。"
-                        end
+        end
 
         redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: error_message and return
       end
