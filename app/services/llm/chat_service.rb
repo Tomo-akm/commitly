@@ -23,7 +23,7 @@ module Llm
       stream = @client.messages.stream(
         max_tokens: 2048,
         messages: messages,
-        model: model.to_sym
+        model: model.to_s
       )
 
       stream.text.each do |text|
