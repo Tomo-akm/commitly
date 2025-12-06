@@ -2,59 +2,52 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static values = { itemId: String }
-  static targets = ["titleField", "contentField", "charLimitField"]
+  static targets = ["titleField", "contentField", "charLimitField", "errorContainer"]
 
   prepareSubmit(event) {
     this.clearError()
 
-    const card = this.findEntrySheetCard()
-    if (!card) return this.handleError(event, '対応するフォームが見つかりません')
+    const card = this.#findCard()
+    if (!card) return this.#showError(event, '対応するフォームが見つかりません')
 
-    const inputs = this.findInputFields(card)
-    if (!inputs) return this.handleError(event, '入力値が取得できません')
-
-    if (!this.validateInputs(inputs)) {
-      return this.handleError(event, 'タイトルと内容を入力してください')
+    const inputs = this.#getInputs(card)
+    if (!inputs?.titleInput?.value.trim() || !inputs?.contentInput?.value.trim()) {
+      return this.#showError(event, 'タイトルと内容を入力してください')
     }
 
-    this.setHiddenFields(inputs)
-  }
-
-  findEntrySheetCard() {
-    return document.querySelector(`.entry-sheet-item[data-item-id="${this.itemIdValue}"]`)
-  }
-
-  findInputFields(card) {
-    const titleInput = card.querySelector('textarea[name*="[title]"]')
-    const contentInput = card.querySelector('textarea[name*="[content]"]')
-    const charLimitInput = card.querySelector('input[name*="[char_limit]"]')
-
-    return (titleInput && contentInput) ? { titleInput, contentInput, charLimitInput } : null
-  }
-
-  validateInputs({ titleInput, contentInput }) {
-    return titleInput.value.trim() && contentInput.value.trim()
-  }
-
-  setHiddenFields({ titleInput, contentInput, charLimitInput }) {
-    this.titleFieldTarget.value = titleInput.value.trim()
-    this.contentFieldTarget.value = contentInput.value.trim()
-    this.charLimitFieldTarget.value = charLimitInput?.value || ''
+    this.#populateHiddenFields(inputs)
   }
 
   clearError() {
-    const errorContainer = document.getElementById(`advice_form_error_${this.itemIdValue}`)
-    if (errorContainer) {
-      errorContainer.innerHTML = ''
+    if (this.hasErrorContainerTarget) {
+      this.errorContainerTarget.innerHTML = ''
     }
   }
 
-  handleError(event, message) {
+  // Private methods
+  #findCard() {
+    return document.querySelector(`.entry-sheet-item[data-item-id="${this.itemIdValue}"]`)
+  }
+
+  #getInputs(card) {
+    return {
+      titleInput: card.querySelector('textarea[name*="[title]"]'),
+      contentInput: card.querySelector('textarea[name*="[content]"]'),
+      charLimitInput: card.querySelector('input[name*="[char_limit]"]')
+    }
+  }
+
+  #populateHiddenFields({ titleInput, contentInput, charLimitInput }) {
+    this.titleFieldTarget.value = titleInput.value.trim()
+    this.contentFieldTarget.value = contentInput.value.trim()
+    this.charLimitFieldTarget.value = charLimitInput?.value ?? ''
+  }
+
+  #showError(event, message) {
     event.preventDefault()
 
-    const errorContainer = document.getElementById(`advice_form_error_${this.itemIdValue}`)
-    if (errorContainer) {
-      errorContainer.innerHTML = `
+    if (this.hasErrorContainerTarget) {
+      this.errorContainerTarget.innerHTML = `
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <i class="fas fa-exclamation-triangle me-2"></i>
           ${message}
