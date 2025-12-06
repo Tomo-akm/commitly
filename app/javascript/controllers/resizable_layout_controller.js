@@ -1,10 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["sidePanel", "divider"]
+  static targets = ["sidePanel", "divider", "left"]
 
   connect() {
-    this.width = 600
+    this.isDragging = false
   }
 
   disconnect() {
@@ -12,71 +12,63 @@ export default class extends Controller {
   }
 
   openPanel(event) {
-    const itemId = event.currentTarget.dataset.itemId
-    this.#switchPanel(`advice-panel-${itemId}`)
-    this.#show()
+    document.body.classList.add("side-panel-open")
+    this.element.classList.add("panel-open")
+
+    const itemId = event?.currentTarget?.dataset?.itemId
+    if (itemId) this.#switchPanel(`advice-panel-${itemId}`)
+
+    if (this.#isMobile()) {
+      this.sidePanelTarget.style.display = "block"
+    }
   }
 
   closePanel() {
-    this.#hide()
+    document.body.classList.remove("side-panel-open")
+    this.element.classList.remove("panel-open")
+
+    if (this.#isMobile()) {
+      this.sidePanelTarget.style.display = "none"
+    }
   }
 
   startResize(event) {
-    event.preventDefault()
-    this.resizing = { startX: event.clientX, startWidth: this.width }
+    if (this.#isMobile()) return
 
-    document.addEventListener("mousemove", this.#resize)
+    this.isDragging = true
+    document.addEventListener("mousemove", this.#resizePanel)
     document.addEventListener("mouseup", this.#stopResize)
-    document.body.style.cursor = "ew-resize"
-    document.body.style.userSelect = "none"
+    event.preventDefault()
   }
 
-  #resize = (event) => {
-    if (!this.resizing) return
+  #resizePanel = (event) => {
+    if (!this.isDragging) return
 
-    const delta = this.resizing.startX - event.clientX
-    const newWidth = Math.max(400, Math.min(window.innerWidth - 200, this.resizing.startWidth + delta))
-
-    this.width = newWidth
-    this.#updateWidth(newWidth)
+    const newWidth = window.innerWidth - event.clientX
+    const width = Math.max(300, Math.min(600, newWidth))
+    this.sidePanelTarget.style.width = `${width}px`
   }
 
   #stopResize = () => {
-    if (!this.resizing) return
-
-    this.resizing = null
-    document.removeEventListener("mousemove", this.#resize)
+    this.isDragging = false
+    document.removeEventListener("mousemove", this.#resizePanel)
     document.removeEventListener("mouseup", this.#stopResize)
-    document.body.style.cursor = ""
-    document.body.style.userSelect = ""
   }
 
   #switchPanel(panelId) {
-    this.element.querySelectorAll('.side-panel-content').forEach(panel => {
-      panel.style.display = panel.dataset.panelId === panelId ? 'block' : 'none'
+    this.element.querySelectorAll(".side-panel-content").forEach(panel => {
+      panel.style.display = (panel.dataset.panelId === panelId) ? "block" : "none"
     })
   }
 
-  #show() {
-    this.#updateWidth(this.width)
-    this.sidePanelTarget.style.display = 'block'
-    this.dividerTarget.style.display = 'block'
-  }
-
-  #hide() {
-    document.body.style.marginRight = '0'
-    this.sidePanelTarget.style.display = 'none'
-    this.dividerTarget.style.display = 'none'
-  }
-
-  #updateWidth(width) {
-    document.body.style.marginRight = `${width}px`
-    this.sidePanelTarget.style.width = `${width}px`
-    this.dividerTarget.style.right = `${width}px`
+  #isMobile() {
+    return window.innerWidth <= 767.98
   }
 
   #cleanup() {
-    if (this.resizing) this.#stopResize()
-    if (this.sidePanelTarget.style.display === 'block') this.#hide()
+    if (this.isDragging) this.#stopResize()
+    document.body.classList.remove("side-panel-open")
+    this.element.classList.remove("panel-open")
   }
 }
+
