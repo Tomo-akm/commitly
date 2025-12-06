@@ -29,7 +29,7 @@ module Vault
       def authorize_entry_sheet_item!
         return if @entry_sheet_item.entry_sheet.user_id == current_user.id
 
-        redirect_to vault_root_path, alert: "アクセス権限がありません"
+        redirect_to vault_root_path, alert: "アクセス権限がありません" and return
       end
 
       def validate_advice_params
@@ -40,25 +40,22 @@ module Vault
         }
 
         if @advice_params[:title].blank? || @advice_params[:content].blank?
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "入力内容が不足しています"
-          return
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "入力内容が不足しています" and return
         end
 
         if @advice_params[:title].length > 100
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "タイトルが長すぎます。100文字以内で入力してください。"
-          return
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "タイトルが長すぎます。100文字以内で入力してください。" and return
         end
 
         if @advice_params[:content].length > 2000
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "内容が長すぎます。2000文字以内で入力してください。"
-          return
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "内容が長すぎます。2000文字以内で入力してください。" and return
         end
       end
 
       def find_model
         @model = find_available_model(params[:model_id])
         unless @model
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "利用可能なAIモデルがありません。APIキーを設定してください。"
+          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "利用可能なAIモデルがありません。APIキーを設定してください。" and return
         end
       end
 
