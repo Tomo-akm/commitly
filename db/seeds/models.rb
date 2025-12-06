@@ -2,9 +2,9 @@ Model.delete_all
 
 models = {
   anthropic: [
-    ["Claude Opus 4.1", "claude-opus-4-1"],
-    ["Claude Sonnet 4.5", "claude-sonnet-4-5"],
-    ["Claude Haiku 4.5", "claude-haiku-4-5"]
+    [ "Claude Opus 4.1", "claude-opus-4-1" ],
+    [ "Claude Sonnet 4.5", "claude-sonnet-4-5" ],
+    [ "Claude Haiku 4.5", "claude-haiku-4-5" ]
   ]
 }
 
