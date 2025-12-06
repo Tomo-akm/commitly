@@ -37,6 +37,9 @@ class EntrySheetAdviceJob < ApplicationJob
 
     # ストリーミング完了後、最終保存
     chat.messages.last.save!
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.warn("ES添削Job: レコードが見つかりません (#{e.message})")
+    # レコードが削除された場合はジョブを失敗させるが、chatは保持
   rescue StandardError => e
     Rails.logger.error("ES添削エラー: #{e.message}")
     raise
