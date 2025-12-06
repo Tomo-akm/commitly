@@ -8,14 +8,24 @@ module Vault
 
       def create
         create_chat_with_model
-        enqueue_advice_job
+
+        EntrySheetAdviceJob.perform_later(
+          @entry_sheet_item.id,
+          current_user.id,
+          @model.id,
+          @advice_params[:title],
+          @advice_params[:content],
+          @advice_params[:char_limit]
+        )
+
         respond_to(&:turbo_stream)
       end
 
       def destroy
         return render_error("添削結果が見つかりません") unless @entry_sheet_item.chat
 
-        destroy_chat
+        @entry_sheet_item.chat.destroy
+        @entry_sheet_item.reload
         respond_to(&:turbo_stream)
       end
 
@@ -23,10 +33,6 @@ module Vault
 
       def set_entry_sheet_item
         @entry_sheet_item = EntrySheetItem.find(params[:entry_sheet_item_id])
-        authorize_entry_sheet_item!
-      end
-
-      def authorize_entry_sheet_item!
         return if @entry_sheet_item.entry_sheet.user_id == current_user.id
 
         redirect_to vault_root_path, alert: "アクセス権限がありません" and return
@@ -39,31 +45,33 @@ module Vault
           char_limit: params[:current_char_limit]
         }
 
-        if @advice_params[:title].blank? || @advice_params[:content].blank?
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "入力内容が不足しています" and return
-        end
+        return if @advice_params[:title].present? &&
+                  @advice_params[:content].present? &&
+                  @advice_params[:title].length <= 100 &&
+                  @advice_params[:content].length <= 2000
 
-        if @advice_params[:title].length > 100
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "タイトルが長すぎます。100文字以内で入力してください。" and return
-        end
+        error_message = if @advice_params[:title].blank? || @advice_params[:content].blank?
+                          "入力内容が不足しています"
+                        elsif @advice_params[:title].length > 100
+                          "タイトルが長すぎます。100文字以内で入力してください。"
+                        else
+                          "内容が長すぎます。2000文字以内で入力してください。"
+                        end
 
-        if @advice_params[:content].length > 2000
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "内容が長すぎます。2000文字以内で入力してください。" and return
-        end
+        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: error_message and return
       end
 
       def find_model
-        @model = find_available_model(params[:model_id])
-        unless @model
-          redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "利用可能なAIモデルがありません。APIキーを設定してください。" and return
-        end
+        return if params[:model_id].blank? &&
+                  redirect_to(edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください")
+
+        @model = Model.available_for_user(current_user).find_by(id: params[:model_id])
+        return if @model
+
+        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください" and return
       end
 
-      def find_available_model(model_id)
-        available_models = Model.available_for_user(current_user)
-        model_id.present? ? available_models.find_by(id: model_id) : available_models.first
-      end
-
+      # Helper methods
       def create_chat_with_model
         ActiveRecord::Base.transaction do
           @entry_sheet_item.chat&.destroy
@@ -73,23 +81,6 @@ module Vault
             title: "#{@advice_params[:title]}の添削"
           )
         end
-        @entry_sheet_item.reload
-      end
-
-      def enqueue_advice_job
-        EntrySheetAdviceJob.perform_later(
-          @entry_sheet_item.id,
-          current_user.id,
-          @model.id,
-          @advice_params[:title],
-          @advice_params[:content],
-          @advice_params[:char_limit]
-        )
-      end
-
-      def destroy_chat
-        @chat = @entry_sheet_item.chat
-        @chat.destroy
         @entry_sheet_item.reload
       end
 
