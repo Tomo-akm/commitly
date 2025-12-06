@@ -37,10 +37,6 @@ Rails.application.routes.draw do
         post :use
       end
     end
-
-    resources :entry_sheet_items, only: [] do
-      resource :advice, only: [ :create, :destroy ], module: :entry_sheet_items
-    end
   end
 
   # API endpoints for heatmap data

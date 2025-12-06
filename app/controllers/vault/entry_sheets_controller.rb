@@ -58,7 +58,7 @@ class Vault::EntrySheetsController < ApplicationController
   private
 
   def set_entry_sheet
-    @entry_sheet = current_user.entry_sheets.includes(entry_sheet_items: :chat).find(params[:id])
+    @entry_sheet = current_user.entry_sheets.find(params[:id])
   end
 
   def entry_sheet_params

@@ -27,6 +27,12 @@
           .col-md-2.d-flex.align-items-end
             = f.submit "登録", class: "btn btn-primary w-100"
 
+        - if @api_key.errors.any?
+          .alert.alert-danger.mt-3.mb-0
+            ul.mb-0
+              - @api_key.errors.full_messages.each do |message|
+                li = message
+
   / 登録済みAPIキー一覧
   - if @api_keys.any?
     .card

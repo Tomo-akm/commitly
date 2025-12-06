@@ -18,7 +18,7 @@ module Settings
       [
         [ "OpenAI", "openai" ],
         [ "Anthropic (Claude)", "anthropic" ],
-        [ "Google (Gemini)", "gemini" ]
+        [ "Google (Gemini)", "google" ]
       ]
     end
   end

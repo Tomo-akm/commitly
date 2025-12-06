@@ -21,8 +21,6 @@
 @import "components/job_hunting";
 @import "components/vault";          // ES管理（Vault）
 @import "components/settings";       // 設定ページ（APIキー管理等）
-@import "components/markdown";       // Markdownレンダリング
-@import "components/resizable_layout"; // リサイズ可能な2カラムレイアウト
 
 // 4. Utilities - ユーティリティクラス
 @import "utilities/utilities";
