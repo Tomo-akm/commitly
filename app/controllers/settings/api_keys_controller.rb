@@ -15,10 +15,7 @@ module Settings
       if @api_key.save
         redirect_to settings_api_keys_path, notice: "APIキーを登録しました"
       else
-        @api_keys = current_user.api_keys.sort_by do |key|
-          ApiKey::PROVIDERS.index(key.provider)
-        end
-        render :index, status: :unprocessable_entity
+        redirect_to settings_api_keys_path, alert: @api_key.errors.full_messages.first
       end
     end
 

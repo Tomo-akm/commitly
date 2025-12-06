@@ -3,6 +3,7 @@ class Chat < ApplicationRecord
 
   belongs_to :user
   belongs_to :model, optional: true
+  belongs_to :chattable, polymorphic: true, optional: true
 
   validates :user, presence: true
 end

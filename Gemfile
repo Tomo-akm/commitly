@@ -44,6 +44,9 @@ gem "bootsnap", require: false
 # LLM integration for AI features
 gem "ruby_llm", "~> 1.9.1"
 
+# Markdown rendering
+gem "redcarpet", "~> 3.6"
+
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false
 

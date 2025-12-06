@@ -2,6 +2,23 @@
 // フォーム コンポーネント
 // ============================================
 
+// Bootstrap フォームコントロールの高さを統一
+.form-select,
+.form-control,
+input[type="datetime-local"] {
+  padding: 0.5rem 0.5rem;
+  height: 45px;
+  line-height: 1.5;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-control,
+input[type="datetime-local"] {
+  display: flex;
+  align-items: center;
+}
+
 .form-group {
   margin-bottom: $spacing-6;
 }
@@ -23,6 +40,11 @@
 .form-textarea,
 .form-select {
   @include input-base;
+}
+
+.form-select {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
 }
 
 .form-textarea {

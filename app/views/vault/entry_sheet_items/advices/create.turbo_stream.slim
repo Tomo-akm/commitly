@@ -1,0 +1,12 @@
+- if @error
+  = turbo_stream.replace "advice_form_#{@entry_sheet_item.id}" do
+    = render "vault/entry_sheet_items/advice_error", error: @error
+- else
+  = turbo_stream.update "advice_messages_#{@entry_sheet_item.id}", ""
+  = turbo_stream.replace "advice_form_#{@entry_sheet_item.id}" do
+    = render "vault/entry_sheet_items/advice_form", item: @entry_sheet_item
+  = turbo_stream.prepend "advice_panel_actions_#{@entry_sheet_item.id}" do
+    = render "vault/entry_sheet_items/retry_advice_button", item: @entry_sheet_item
+  = turbo_stream.append "turbo_streams_container" do
+    div[id="turbo_stream_for_chat_#{@entry_sheet_item.chat.id}"]
+      = turbo_stream_from "chat_#{@entry_sheet_item.chat.id}"
