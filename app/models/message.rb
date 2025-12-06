@@ -1,6 +1,5 @@
 class Message < ApplicationRecord
-  acts_as_message tool_calls_foreign_key: :message_id
-  has_many_attached :attachments
+  belongs_to :chat
 
   # ストリーミング中のチャンクをブロードキャスト（DB保存は呼び出し側で制御）
   def broadcast_append_chunk(chunk_content, save_to_db: false)
