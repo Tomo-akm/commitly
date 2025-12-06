@@ -41,7 +41,7 @@ class EntrySheetAdviceJob < ApplicationJob
     end
 
     message.save!
-  rescue => e
+  rescue StandardError=> e
     Rails.logger.error("ES添削ERROR: #{e.class} - #{e.message}")
     raise
   end
