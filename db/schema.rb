@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_06_174710) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_06_181616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -115,6 +115,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_174710) do
     t.index ["role"], name: "index_messages_on_role"
   end
 
+  create_table "models", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "model_id", null: false
+    t.string "name", null: false
+    t.string "provider", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "model_id"], name: "index_models_on_provider_and_model_id", unique: true
+  end
+
   create_table "post_tags", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "post_id", null: false
@@ -174,6 +183,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_174710) do
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
   add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "models"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "posts", column: "parent_id"
