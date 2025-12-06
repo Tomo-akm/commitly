@@ -7,7 +7,7 @@ class Model < ApplicationRecord
     "openai" => %w[gpt-5 gpt-5-mini gpt-5-nano gpt-5-pro]
   }.freeze
 
-  scope :without_dated_versions, -> { where.not("model_id ~ ?", '\d{8}') }
+  scope :without_dated_versions, -> { where.not("model_id ~ ?", '-\\d{8}$') }
   scope :for_provider, ->(provider) { where(provider: provider) }
 
   scope :available_for_user, ->(user) {
