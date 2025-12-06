@@ -77,7 +77,6 @@ module Vault
           @entry_sheet_item.chat&.destroy
           @entry_sheet_item.create_chat!(
             user: current_user,
-            model: @model,
             title: "#{@advice_params[:title]}の添削"
           )
         end

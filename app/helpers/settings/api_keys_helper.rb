@@ -17,8 +17,7 @@ module Settings
     def provider_options
       [
         [ "OpenAI", "openai" ],
-        [ "Anthropic (Claude)", "anthropic" ],
-        [ "Google (Gemini)", "gemini" ]
+        [ "Anthropic (Claude)", "anthropic" ]
       ]
     end
   end
