@@ -24,7 +24,7 @@ class EntrySheetAdviceJob < ApplicationJob
       api_key: api_key
     )
 
-    messages = [{ role: "user", content: prompt }]
+    messages = [ { role: "user", content: prompt } ]
     message = chat.messages.create!(role: "assistant", content: "", model: @model)
 
     chunk_count = 0

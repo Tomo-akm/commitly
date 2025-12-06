@@ -8,6 +8,6 @@ class RecreateModelsForSdk < ActiveRecord::Migration[8.1]
       t.string :provider, null: false
     end
 
-    add_index :models, [:provider, :model_id], unique: true
+    add_index :models, [ :provider, :model_id ], unique: true
   end
 end

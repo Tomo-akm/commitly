@@ -14,6 +14,3 @@ module Llm
     end
   end
 end
-
-
-

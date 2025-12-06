@@ -2,15 +2,15 @@ Model.delete_all
 
 models = {
   openai: [
-    ["GPT-5", "gpt-5"],
-    ["GPT-5 Mini", "gpt-5-mini"],
-    ["GPT-5 Nano", "gpt-5-nano"],
-    ["GPT-5 Pro", "gpt-5-pro"]
+    [ "GPT-5", "gpt-5" ],
+    [ "GPT-5 Mini", "gpt-5-mini" ],
+    [ "GPT-5 Nano", "gpt-5-nano" ],
+    [ "GPT-5 Pro", "gpt-5-pro" ]
   ],
   anthropic: [
-    ["Claude Opus 4.1", "claude-opus-4-1"],
-    ["Claude Sonnet 4.5", "claude-sonnet-4-5"],
-    ["Claude Haiku 4.5", "claude-haiku-4-5"]
+    [ "Claude Opus 4.1", "claude-opus-4-1" ],
+    [ "Claude Sonnet 4.5", "claude-sonnet-4-5" ],
+    [ "Claude Haiku 4.5", "claude-haiku-4-5" ]
   ]
 }
 
