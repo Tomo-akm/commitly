@@ -21,6 +21,11 @@ Rails.application.routes.draw do
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
 
+  # Settings（設定エリア）
+  namespace :settings do
+    resources :api_keys, only: [ :index, :create, :destroy ]
+  end
+
   # Vault（就活記録エリア）
   namespace :vault do
     root "dashboard#index"
@@ -30,6 +35,10 @@ Rails.application.routes.draw do
       member do
         post :use
       end
+    end
+
+    resources :entry_sheet_items, only: [] do
+      resource :advice, only: [ :create, :destroy ], module: :entry_sheet_items
     end
   end
 
