@@ -79,6 +79,7 @@ services:
       - bundle:/usr/local/bundle
       - node_modules:/webapp/node_modules
     command: bundle exec bin/jobs
+    tty: true
     networks:
       - commitly_network
 
