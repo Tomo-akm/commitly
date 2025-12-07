@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM public.ecr.aws/docker/library/ruby:3.3.5
 
 ENV TZ=Asia/Tokyo
@@ -33,7 +34,9 @@ RUN bundle install
 COPY . .
 
 # Precompile assets（本番ビルド、master key 必須）
-RUN bundle exec rails assets:precompile
+RUN --mount=type=secret,id=RAILS_MASTER_KEY \
+    export RAILS_MASTER_KEY=$(cat /run/secrets/RAILS_MASTER_KEY) && \
+    bundle exec rails assets:precompile
 
 # Remove dev-only bin
 RUN rm -f bin/dev
