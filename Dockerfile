@@ -1,13 +1,9 @@
 FROM public.ecr.aws/docker/library/ruby:3.3.5
 
-# Set timezone
 ENV TZ=Asia/Tokyo
-
-# Set rubygems version
 ARG RUBYGEMS_VERSION=3.5.23
 
-# Install dependencies
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
+# Install system dependencies
 RUN set -uex && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -16,50 +12,34 @@ RUN set -uex && \
       gnupg \
       libpq-dev \
       postgresql-client \
-      vim && \
-    # Install Node.js
-    mkdir -p /etc/apt/keyrings && \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
-      | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-    NODE_MAJOR=18 && \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" \
-      > /etc/apt/sources.list.d/nodesource.list && \
-    # Install Yarn
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update -qq && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
-    # Clean up
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+      vim \
+      nodejs \
+      yarn && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /webapp
+WORKDIR /rails
 
-# Install Ruby dependencies
-COPY Gemfile ./
+# Install Ruby gems
+COPY Gemfile Gemfile.lock ./
 RUN gem update --system ${RUBYGEMS_VERSION}
-
-# Copy Gemfile.lock if it exists, otherwise bundle install will create it
-COPY Gemfile.lock* ./
-RUN bundle install
-
-# Install foreman for bin/dev
-RUN gem install foreman
+RUN bundle install --without development test
 
 # Copy application code
 COPY . .
 
-# Install Node dependencies if package.json exists
-RUN if [ -f package.json ]; then yarn install; fi
+# Precompile assets (重要)
+RUN bundle exec rails assets:precompile
 
-# Add entrypoint script
+# Remove dev-only bins (optional)
+RUN rm -f bin/dev
+
+# Expose
+EXPOSE 3000
+
+# Entrypoint
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
-# Expose port
-EXPOSE 3000
-
-# Start the server with bin/dev (runs both Rails server and dartsass:watch)
-CMD ["bin/dev"]
+# Run production server
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
