@@ -1,20 +1,19 @@
 #!/bin/bash
 set -e
 
-# Remove a potentially pre-existing server.pid for Rails.
-rm -f /webapp/tmp/pids/server.pid
+# Ensure working directory matches Dockerfile
+cd /rails
 
-# Wait for database to be ready (PostgreSQL)
+# Remove a pre-existing server.pid for Rails
+rm -f tmp/pids/server.pid
+
+# Wait for PostgreSQL to be ready (using DATABASE_URL)
 echo "Waiting for PostgreSQL to be ready..."
-until PGPASSWORD=$DB_PASSWORD psql -h "$DB_HOST" -U "$DB_USERNAME" -d "$DB_DATABASE" -c '\q' 2>/dev/null; do
+until bundle exec rails db:prepare 2>/dev/null; do
   echo "PostgreSQL is unavailable - sleeping"
   sleep 1
 done
 
-echo "PostgreSQL is up - executing command"
+echo "PostgreSQL is up - starting app..."
 
-# Run database migrations
-bundle exec rails db:migrate
-
-# Then exec the container's main process (what's set as CMD in the Dockerfile).
 exec "$@"

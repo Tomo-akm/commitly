@@ -17,7 +17,6 @@ proxy:
 
 registry:
   server: ghcr.io
-  repository: tomo-akm/commitly
   username: tomo-akm
   password:
     - KAMAL_REGISTRY_PASSWORD
@@ -36,6 +35,8 @@ asset_path: /rails/public/assets
 
 builder:
   arch: amd64
+  secrets:
+    - RAILS_MASTER_KEY
 
 accessories:
   db:
