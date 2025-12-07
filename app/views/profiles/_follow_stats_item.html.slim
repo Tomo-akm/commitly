@@ -1,0 +1,23 @@
+/ フォロー中・フォロワーの統計表示項目
+/ @param icon [String] FontAwesomeのアイコンクラス（例: "fa-users"）
+/ @param label [String] ラベルテキスト（例: "フォロー中"）
+/ @param value_id [String] Turbo更新用のDOM ID
+/ @param count [Integer] 表示するカウント数
+/ @param path [String] リンク先のパス
+/ @param linkable [Boolean] リンクを有効にするか
+
+- if linkable
+  = link_to path, class: "text-decoration-none text-dark" do
+    .profile-info-item
+      .profile-icon
+        i.fas class=icon
+      .profile-label = label
+      .profile-value id=value_id
+        = count
+- else
+  .profile-info-item
+    .profile-icon
+      i.fas class=icon
+    .profile-label = label
+    .profile-value id=value_id
+      = count

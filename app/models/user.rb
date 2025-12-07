@@ -17,18 +17,20 @@ class User < ApplicationRecord
   has_many :followers, through: :passive_follows, source: :follower
 
   # ユーザーをフォローする
+  # Follow モデルのバリデーションにより自分自身のフォローや重複は自動的に防止される
   def follow(other_user)
-    following << other_user unless self == other_user
+    active_follows.create(followed: other_user)
   end
 
   # ユーザーをフォロー解除する
   def unfollow(other_user)
-    following.delete(other_user)
+    active_follows.find_by(followed: other_user)&.destroy
   end
 
   # 現在のユーザーがフォローしてたらtrueを返す
+  # exists? を使用してデータベースレベルで効率的にチェック
   def following?(other_user)
-    following.include?(other_user)
+    active_follows.exists?(followed: other_user)
   end
 
   has_many :liked_posts, through: :likes, source: :post
