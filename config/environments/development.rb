@@ -72,5 +72,5 @@ Rails.application.configure do
 
   # Use Solid Queue in Development.
   config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :primary } }
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 end
