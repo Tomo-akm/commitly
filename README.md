@@ -25,8 +25,8 @@ docker compose build
 ```bash
 docker compose run --rm web bin/rails db:create
 docker compose run --rm web bin/rails db:migrate
-docker compose exec web bin/rails db:schema:load:queue
-docker compose exec web bin/rails db:schema:load:cable
+docker compose run --rm web bin/rails db:schema:load:queue
+docker compose run --rm web bin/rails db:schema:load:cable
 ```
 
 4. アプリケーションの起動
