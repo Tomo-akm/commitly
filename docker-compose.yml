@@ -59,6 +59,29 @@ services:
     networks:
       - commitly_network
 
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: commitly_worker
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: development
+      DB_HOST: db
+      DB_USERNAME: commitly
+      DB_PASSWORD: password
+      DB_DATABASE: commitly_development
+    volumes:
+      - .:/webapp
+      - bundle:/usr/local/bundle
+      - node_modules:/webapp/node_modules
+    command: bundle exec bin/jobs
+    networks:
+      - commitly_network
+
 networks:
   commitly_network:
     driver: bridge
