@@ -17,6 +17,7 @@ proxy:
 
 registry:
   server: ghcr.io
+  repository: tomo-akm/commitly
   username: tomo-akm
   password:
     - KAMAL_REGISTRY_PASSWORD
