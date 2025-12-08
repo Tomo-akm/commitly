@@ -5,19 +5,19 @@ ssh:
   keys:
     - ~/.ssh/commitly-ec2.pem
 
-image: ghcr.io/tomo-akm/commitly
+image: tomo-akm/commitly
 
 servers:
   web:
-    - 3.25.217.182
+    - 3.25.180.24
   job:
     hosts:
-      - 3.25.217.182
+      - 3.25.180.24
     cmd: bundle exec bin/jobs
 
 proxy:
   ssl: true
-  host: kamal.akamine.dev
+  host: commitly.akamine.dev
   app_port: 3000
   healthcheck:
     path: /up
@@ -55,7 +55,7 @@ builder:
 accessories:
   db:
     image: postgres:16
-    host: 3.25.217.182
+    host: 3.25.180.24
     port: "5432:5432"
     env:
       clear:

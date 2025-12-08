@@ -88,4 +88,6 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
   config.hosts << "commitly.akamine.dev"
+  # Allow internal container/healthcheck hostnames used by Kamal (e.g. 12-char container ids with port).
+  config.hosts << /[0-9a-f]{12}(:\d+)?/
 end

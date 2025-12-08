@@ -5,6 +5,7 @@ ENV TZ=Asia/Tokyo
 ENV RAILS_ENV=production
 ENV BUNDLE_DEPLOYMENT=true
 ENV BUNDLE_WITHOUT="development test"
+ENV BUNDLE_PATH=/usr/local/bundle
 
 ARG RUBYGEMS_VERSION=3.5.23
 
@@ -33,9 +34,9 @@ RUN bundle install
 # Copy application code
 COPY . .
 
-# Precompile assets（本番ビルド、master key 必須）
+# Precompile assets（requires RAILS_MASTER_KEY as a BuildKit secret from Kamal）
 RUN --mount=type=secret,id=RAILS_MASTER_KEY \
-    export RAILS_MASTER_KEY=$(cat /run/secrets/RAILS_MASTER_KEY) && \
+    RAILS_MASTER_KEY="$(cat /run/secrets/RAILS_MASTER_KEY)" \
     bundle exec rails assets:precompile
 
 # Remove dev-only bin
