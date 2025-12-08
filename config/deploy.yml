@@ -10,10 +10,19 @@ image: ghcr.io/tomo-akm/commitly
 servers:
   web:
     - 3.25.217.182
+  job:
+    hosts:
+      - 3.25.217.182
+    cmd: bundle exec bin/jobs
 
 proxy:
   ssl: true
   host: kamal.akamine.dev
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 10
+    timeout: 60
 
 registry:
   server: ghcr.io
@@ -32,6 +41,10 @@ volumes:
   - "commitly_storage:/rails/storage"
 
 asset_path: /rails/public/assets
+
+# Deployment timeouts
+deploy_timeout: 120
+readiness_delay: 10
 
 builder:
   arch: amd64
