@@ -1,0 +1,23 @@
+<%= turbo_stream.update(dom_id(@user, "follow_button")) do %>
+  <%= render "profiles/follow_button", user: @user %>
+<% end %>
+
+<%= turbo_stream.update(dom_id(@user, "followers_count")) do %>
+  <%= @user.followers.count %>
+<% end %>
+
+<%= turbo_stream.update(dom_id(current_user, "following_count")) do %>
+  <%= current_user.following.count %>
+<% end %>
+
+<%= turbo_stream.remove_all ".toast" %>
+
+<%= turbo_stream.append "toast-container" do %>
+  <div class="toast show text-bg-info" role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast">
+    <div class="toast-body">
+      <i class="fas fa-check-circle"></i>
+      <span>フォローしました</span>
+    </div>
+    <button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="閉じる"></button>
+  </div>
+<% end %>

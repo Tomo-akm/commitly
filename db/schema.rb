@@ -75,6 +75,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_181616) do
     t.index ["user_id"], name: "index_entry_sheets_on_user_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "followed_id"
+    t.integer "follower_id"
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
   create_table "general_contents", force: :cascade do |t|
     t.text "content", null: false
     t.datetime "created_at", null: false
@@ -126,8 +136,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_181616) do
 
   create_table "post_tags", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "post_id", null: false
-    t.bigint "tag_id", null: false
+    t.integer "post_id", null: false
+    t.integer "tag_id", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id", "tag_id"], name: "index_post_tags_on_post_id_and_tag_id", unique: true
     t.index ["post_id"], name: "index_post_tags_on_post_id"
@@ -140,7 +150,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_181616) do
     t.datetime "created_at", null: false
     t.bigint "parent_id"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.integer "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"

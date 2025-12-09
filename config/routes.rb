@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     post "users", to: "users/registrations#create", as: :user_registration
     get "users/sign_up", to: "users/registrations#new", as: :new_user_registration
   end
+  resources :users, only: [] do
+    resources :follows, only: [ :create, :destroy ]
+  end
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
@@ -20,6 +23,9 @@ Rails.application.routes.draw do
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
   get "users/:id/profile", to: "profiles#show", as: "user_profile"
+  get "users/:id/profile/likes", to: "profiles#likes", as: "user_profile_likes"
+  get "users/:id/following", to: "profiles#following", as: "following_user"
+  get "users/:id/followers", to: "profiles#followers", as: "followers_user"
 
   # Settings（設定エリア）
   namespace :settings do

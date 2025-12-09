@@ -5,8 +5,13 @@
       h2.h3.mb-0.font-bold.d-flex.align-items-center
         i.fas.fa-user-circle.me-2
         = @user.name
-      - if user_signed_in? && @user == current_user
-        = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+      .d-flex.gap-2
+        - if user_signed_in?
+          - if @user == current_user
+            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+          - else
+            = turbo_frame_tag dom_id(@user, "follow_button") do
+              = render "profiles/follow_button", user: @user
   .card-body.p-4
     .profile-info-item
       .profile-icon
@@ -57,3 +62,11 @@
         i.fas.fa-calendar-check
       .profile-label 登録日
       .profile-value = @user.created_at.strftime("%Y年%m月%d日")
+
+    .separator-gradient
+
+    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user), linkable: user_signed_in?
+
+    .separator-gradient
+
+    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user), linkable: user_signed_in?

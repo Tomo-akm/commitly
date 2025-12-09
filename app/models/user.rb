@@ -7,6 +7,32 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :active_follows, class_name:  "Follow",
+           foreign_key: "follower_id",
+           dependent:   :destroy
+  has_many :passive_follows, class_name:  "Follow",
+           foreign_key: "followed_id",
+           dependent:   :destroy
+  has_many :following, through: :active_follows, source: :followed
+  has_many :followers, through: :passive_follows, source: :follower
+
+  # ユーザーをフォローする
+  # Follow モデルのバリデーションにより自分自身のフォローや重複は自動的に防止される
+  def follow(other_user)
+    active_follows.create(followed: other_user)
+  end
+
+  # ユーザーをフォロー解除する
+  def unfollow(other_user)
+    active_follows.find_by(followed: other_user)&.destroy
+  end
+
+  # 現在のユーザーがフォローしてたらtrueを返す
+  # exists? を使用してデータベースレベルで効率的にチェック
+  def following?(other_user)
+    active_follows.exists?(followed: other_user)
+  end
+
   has_many :entry_sheets, dependent: :destroy
   has_many :entry_sheet_item_templates, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
