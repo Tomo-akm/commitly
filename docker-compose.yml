@@ -30,6 +30,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        RAILS_ENV: development
+        BUNDLE_WITHOUT: "test"
+        BUNDLE_DEPLOYMENT: "false"
     container_name: commitly_web
     restart: unless-stopped
     depends_on:
@@ -41,6 +45,8 @@ services:
       DB_USERNAME: commitly
       DB_PASSWORD: password
       DB_DATABASE: commitly_development
+      DATABASE_URL: postgres://commitly:password@db:5432/commitly_development
+    command: bin/dev
     volumes:
       - .:/webapp
       - bundle:/usr/local/bundle
@@ -63,6 +69,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        RAILS_ENV: development
+        BUNDLE_WITHOUT: "test"
+        BUNDLE_DEPLOYMENT: "false"
     container_name: commitly_worker
     restart: unless-stopped
     depends_on:
@@ -74,6 +84,7 @@ services:
       DB_USERNAME: commitly
       DB_PASSWORD: password
       DB_DATABASE: commitly_development
+      DATABASE_URL: postgres://commitly:password@db:5432/commitly_development
     volumes:
       - .:/webapp
       - bundle:/usr/local/bundle

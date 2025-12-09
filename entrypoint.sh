@@ -2,7 +2,7 @@
 set -e
 
 # Ensure working directory matches Dockerfile
-cd /rails
+cd /webapp
 
 # Remove a pre-existing server.pid for Rails
 rm -f tmp/pids/server.pid
