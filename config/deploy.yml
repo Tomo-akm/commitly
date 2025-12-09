@@ -42,6 +42,7 @@ volumes:
   - "commitly_storage:/rails/storage"
 
 asset_path: /rails/public/assets
+asset_path: /webapp/public/assets
 
 # Deployment timeouts
 deploy_timeout: 120
