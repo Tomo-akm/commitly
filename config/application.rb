@@ -32,5 +32,10 @@ module Commitly
     config.generators do |g|
       g.template_engine :slim
     end
+
+    # Active Record Encryption
+    config.active_record.encryption.primary_key = Rails.application.credentials.dig(:active_record_encryption, :primary_key)
+    config.active_record.encryption.deterministic_key = Rails.application.credentials.dig(:active_record_encryption, :deterministic_key)
+    config.active_record.encryption.key_derivation_salt = Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt)
   end
 end

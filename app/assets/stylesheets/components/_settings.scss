@@ -1,0 +1,16 @@
+// Settings pages
+.settings-api-keys {
+  // APIキー入力フィールド
+  input[type="text"] {
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  // マスクされたAPIキー表示
+  code {
+    background-color: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+  }
+}

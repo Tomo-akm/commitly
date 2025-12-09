@@ -25,14 +25,18 @@ docker compose build
 ```bash
 docker compose run --rm web bin/rails db:create
 docker compose run --rm web bin/rails db:migrate
+docker compose run --rm web bin/rails db:schema:load:queue
+docker compose run --rm web bin/rails db:schema:load:cable
 ```
 
 4. アプリケーションの起動
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 アプリケーションは http://localhost:3000 でアクセスできます。
+
+**📌 Solid Queue/Solid Cableのセットアップ詳細は [docs/solid-queue-setup-guide.md](docs/solid-queue-setup-guide.md) を参照してください。**
 
 ## 日常の開発手順
 
@@ -203,6 +207,26 @@ docker compose exec web bin/rails dartsass:watch
   // あなたのスタイル
 }
 ```
+
+## バックグラウンドジョブとリアルタイム通信
+
+このアプリケーションは以下の技術を使用しています：
+
+- **Solid Queue**: バックグラウンドジョブ処理（PostgreSQL ベース）
+- **Solid Cable**: ActionCable/WebSocket 通信（PostgreSQL ベース）
+
+### 主な機能
+- ESアドバイスのリアルタイム生成
+- チャットのリアルタイム更新
+- ストリーミング応答の表示
+
+### セットアップ・デプロイ手順
+詳細は **[docs/solid-queue-setup-guide.md](docs/solid-queue-setup-guide.md)** を参照してください。
+
+各環境でのセットアップ方法：
+- ローカル開発環境（Docker Compose）
+- 本番環境（Render）
+- Kamal2デプロイ
 
 ## 開発ルール
 

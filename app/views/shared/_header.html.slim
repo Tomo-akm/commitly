@@ -40,7 +40,13 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
               = current_user&.name
             ul.dropdown-menu.dropdown-menu-end
               li
-                = link_to "プロフィール", profile_path, class: "dropdown-item"
+                = link_to profile_path, class: "dropdown-item" do
+                  i.fas.fa-user.me-2
+                  | プロフィール
+              li
+                = link_to settings_api_keys_path, class: "dropdown-item" do
+                  i.fas.fa-cog.me-2
+                  | 設定
               li
                 hr.dropdown-divider
               li
