@@ -1,7 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!, except: [ :show ]
   before_action :set_user, only: [ :show, :likes ]
-  before_action :require_own_likes_access, only: [ :likes ]
 
   def show
     @posts = @user.posts.includes(:contentable, :user, :likes, :tags).order(created_at: :desc)
@@ -9,7 +8,7 @@ class ProfilesController < ApplicationController
   end
 
   def likes
-    @liked_posts = @user.liked_posts.includes(:contentable, :user, :tags, :likes).order(created_at: :desc)
+    @liked_posts = current_user.liked_posts.includes(:contentable, :user, :tags, :likes).order(created_at: :desc)
     prepare_heatmap_data
   end
 
@@ -42,12 +41,6 @@ class ProfilesController < ApplicationController
 
   def set_user
     @user = params[:id] ? User.find(params[:id]) : current_user
-  end
-
-  def require_own_likes_access
-    if @user != current_user
-      redirect_to user_profile_path(@user), alert: "他のユーザーのいいね一覧は閲覧できません"
-    end
   end
 
   def profile_params

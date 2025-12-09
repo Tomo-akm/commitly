@@ -27,6 +27,17 @@ Rails.application.routes.draw do
   get "users/:id/following", to: "profiles#following", as: "following_user"
   get "users/:id/followers", to: "profiles#followers", as: "followers_user"
 
+  # Vault（就活記録エリア）
+  namespace :vault do
+    root "dashboard#index"
+
+    resources :entry_sheets
+    resources :entry_sheet_item_templates, path: "templates" do
+      member do
+        post :use
+      end
+    end
+  end
 
   # API endpoints for heatmap data
   namespace :api do
