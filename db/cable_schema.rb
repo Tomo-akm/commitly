@@ -75,6 +75,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_06_181616) do
     t.index ["user_id"], name: "index_entry_sheets_on_user_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "followed_id"
+    t.bigint "follower_id"
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
   create_table "general_contents", force: :cascade do |t|
     t.text "content", null: false
     t.datetime "created_at", null: false
