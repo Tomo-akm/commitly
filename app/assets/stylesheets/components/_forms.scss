@@ -96,6 +96,19 @@ input[type="datetime-local"] {
 
   .btn {
     border-radius: 0 $border-radius-md $border-radius-md 0;
+    // Align search buttons with input height inside input groups
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 45px;
+    padding: 0 $spacing-5;
+
+    // Keep search button fixed on hover/active
+    &:hover:not(:disabled),
+    &:active {
+      transform: none;
+    }
   }
 }
 
