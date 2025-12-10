@@ -3,7 +3,7 @@
 module ProfilesHelper
   # プロフィールタブのリンクを生成
   def profile_tab_link(path, icon, label, is_active:)
-    link_to path, class: "nav-link #{'active' if is_active}", data: { turbo_frame: "profile_content", turbo_action: "advance" } do
+    link_to path, class: "nav-link profile-tab-link #{'active' if is_active}", data: { turbo_frame: "profile_content", turbo_action: "advance" } do
       concat content_tag(:i, "", class: "#{icon} me-2")
       concat label
     end
