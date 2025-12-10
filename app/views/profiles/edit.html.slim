@@ -26,10 +26,6 @@
               = form.text_field :favorite_language, class: "form-input", placeholder: "例: Ruby, Python, JavaScript"
 
             .form-group
-              = form.label :research_lab, "希望・所属研究室", class: "form-label"
-              = form.text_field :research_lab, class: "form-input", placeholder: "例: 情報工学研究室"
-
-            .form-group
               = form.label :internship_count, "インターン・説明会参加回数", class: "form-label"
               = form.number_field :internship_count, class: "form-input", min: 0, placeholder: "0"
               .form-help 参加した回数を入力してください
