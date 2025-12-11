@@ -7,7 +7,7 @@ export default class extends Controller {
     const target = event.target
     const isInteractiveElement = target.closest([
       'a',                      // リンク（ユーザー名、タグなど）
-      'button',                 // ボタン（いいね、リプライなど）
+      'button',                 // ボタン（Star、リプライなど）
       'form',                   // フォーム
       '[data-bs-toggle]',       // モーダルトリガー
       '.job-hunting-badge',     // 就活バッジ（将来的にクリッカブルにする可能性）

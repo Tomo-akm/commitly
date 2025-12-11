@@ -44,7 +44,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
             = link_to tag_path(tag.id), class: "text-decoration-none", data: { turbo_frame: "_top" } do
               span.badge.bg-light.text-dark ##{tag.name}
 
-    / フッター（いいねボタンとリプライボタン）
+    / フッター（Starボタンとリプライボタン）
     .d-flex.align-items-center.gap-2.pt-2.border-top
       = render 'posts/components/like_button', post: post
       = render 'posts/components/reply_button', post: post

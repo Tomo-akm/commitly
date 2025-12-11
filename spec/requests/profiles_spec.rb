@@ -89,7 +89,7 @@ RSpec.describe "Profiles", type: :request do
     context "ログイン済み" do
       before { sign_in user, scope: :user }
 
-      it "いいねした投稿のみ表示される" do
+      it "Starした投稿のみ表示される" do
         create(:like, user: user, post: liked_post)
         get profile_likes_path
 
@@ -98,11 +98,11 @@ RSpec.describe "Profiles", type: :request do
         expect(response.body).not_to include(other_post.content)
       end
 
-      it "いいねがない場合、メッセージが表示される" do
+      it "Starがない場合、メッセージが表示される" do
         get profile_likes_path
 
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("まだいいねした投稿がありません")
+        expect(response.body).to include("まだStarした投稿がありません")
       end
     end
 

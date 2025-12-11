@@ -20,14 +20,14 @@ module ProfilesHelper
     current_page?(path)
   end
 
-  # いいねタブのパスを取得
-  def likes_tab_path
+  # Starタブのパスを取得
+  def stars_tab_path
     profile_likes_path
   end
 
-  # いいねタブがアクティブかどうか
-  def likes_tab_active?
-    path = likes_tab_path
+  # Starタブがアクティブかどうか
+  def stars_tab_active?
+    path = stars_tab_path
     current_page?(path)
   end
 end

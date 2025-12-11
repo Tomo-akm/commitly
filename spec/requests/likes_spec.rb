@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Likes", type: :request do
+RSpec.describe "Stars", type: :request do
   let(:user) { create(:user) }
   let(:post_record) { create(:post) }
 
@@ -9,14 +9,14 @@ RSpec.describe "Likes", type: :request do
   end
 
   describe "POST /posts/:post_id/likes" do
-    context "いいねが作成される場合" do
+    context "Starが作成される場合" do
       it "Like数が1増える" do
         expect {
           post post_likes_path(post_record)
         }.to change(Like, :count).by(1)
       end
 
-      it "作成されたいいねのuser_idとpost_idが正しい" do
+      it "作成されたStarのuser_idとpost_idが正しい" do
         post post_likes_path(post_record)
         like = Like.last
         expect(like.user_id).to eq(user.id)
@@ -24,7 +24,7 @@ RSpec.describe "Likes", type: :request do
       end
     end
 
-    context "重複いいねの場合" do
+    context "重複Starの場合" do
       let!(:existing_like) { create(:like, user: user, post: post_record) }
 
       it "Like数が増えない" do
@@ -43,7 +43,7 @@ RSpec.describe "Likes", type: :request do
   describe "DELETE /posts/:post_id/likes/:id" do
     let!(:like) { create(:like, user: user, post: post_record) }
 
-    context "いいねが削除される場合" do
+    context "Starが削除される場合" do
       it "Like数が1減る" do
         expect {
           delete post_like_path(post_record, like)
@@ -51,7 +51,7 @@ RSpec.describe "Likes", type: :request do
       end
     end
 
-    context "他人のいいねを削除しようとする場合" do
+    context "他人のStarを削除しようとする場合" do
       let(:other_user) { create(:user) }
       let!(:other_like) { create(:like, user: other_user, post: post_record) }
 

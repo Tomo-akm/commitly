@@ -146,7 +146,7 @@
 }
 
 // ============================================
-// インタラクションボタン（いいね・リプライ）
+// インタラクションボタン（Star・リプライ）
 // ============================================
 
 %interaction-button {
@@ -198,25 +198,25 @@
   @extend %interaction-button;
 
   &:hover {
-    background-color: rgba($error, 0.08);
-    color: $error;
+    background-color: rgba($star, 0.12);
+    color: $star-dark;
 
     i {
-      color: $error;
+      color: $star;
       transform: scale(1.1);
     }
   }
 
   &.liked {
-    background-color: rgba($error, 0.1);
-    color: $error;
+    background-color: rgba($star, 0.18);
+    color: $star-dark;
 
     i {
-      color: $error;
+      color: $star-dark;
     }
 
     &:hover {
-      background-color: rgba($error, 0.12);
+      background-color: rgba($star, 0.22);
     }
   }
 }

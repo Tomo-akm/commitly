@@ -21,12 +21,6 @@ RSpec.describe ProfilesHelper, type: :helper do
     end
   end
 
-  describe "#likes_tab_path" do
-    it "profile_likes_pathを返す" do
-      expect(helper.likes_tab_path).to eq(profile_likes_path)
-    end
-  end
-
   describe "#commit_log_tab_active?" do
     before { params[:id] = user.id.to_s }
 
@@ -38,6 +32,26 @@ RSpec.describe ProfilesHelper, type: :helper do
     it "commit logページでない場合、falseを返す" do
       allow(helper).to receive(:current_page?).with(user_profile_path(user.id)).and_return(false)
       expect(helper.commit_log_tab_active?).to be false
+    end
+  end
+
+  describe "#stars_tab_path" do
+    it "profile_likes_pathを返す" do
+      expect(helper.stars_tab_path).to eq(profile_likes_path)
+    end
+  end
+
+  describe "#stars_tab_active?" do
+    before { params[:id] = user.id.to_s }
+
+    it "Starsページで表示される場合、trueを返す" do
+      allow(helper).to receive(:current_page?).with(profile_likes_path).and_return(true)
+      expect(helper.stars_tab_active?).to be true
+    end
+
+    it "Starsページでない場合、falseを返す" do
+      allow(helper).to receive(:current_page?).with(profile_likes_path).and_return(false)
+      expect(helper.stars_tab_active?).to be false
     end
   end
 end

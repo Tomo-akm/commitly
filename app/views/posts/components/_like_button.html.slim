@@ -1,9 +1,9 @@
 = turbo_frame_tag "like_button_#{post.id}" do
   - if user_signed_in? && post.liked_by?(current_user)
-    = button_to post_like_path(post, post.likes.find_by(user: current_user)), method: :delete, class: "like-button liked", data: { turbo_frame: "_top" }, aria: { label: "いいねを取り消す" }, form: { class: "inline-button-form" } do
-      i.fas.fa-heart
+    = button_to post_like_path(post, post.likes.find_by(user: current_user)), method: :delete, class: "like-button liked", data: { turbo_frame: "_top" }, aria: { label: "Starを取り消す" }, form: { class: "inline-button-form" } do
+      i.fas.fa-star
       span.ms-1= post.likes_count
   - else
-    = button_to post_likes_path(post), method: :post, class: "like-button", data: { turbo_frame: "_top" }, aria: { label: "いいねする" }, form: { class: "inline-button-form" } do
-      i.far.fa-heart
+    = button_to post_likes_path(post), method: :post, class: "like-button", data: { turbo_frame: "_top" }, aria: { label: "Starする" }, form: { class: "inline-button-form" } do
+      i.far.fa-star
       span.ms-1= post.likes_count
