@@ -65,7 +65,7 @@
   / 締切が近いES
   .col-lg-6
     .card.h-100
-      = vault_card_header_light "締切が近いES", icon: "clock text-warning"
+      = vault_card_header_warning "締切が近いES", icon: "clock"
       .card-body.p-0
         - if @upcoming_entry_sheets.any?
           .list-group.list-group-flush
@@ -83,7 +83,7 @@
   / 最近のES
   .col-lg-6
     .card.h-100
-      = vault_card_header_light "最近のES", icon: "file-alt"
+      = vault_card_header_success "最近のES", icon: "file-alt"
       .card-body.p-0
         - if @recent_entry_sheets.any?
           .list-group.list-group-flush

@@ -13,14 +13,14 @@
 
   // Primary Button - モダンなグラデーション
   &.btn-primary {
-    background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+    background: linear-gradient(135deg, lighten($primary, 10%) 0%, $primary 100%);
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba($primary, 0.3);
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, darken($primary, 3%) 0%, darken($primary, 11%) 100%);
-      box-shadow: 0 6px 20px rgba($primary, 0.4);
+      background: linear-gradient(135deg, lighten($primary, 5%) 0%, darken($primary, 4%) 100%);
+      box-shadow: 0 6px 20px rgba($primary, 0.35);
       transform: translateY(-2px);
     }
 
@@ -76,7 +76,7 @@
     box-shadow: none;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+      background: linear-gradient(135deg, lighten($primary, 10%) 0%, $primary 100%);
       border-color: $primary;
       color: white;
       box-shadow: 0 4px 12px rgba($primary, 0.3);
