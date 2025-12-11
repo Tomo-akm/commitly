@@ -19,33 +19,33 @@
 // 例: <span class="badge bg-draft">下書き</span>
 
 .bg-draft {
-  background-color: rgba($neutral-500, 0.1) !important;
-  color: $neutral-700 !important;
+  background-color: rgba($neutral-500, 0.1);
+  color: $neutral-700;
 }
 
 .bg-in-progress {
-  background-color: rgba($primary, 0.1) !important;
-  color: $primary-dark !important;
+  background-color: rgba($primary, 0.1);
+  color: $primary-dark;
 }
 
 .bg-completed {
-  background-color: rgba($secondary, 0.2) !important;
-  color: $secondary-dark !important;
+  background-color: rgba($secondary, 0.2);
+  color: $secondary-dark;
 }
 
 .bg-submitted {
-  background-color: $primary !important;
-  color: white !important;
+  background-color: $primary;
+  color: white;
 }
 
 .bg-passed {
-  background-color: $success !important;
-  color: white !important;
+  background-color: $success;
+  color: white;
 }
 
 .bg-failed {
-  background-color: rgba($error, 0.1) !important;
-  color: $error-dark !important;
+  background-color: rgba($error, 0.1);
+  color: $error-dark;
 }
 
 // ============================================

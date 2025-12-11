@@ -44,7 +44,7 @@
     min-width: 320px;
     max-width: 420px;
     margin-bottom: $spacing-3; // 複数のtoast間のスペース
-    background-color: white !important;
+    background-color: white;
     color: $neutral-700;
     border-radius: $border-radius-lg;
     border: 1px solid rgba(16, 24, 40, 0.06);
@@ -60,14 +60,14 @@
     }
 
     &.hiding {
-      animation: slideOutRight $transition-speed-slow $transition-timing-ease-out forwards !important;
+      animation: slideOutRight $transition-speed-slow $transition-timing-ease-out forwards;
       pointer-events: none;
       // Bootstrap の fade トランジションを無効化
-      transition: none !important;
+      transition: none;
     }
 
     &.hidden {
-      display: none !important;
+      display: none;
       visibility: hidden;
       pointer-events: none;
     }

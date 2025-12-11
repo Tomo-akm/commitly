@@ -39,7 +39,6 @@ RSpec.describe "Profiles", type: :request do
           user: {
             name: "新しい名前",
             favorite_language: "Ruby",
-            research_lab: "情報工学研究室",
             internship_count: 5,
             personal_message: "よろしくお願いします"
           }
@@ -47,7 +46,6 @@ RSpec.describe "Profiles", type: :request do
         user.reload
         expect(user.name).to eq("新しい名前")
         expect(user.favorite_language).to eq("Ruby")
-        expect(user.research_lab).to eq("情報工学研究室")
         expect(user.internship_count).to eq(5)
         expect(user.personal_message).to eq("よろしくお願いします")
       end
