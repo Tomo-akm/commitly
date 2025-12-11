@@ -44,8 +44,8 @@
     min-width: 320px;
     max-width: 420px;
     margin-bottom: $spacing-3; // 複数のtoast間のスペース
-    background-color: white;
-    color: $neutral-700;
+    background-color: white !important;
+    color: $neutral-700 !important;
     border-radius: $border-radius-lg;
     border: 1px solid rgba(16, 24, 40, 0.06);
     box-shadow: $shadow-md;
@@ -116,11 +116,13 @@
     // カラーバリアント（左ボーダー + アイコン色）
     // ============================================
     &.text-bg-info {
+      background-color: white !important;
+      color: $neutral-700 !important;
       border-left-color: $info-dark;
       box-shadow: 0 6px 30px rgba($info-dark, 0.06);
 
       .toast-body {
-        color: #0c4a6e;
+        color: $neutral-700;
 
         i {
           color: $info-dark;
@@ -129,11 +131,13 @@
     }
 
     &.text-bg-success {
+      background-color: white !important;
+      color: $neutral-700 !important;
       border-left-color: $success-dark;
       box-shadow: 0 6px 30px rgba($success-dark, 0.06);
 
       .toast-body {
-        color: #14532d;
+        color: $neutral-700;
 
         i {
           color: $success-dark;
@@ -142,11 +146,13 @@
     }
 
     &.text-bg-warning {
+      background-color: white !important;
+      color: $neutral-700 !important;
       border-left-color: $warning-dark;
       box-shadow: 0 6px 30px rgba($warning-dark, 0.06);
 
       .toast-body {
-        color: #78350f;
+        color: $neutral-700;
 
         i {
           color: $warning-dark;
@@ -155,11 +161,13 @@
     }
 
     &.text-bg-danger {
+      background-color: white !important;
+      color: $neutral-700 !important;
       border-left-color: $error-dark;
       box-shadow: 0 6px 30px rgba($error-dark, 0.06);
 
       .toast-body {
-        color: #7f1d1d;
+        color: $neutral-700;
 
         i {
           color: $error-dark;
