@@ -70,8 +70,9 @@ export default class extends Controller {
     const seen = new Set()
     const tags = []
 
-    for (const match of text.match(this.hashtagPattern) || []) {
-      const tag = match.trim().replace(/^#/, "")
+    for (const match of text.matchAll(this.hashtagPattern)) {
+      const tagWithHash = match[2] // キャプチャグループ2: #tag
+      const tag = tagWithHash.slice(1) // #を除去
       if (seen.has(tag)) continue
       seen.add(tag)
       tags.push(tag)

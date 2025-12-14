@@ -5,22 +5,17 @@ class PostDecorator
 
   attr_reader :post
 
+  # 明示的に委譲するメソッドのみを許可
+  delegate :content, :tags, :association, to: :post
+
   def initialize(post)
     @post = post
   end
 
-  def method_missing(method, *args, &block)
-    post.send(method, *args, &block)
-  end
-
-  def respond_to_missing?(method, include_private = false)
-    post.respond_to?(method, include_private) || super
-  end
-
   def highlighted_content
-    return "" if post.content.blank?
+    return "" if content.blank?
 
-    escaped = html_escape(post.content)
+    escaped = html_escape(content)
     highlighted = highlight_hashtags(escaped)
     highlighted = highlight_urls(highlighted)
     format_text(highlighted).html_safe
@@ -29,7 +24,7 @@ class PostDecorator
   private
 
   def highlight_hashtags(text)
-    tags_by_name = post.tags.index_by(&:name)
+    tags_by_name = tags.index_by(&:name)
 
     text.gsub(Tag::HASHTAG_REGEX) do
       match = Regexp.last_match
