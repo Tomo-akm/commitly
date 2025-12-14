@@ -9,9 +9,6 @@ class Tag < ApplicationRecord
 
   before_save :normalize_name
 
-  # ハッシュタグを検出する正規表現（Unicode文字、数字、アンダースコアに対応）
-  # ハッシュタグの前に空白（半角・全角）または行頭、後ろに空白または行末が必要
-  # \u3000 = 全角スペース
   HASHTAG_REGEX = /(?:^|[\s\u3000])#([\p{Letter}\p{Number}_]+)(?=[\s\u3000]|$)/u
 
   # Ransackの設定

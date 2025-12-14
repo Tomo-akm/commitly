@@ -94,15 +94,12 @@ export default class extends Controller {
   }
 
   get hashtagPattern() {
-    // ハッシュタグの前に空白（半角・全角）または行頭、後ろに空白または行末が必要
     // キャプチャグループ: (1)空白/行頭 (2)ハッシュタグ本体
     // \u3000 = 全角スペース
     return /(^|[\s\u3000])(#[\p{Letter}\p{Number}_]+)(?=[\s\u3000]|$)/gu
   }
 
   get urlPattern() {
-    // http:// または https:// で始まるURL
-    // 空白までまたは行末まで
     return /(https?:\/\/[^\s]+)/g
   }
 }

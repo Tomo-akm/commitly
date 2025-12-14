@@ -133,11 +133,23 @@ input[type="datetime-local"] {
 .hashtag-highlight {
   color: $primary;
   font-weight: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: darken($primary, 10%);
+    text-decoration: underline;
+  }
 }
 
 .url-highlight {
   color: $info;
   font-weight: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: darken($info, 10%);
+    text-decoration: underline;
+  }
 }
 
 .text-input__chips {
