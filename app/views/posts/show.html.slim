@@ -15,8 +15,7 @@
         .mt-4.x-reply-container
           .d-flex.align-items-start.gap-3
             / ユーザーアイコン
-            .icon-circle.bg-gradient-secondary.icon-md
-              i.fas.fa-user
+            = render "shared/avatar", user: current_user, size: 40
 
             / フォーム部分
             .flex-grow-1

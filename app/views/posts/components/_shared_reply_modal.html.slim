@@ -27,8 +27,8 @@
 
           .d-flex.gap-3
             / ユーザーアイコン
-            .icon-circle.bg-gradient-secondary.icon-md
-              i.fas.fa-user
+            - if user_signed_in?
+              = render "shared/avatar", user: current_user, size: 40
 
             / 入力エリア
             .flex-grow-1

@@ -9,7 +9,7 @@
               | プロフィール編集
           hr.my-3
 
-          = form_with(model: @user, url: profile_path, method: :patch, local: true) do |form|
+          = form_with(model: @user, url: profile_path, method: :patch, local: true, html: { multipart: true }, data: { controller: "avatar-size-validator" }) do |form|
             - if @user.errors.any?
               .alert.alert-danger
                 h4.font-semibold = pluralize(@user.errors.count, "個のエラー") + "があります:"
@@ -20,6 +20,17 @@
             .form-group
               = form.label :name, "ユーザー名", class: "form-label"
               = form.text_field :name, class: "form-input", placeholder: "例: 山田太郎"
+
+            .form-group
+              = form.label :avatar, "アバター画像", class: "form-label"
+              = form.file_field :avatar, class: "form-input", accept: "image/png, image/jpeg", data: { avatar_size_validator_target: "input", action: "change->avatar-size-validator#validate" }
+              = turbo_frame_tag "avatar-preview" do
+                - if @user.avatar.attached?
+                  .current-avatar.mt-2
+                    = image_tag @user.avatar.variant(resize_to_limit: [100, 100]).processed, class: "rounded-circle avatar-circle", size: "100x100"
+                    = link_to "削除", profile_path(avatar_purge: true), data: { turbo_method: :patch, turbo_confirm: "アバター画像を削除してもよろしいですか？" }, class: "btn btn-danger btn-sm ms-2"
+              .form-help 画像ファイル（PNG, JPEG）のみ、5MBまで
+              .text-danger.mt-1 style="display:none;" data-avatar-size-validator-target="error"
 
             .form-group
               = form.label :favorite_language, "好きな言語", class: "form-label"
@@ -36,4 +47,4 @@
 
             .d-flex.gap-2.justify-content-end
               = link_to "キャンセル", profile_path, class: "btn btn-secondary"
-              = form.submit "更新", class: "btn btn-gradient-primary"
+              = form.submit "更新", class: "btn btn-gradient-primary", data: { avatar_size_validator_target: "submit" }
