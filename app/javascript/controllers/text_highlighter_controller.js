@@ -100,6 +100,7 @@ export default class extends Controller {
   }
 
   get urlPattern() {
-    return /(https?:\/\/[^\s]+)/g
+    // Exclude common trailing punctuation from URL match
+    return /(https?:\/\/[^\s<>"'`.,!?;:)\]\}]+[^\s<>"'`.,!?;:)\]\}])/g
   }
 }
