@@ -50,3 +50,4 @@
 
 # Ignore Kamal secrets
 /.kamal/secrets
+/config/deploy.yml
