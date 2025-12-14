@@ -1,7 +1,7 @@
 class PostDecorator
   include ERB::Util
 
-  URL_PATTERN = /(https?:\/\/[^\s]+)/
+  URL_PATTERN = /(https?:\/\/[^\s<>\"]+?)(?=[<>\".,;!?)]*(?:\s|$))/
 
   attr_reader :post
 
