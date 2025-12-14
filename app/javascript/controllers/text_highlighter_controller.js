@@ -101,7 +101,7 @@ export default class extends Controller {
   }
 
   get urlPattern() {
-    // Exclude common trailing punctuation from URL match
-    return /(https?:\/\/[^\s<>"'`.,!?;:)\]\}]+[^\s<>"'`.,!?;:)\]\}])/g
+    // PostDecoratorと同じパターンを使用（末尾の句読点のみlookaheadで除外）
+    return /(https?:\/\/[^\s<>"]+?)(?=[<>".,;!?)]*(?:\s|$))/g
   }
 }
