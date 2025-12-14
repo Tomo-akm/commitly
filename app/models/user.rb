@@ -48,8 +48,8 @@ class User < ApplicationRecord
             allow_blank: true
 
   # アバター画像のバリデーション
-  validates :avatar, content_type: ['image/png', 'image/jpeg'],
-                     size: { less_than: 5.megabytes, message: 'は5MB未満にしてください' }
+  validates :avatar, content_type: [ "image/png", "image/jpeg" ],
+                     size: { less_than: 5.megabytes, message: "は5MB未満にしてください" }
 
   DEFAULT_INTERNSHIP_COUNT = 0
 
@@ -57,7 +57,7 @@ class User < ApplicationRecord
   def avatar_url(size: 100)
     if avatar.attached?
       Rails.application.routes.url_helpers.rails_representation_url(
-        avatar.variant(resize_to_limit: [size, size]).processed,
+        avatar.variant(resize_to_limit: [ size, size ]).processed,
         only_path: true
       )
     else

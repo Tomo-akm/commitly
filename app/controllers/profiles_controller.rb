@@ -20,7 +20,7 @@ class ProfilesController < ApplicationController
     @user = current_user
 
     # アバター削除の処理（Turbo Streamで部分更新）
-    if params[:avatar_purge] == 'true'
+    if params[:avatar_purge] == "true"
       @user.avatar.purge
       respond_to do |format|
         format.turbo_stream { render "profiles/avatar_delete" }
