@@ -83,12 +83,12 @@ input[type="datetime-local"] {
   }
 }
 
-// Hashtag input (本文からタグ化するための入力)
-.hashtag-input {
+// Text input with highlighting (ハッシュタグやURLをハイライト)
+.text-input {
   position: relative;
 }
 
-.hashtag-input__preview {
+.text-input__preview {
   display: none;
   position: absolute;
   inset: 0;
@@ -109,23 +109,23 @@ input[type="datetime-local"] {
   }
 }
 
-.hashtag-input__field {
+.text-input__field {
   position: relative;
   z-index: 1;
 }
 
-.hashtag-input--enhanced {
-  .hashtag-input__preview {
+.text-input--enhanced {
+  .text-input__preview {
     display: block;
   }
 
-  .hashtag-input__field {
+  .text-input__field {
     background-color: transparent;
     color: transparent;
     caret-color: $primary;
   }
 
-  .hashtag-input__field::placeholder {
+  .text-input__field::placeholder {
     color: transparent;
   }
 }
@@ -135,7 +135,12 @@ input[type="datetime-local"] {
   font-weight: inherit;
 }
 
-.hashtag-input__chips {
+.url-highlight {
+  color: $info;
+  font-weight: inherit;
+}
+
+.text-input__chips {
   margin-top: $spacing-3;
   display: flex;
   flex-wrap: wrap;

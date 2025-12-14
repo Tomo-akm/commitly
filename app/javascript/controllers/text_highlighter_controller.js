@@ -1,16 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
-// 本文中の #タグ をハイライトし、検出されたタグ一覧を表示するコントローラー
+// 本文中の #タグ とURLをハイライトし、検出されたタグ一覧を表示するコントローラー
 export default class extends Controller {
   static targets = [ "textarea", "preview", "tagList" ]
 
   connect() {
-    this.element.classList.add("hashtag-input--enhanced")
+    this.element.classList.add("text-input--enhanced")
     this.update()
   }
 
   disconnect() {
-    this.element.classList.remove("hashtag-input--enhanced")
+    this.element.classList.remove("text-input--enhanced")
   }
 
   update() {
@@ -34,12 +34,21 @@ export default class extends Controller {
 
     this.previewTarget.classList.remove("is-placeholder")
     const escaped = this.escapeHtml(text)
-    // 空白を壊さないようにキャプチャグループを使用
-    // (1)空白/行頭 (2)ハッシュタグ → 空白を保持しつつハッシュタグだけハイライト
-    this.previewTarget.innerHTML = escaped.replace(
-      this.hashtagPattern,
-      (_, space, tag) => `${space}<span class="hashtag-highlight">${tag}</span>`
-    )
+
+    // ハッシュタグとURLをハイライト
+    const highlighted = escaped
+      // まずハッシュタグをハイライト（空白を保持）
+      .replace(
+        this.hashtagPattern,
+        (_, space, tag) => `${space}<span class="hashtag-highlight">${tag}</span>`
+      )
+      // 次にURLをハイライト
+      .replace(
+        this.urlPattern,
+        (url) => `<span class="url-highlight">${url}</span>`
+      )
+
+    this.previewTarget.innerHTML = highlighted
   }
 
   renderTags(tags) {
@@ -89,5 +98,11 @@ export default class extends Controller {
     // キャプチャグループ: (1)空白/行頭 (2)ハッシュタグ本体
     // \u3000 = 全角スペース
     return /(^|[\s\u3000])(#[\p{Letter}\p{Number}_]+)(?=[\s\u3000]|$)/gu
+  }
+
+  get urlPattern() {
+    // http:// または https:// で始まるURL
+    // 空白までまたは行末まで
+    return /(https?:\/\/[^\s]+)/g
   }
 }
