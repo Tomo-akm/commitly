@@ -34,15 +34,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
             = post.contentable.result_ja
 
     .card-text.mb-3.line-height-relaxed
-      = simple_format(h(post.content))
-
-    / タグ表示（通常投稿のみ）
-    - if post.general? && post.tags.any?
-      .mb-3
-        .d-flex.flex-wrap.gap-1
-          - post.tags.each do |tag|
-            = link_to tag_path(tag.id), class: "text-decoration-none", data: { turbo_frame: "_top" } do
-              span.badge.bg-light.text-dark ##{tag.name}
+      = PostDecorator.new(post).highlighted_content
 
     / フッター（Starボタンとリプライボタン）
     .d-flex.align-items-center.gap-2.pt-2.border-top

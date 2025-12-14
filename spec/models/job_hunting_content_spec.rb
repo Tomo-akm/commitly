@@ -152,8 +152,8 @@ RSpec.describe JobHuntingContent, type: :model do
         job_content = build(:job_hunting_content, company_name: "(株)サンプル")
         post = create(:post, user: user, contentable: job_content)
 
-        expect(post.tags.pluck(:name)).to include("サンプル".downcase)
-        expect(post.tags.pluck(:name)).not_to include("(株)サンプル".downcase)
+        expect(post.tags.pluck(:name)).to include("サンプル")
+        expect(post.tags.pluck(:name)).not_to include("(株)サンプル")
       end
     end
 
@@ -163,14 +163,14 @@ RSpec.describe JobHuntingContent, type: :model do
         job_content = create(:job_hunting_content, company_name: "株式会社テスト")
         post = create(:post, user: user, contentable: job_content)
 
-        expect(post.tags.first.name).to eq("テスト".downcase)
+        expect(post.tags.first.name).to eq("テスト")
 
         # 企業名を更新してPostを保存（after_saveをトリガー）
         job_content.update!(company_name: "株式会社別会社")
         post.save!
 
         expect(post.reload.tags.count).to eq(1)
-        expect(post.tags.first.name).to eq("別会社".downcase)
+        expect(post.tags.first.name).to eq("別会社")
       end
     end
 
@@ -184,7 +184,7 @@ RSpec.describe JobHuntingContent, type: :model do
         post2 = create(:post, user: user, contentable: job_content2)
 
         expect(post1.tags.pluck(:name)).to match_array(post2.tags.pluck(:name))
-        expect(Tag.where(name: "テスト".downcase).count).to eq(1)
+        expect(Tag.where(name: "テスト").count).to eq(1)
       end
     end
 
@@ -194,8 +194,8 @@ RSpec.describe JobHuntingContent, type: :model do
         job_content = build(:job_hunting_content, company_name: "株式会社テスト")
         post = build(:post, user: user, contentable: job_content)
 
-        # Tag.find_or_create_by!が例外を投げるようにモック
-        allow(Tag).to receive(:find_or_create_by!).and_raise(ActiveRecord::RecordInvalid.new(Tag.new))
+        # タグ作成で例外が出た場合にロールバックされることを確認
+        allow(Tag).to receive(:find_or_create_by_names).and_raise(ActiveRecord::RecordInvalid.new(Tag.new))
 
         expect {
           post.save!

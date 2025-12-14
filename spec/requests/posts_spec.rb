@@ -12,10 +12,7 @@ RSpec.describe "Posts", type: :request do
       let(:valid_attributes) do
         {
           general_content: {
-            content: "これはテスト投稿です"
-          },
-          post: {
-            tag_names: "テスト, RSpec"
+            content: "これはテスト投稿です #テスト #RSpec"
           }
         }
       end
@@ -43,13 +40,13 @@ RSpec.describe "Posts", type: :request do
         post posts_path, params: valid_attributes
         created_post = Post.last
         expect(created_post.contentable).to be_a(GeneralContent)
-        expect(created_post.contentable.content).to eq("これはテスト投稿です")
+        expect(created_post.contentable.content).to eq("これはテスト投稿です #テスト #RSpec")
       end
 
       it "タグが関連付けられる" do
         post posts_path, params: valid_attributes
         created_post = Post.last
-        expect(created_post.tags.pluck(:name)).to contain_exactly("テスト", "rspec")
+        expect(created_post.tags.pluck(:name)).to contain_exactly("テスト", "RSpec")
       end
 
       it "posts_pathにリダイレクトする" do
@@ -169,7 +166,7 @@ RSpec.describe "Posts", type: :request do
 
       it "タグフィールドが表示される" do
         get edit_post_path(post)
-        expect(response.body).to include("タグ")
+        expect(response.body).to include("#タグ を本文に含めると自動でタグ化されます")
       end
     end
 
@@ -196,20 +193,18 @@ RSpec.describe "Posts", type: :request do
       it "contentを更新できる" do
         expect {
           patch post_path(post), params: {
-            general_content: { content: "更新後のコンテンツ" },
-            post: { tag_names: "更新, テスト" }
+            general_content: { content: "更新後のコンテンツ #更新 #テスト" }
           }
-        }.to change { post.reload.contentable.content }.to("更新後のコンテンツ")
+        }.to change { post.reload.contentable.content }.to("更新後のコンテンツ #更新 #テスト")
 
         expect(response).to redirect_to(post)
       end
 
       it "タグを更新できる" do
         patch post_path(post), params: {
-          general_content: { content: "テスト投稿" },
-          post: { tag_names: "Ruby, Rails" }
+          general_content: { content: "テスト投稿 #Ruby #Rails" }
         }
-        expect(post.reload.tags.pluck(:name)).to contain_exactly("ruby", "rails")
+        expect(post.reload.tags.pluck(:name)).to contain_exactly("Ruby", "Rails")
       end
 
       it "バリデーションエラーの場合は編集ページを再表示" do
@@ -302,11 +297,10 @@ RSpec.describe "Posts", type: :request do
         let(:valid_reply_attributes) do
           {
             general_content: {
-              content: "これはリプライです"
+              content: "これはリプライです #返信 #テスト"
             },
             post: {
-              parent_id: parent_post.id,
-              tag_names: "返信, テスト"
+              parent_id: parent_post.id
             }
           }
         end
