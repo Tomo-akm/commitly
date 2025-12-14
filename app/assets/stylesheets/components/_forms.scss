@@ -83,6 +83,92 @@ input[type="datetime-local"] {
   }
 }
 
+// Hashtag input (本文からタグ化するための入力)
+.hashtag-input {
+  position: relative;
+}
+
+.hashtag-input__preview {
+  display: none;
+  position: absolute;
+  inset: 0;
+  padding: $spacing-3 $spacing-4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border-radius: $border-radius-md;
+  background-color: white;
+  color: $neutral-900;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  &.is-placeholder {
+    color: $neutral-500;
+  }
+}
+
+.hashtag-input__field {
+  position: relative;
+  z-index: 1;
+}
+
+.hashtag-input--enhanced {
+  .hashtag-input__preview {
+    display: block;
+  }
+
+  .hashtag-input__field {
+    background-color: transparent;
+    color: transparent;
+    caret-color: $primary;
+  }
+
+  .hashtag-input__field::placeholder {
+    color: transparent;
+  }
+}
+
+.hashtag-highlight {
+  color: $primary;
+  font-weight: inherit;
+}
+
+.hashtag-input__chips {
+  margin-top: $spacing-3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  min-height: 32px;
+
+  &[data-state="empty"] .hashtag-chip:not(.is-placeholder) {
+    display: none;
+  }
+
+  &[data-state="has-tags"] .hashtag-chip.is-placeholder {
+    display: none;
+  }
+}
+
+.hashtag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: 0.3rem 0.75rem;
+  border-radius: $border-radius-full;
+  background-color: rgba($primary, 0.12);
+  color: $primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+
+  &.is-placeholder {
+    background-color: $neutral-100;
+    color: $neutral-500;
+    font-weight: $font-weight-normal;
+  }
+}
+
 // Input Group
 .input-group {
   display: flex;
