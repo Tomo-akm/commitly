@@ -83,7 +83,7 @@ class Post < ApplicationRecord
       SELECT COUNT(*) FROM reply_tree
     SQL
 
-    sanitized_sql = Post.sanitize_sql_array([sql, id])
+    sanitized_sql = Post.sanitize_sql_array([ sql, id ])
     Post.connection.select_value(sanitized_sql).to_i
   end
 
