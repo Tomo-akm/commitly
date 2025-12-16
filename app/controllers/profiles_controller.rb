@@ -18,11 +18,23 @@ class ProfilesController < ApplicationController
 
   def update
     @user = current_user
-    if @user.update(profile_params)
-      redirect_to profile_path, notice: "プロフィールを更新しました。"
-    else
-      render :edit, status: :unprocessable_entity
+
+    # アバター削除の処理（Turbo Streamで部分更新）
+    if params[:avatar_purge] == "true"
+      @user.avatar.purge
+      respond_to do |format|
+        format.turbo_stream { render "profiles/avatar_delete" }
+        format.html { redirect_to edit_profile_path, notice: "アバター画像を削除しました。" }
+      end
+      return
     end
+
+    @user.update!(profile_params)
+    redirect_to profile_path, notice: "プロフィールを更新しました。"
+  rescue ActiveRecord::RecordInvalid
+    # バリデーション失敗時、アバターをDBの状態に戻す（古い画像を復元）
+    @user.avatar.reload if @user.avatar.attached?
+    render :edit, status: :unprocessable_entity
   end
 
   def following
@@ -44,7 +56,7 @@ class ProfilesController < ApplicationController
   end
 
   def profile_params
-    params.expect(user: [ :name, :favorite_language, :internship_count, :personal_message ])
+    params.expect(user: [ :name, :favorite_language, :internship_count, :personal_message, :avatar ])
   end
 
   def prepare_heatmap_data

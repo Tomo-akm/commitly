@@ -32,7 +32,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
         - if user_signed_in?
           li.nav-item.dropdown
             a.nav-link.dropdown-toggle.text-white[href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"]
-              i.fas.fa-user-circle.me-2
+              = render "shared/avatar", user: current_user, size: 24, class_name: "me-2"
               = current_user&.name
 
             ul.dropdown-menu.dropdown-menu-end

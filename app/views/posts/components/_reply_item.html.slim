@@ -3,8 +3,7 @@
   .d-flex.gap-3.position-relative
     / 左側：アイコン
     .reply-thread-container
-      .icon-circle.bg-gradient-secondary.icon-sm
-        i.fas.fa-user
+      = render "shared/avatar", user: reply.user, size: 32
 
     / 右側：リプライ本体
     .reply-content.flex-grow-1

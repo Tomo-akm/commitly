@@ -534,3 +534,12 @@
 .pre-wrap {
   white-space: pre-wrap !important;
 }
+
+// ============================================
+// アバター画像
+// ============================================
+
+.avatar-circle {
+  background-color: transparent;
+  object-fit: cover;
+}

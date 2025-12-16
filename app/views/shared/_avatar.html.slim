@@ -1,0 +1,8 @@
+/ アバター画像コンポーネント
+/ @param user [User] ユーザーオブジェクト
+/ @param size [Integer] 画像サイズ（デフォルト: 40）
+/ @param class_name [String] 追加のCSSクラス（オプション）
+
+- size ||= 40
+- class_name ||= ""
+= image_tag user.avatar_url(size: size), class: "rounded-circle avatar-circle #{class_name}", size: "#{size}x#{size}", alt: "#{user.name}'s avatar"
