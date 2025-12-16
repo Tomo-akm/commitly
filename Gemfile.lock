@@ -160,6 +160,9 @@ GEM
     google-protobuf (4.33.0-arm64-darwin)
       bigdecimal
       rake (>= 13)
+    google-protobuf (4.33.0-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
     groupdate (6.7.0)
       activesupport (>= 7.1)
     hashie (5.0.0)
@@ -248,6 +251,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-linux-gnu)
+      racc (~> 1.4)
     oauth2 (2.0.17)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
@@ -283,6 +288,7 @@ GEM
       racc
     pg (1.6.2-aarch64-linux)
     pg (1.6.2-arm64-darwin)
+    pg (1.6.2-x86_64-linux)
     popper_js (2.11.8)
     pp (0.6.3)
       prettyprint
@@ -414,6 +420,8 @@ GEM
       google-protobuf (~> 4.31)
     sass-embedded (1.93.2-arm64-darwin)
       google-protobuf (~> 4.31)
+    sass-embedded (1.93.2-x86_64-linux-gnu)
+      google-protobuf (~> 4.31)
     securerandom (0.4.1)
     selenium-webdriver (4.38.0)
       base64 (~> 0.2)
@@ -461,6 +469,7 @@ GEM
     thor (1.4.0)
     thruster (0.1.15-aarch64-linux)
     thruster (0.1.15-arm64-darwin)
+    thruster (0.1.15-x86_64-linux)
     tilt (2.6.1)
     timeout (0.4.4)
     tsort (0.2.0)
@@ -495,6 +504,8 @@ PLATFORMS
   aarch64-linux
   aarch64-linux-gnu
   arm64-darwin-24
+  x86_64-linux
+  x86_64-linux-gnu
 
 DEPENDENCIES
   active_storage_validations
