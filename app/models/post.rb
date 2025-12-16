@@ -67,6 +67,26 @@ class Post < ApplicationRecord
     likes.count
   end
 
+  # 再帰的に全てのリプライ（子孫）をカウント（効率的なSQL CTEを使用）
+  def all_replies_count
+    # 再帰CTEを使って全ての子孫を1クエリで取得
+    sql = <<-SQL.squish
+      WITH RECURSIVE reply_tree AS (
+        SELECT id, parent_id
+        FROM posts
+        WHERE parent_id = ?
+        UNION ALL
+        SELECT p.id, p.parent_id
+        FROM posts p
+        INNER JOIN reply_tree rt ON rt.id = p.parent_id
+      )
+      SELECT COUNT(*) FROM reply_tree
+    SQL
+
+    sanitized_sql = Post.sanitize_sql_array([sql, id])
+    Post.connection.select_value(sanitized_sql).to_i
+  end
+
   # 投稿タイプを判定
   def general?
     contentable_type == "GeneralContent"

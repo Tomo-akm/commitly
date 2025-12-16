@@ -279,5 +279,61 @@ RSpec.describe Post, type: :model do
         expect { parent_post.destroy }.to change(Post, :count).by(-3) # 親+リプライ2つ
       end
     end
+
+    describe '#all_replies_count' do
+      context 'リプライが存在しない場合' do
+        it '0を返す' do
+          expect(parent_post.all_replies_count).to eq(0)
+        end
+      end
+
+      context '直下のリプライのみの場合' do
+        it 'リプライ数を正しくカウントする' do
+          create(:post, user: user, parent: parent_post)
+          create(:post, user: user, parent: parent_post)
+          create(:post, user: user, parent: parent_post)
+
+          expect(parent_post.all_replies_count).to eq(3)
+        end
+      end
+
+      context 'ネストしたリプライ（孫、ひ孫）も含む場合' do
+        it '全ての子孫リプライをカウントする' do
+          # 親投稿に3つのリプライ
+          reply1 = create(:post, user: user, parent: parent_post)
+          reply2 = create(:post, user: user, parent: parent_post)
+          reply3 = create(:post, user: user, parent: parent_post)
+
+          # reply1 に2つの孫リプライ
+          nested_reply1 = create(:post, user: user, parent: reply1)
+          nested_reply2 = create(:post, user: user, parent: reply1)
+
+          # nested_reply1 にひ孫リプライ
+          create(:post, user: user, parent: nested_reply1)
+
+          # 合計: 3（直下） + 2（孫） + 1（ひ孫） = 6
+          expect(parent_post.all_replies_count).to eq(6)
+        end
+      end
+
+      context '複雑なネスト構造の場合' do
+        it '全ての階層のリプライをカウントする' do
+          # レベル1: 2つのリプライ
+          reply1 = create(:post, user: user, parent: parent_post)
+          reply2 = create(:post, user: user, parent: parent_post)
+
+          # レベル2: reply1に2つ、reply2に1つ
+          reply1_child1 = create(:post, user: user, parent: reply1)
+          reply1_child2 = create(:post, user: user, parent: reply1)
+          reply2_child1 = create(:post, user: user, parent: reply2)
+
+          # レベル3: reply1_child1に1つ
+          create(:post, user: user, parent: reply1_child1)
+
+          # 合計: 2 + 3 + 1 = 6
+          expect(parent_post.all_replies_count).to eq(6)
+        end
+      end
+    end
   end
 end
