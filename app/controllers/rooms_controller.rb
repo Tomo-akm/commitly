@@ -13,7 +13,7 @@ class RoomsController < ApplicationController
     other_user = User.find(params[:id])
     @room = Room.between(current_user, other_user)
 
-    mark_room_as_read
+    @room.mark_as_read_by(current_user)
 
     @direct_messages = @room.direct_messages.includes(:user).order(created_at: :asc)
     @direct_message = DirectMessage.new
@@ -37,14 +37,7 @@ class RoomsController < ApplicationController
   def mark_as_read
     other_user = User.find(params[:id])
     @room = Room.between(current_user, other_user)
-    mark_room_as_read
+    @room.mark_as_read_by(current_user)
     head :ok
-  end
-
-  private
-
-  def mark_room_as_read
-    entry = current_user.entries.find_by(room: @room)
-    entry&.mark_as_read!
   end
 end

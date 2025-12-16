@@ -5,11 +5,8 @@ class Room < ApplicationRecord
 
   # 2人のユーザー間のルームを取得または作成
   def self.between(user1, user2)
-    room = joins(:entries)
-             .where(entries: { user_id: [ user1.id, user2.id ] })
-             .group("rooms.id")
-             .having("COUNT(entries.id) = 2")
-             .first
+    room_ids = Entry.where(user_id: user1.id).pluck(:room_id)
+    room = Entry.where(user_id: user2.id, room_id: room_ids).first&.room
 
     room || create_between(user1, user2)
   end
@@ -31,5 +28,10 @@ class Room < ApplicationRecord
   # 最新メッセージ
   def latest_message
     direct_messages.order(created_at: :desc).first
+  end
+
+  # 指定したユーザーのこのroomに対するentryを既読にする
+  def mark_as_read_by(user)
+    entries.find_by(user: user)&.mark_as_read!
   end
 end
