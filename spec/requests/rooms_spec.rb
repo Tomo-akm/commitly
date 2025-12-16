@@ -19,7 +19,7 @@ RSpec.describe 'Rooms', type: :request do
   describe 'POST /rooms/:id/mark_as_read' do
     before do
       room
-      create(:message, room: room, user: other_user, content: 'テストメッセージ')
+      create(:direct_message, room: room, user: other_user, content: 'テストメッセージ')
     end
 
     it 'ルームが既読になる' do
