@@ -30,6 +30,8 @@ $success-dark: #16a34a;
 
 $warning: #f59e0b;
 $warning-dark: #d97706;
+$star: #f7c948;        // 明るく鮮やかなStarイエロー
+$star-dark: darken($star, 12%);
 
 $error: #ef4444;
 $error-dark: #dc2626;

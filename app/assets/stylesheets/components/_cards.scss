@@ -28,7 +28,7 @@
 
     // Vault用モディファイア
     &.vault {
-      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      background: linear-gradient(135deg, $primary 0%, $secondary 100%);
       border-bottom: none;
       color: white;
       padding: $spacing-4;
@@ -61,6 +61,44 @@
 
         i {
           color: $primary;
+          margin-right: $spacing-3;
+        }
+      }
+    }
+
+    &.vault-warning {
+      background: linear-gradient(135deg, lighten($warning, 5%) 0%, lighten($star, 8%) 100%);
+      border-bottom: none;
+      color: white;
+      padding: $spacing-4;
+      border-radius: $border-radius-lg $border-radius-lg 0 0;
+
+      h4, h5 {
+        margin: 0;
+        font-weight: $font-weight-bold;
+        display: flex;
+        align-items: center;
+
+        i {
+          margin-right: $spacing-3;
+        }
+      }
+    }
+
+    &.vault-success {
+      background: linear-gradient(135deg, lighten($success, 8%) 0%, lighten($secondary, 5%) 100%);
+      border-bottom: none;
+      color: white;
+      padding: $spacing-4;
+      border-radius: $border-radius-lg $border-radius-lg 0 0;
+
+      h4, h5 {
+        margin: 0;
+        font-weight: $font-weight-bold;
+        display: flex;
+        align-items: center;
+
+        i {
           margin-right: $spacing-3;
         }
       }
@@ -115,5 +153,71 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-4;
+  }
+}
+
+// ============================================
+// Profile Tabs (minimal, X-like)
+// ============================================
+
+.profile-tabs {
+  padding: $spacing-2 $spacing-4;
+  border-bottom: 1px solid $neutral-300;
+
+  &__list {
+    border: none;
+    display: inline-flex;
+    gap: $spacing-2;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.profile-tab-link {
+  position: relative;
+  border: none;
+  background: transparent;
+  color: $neutral-700;
+  padding: $spacing-2 $spacing-3;
+  font-weight: $font-weight-semibold;
+  letter-spacing: $letter-spacing-tight;
+  border-radius: $border-radius-sm;
+  transition: color $transition-speed-base $transition-timing-ease;
+
+  i {
+    font-size: $font-size-sm;
+    margin-right: $spacing-2;
+    color: inherit;
+  }
+
+  &:hover {
+    color: $primary-dark;
+    background: rgba($primary, 0.08);
+  }
+
+  &.active {
+    color: $primary-dark;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: $spacing-2;
+      right: $spacing-2;
+      bottom: -1px;
+      height: 2px;
+      background: $primary-dark;
+      border-radius: $border-radius-full;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .profile-tabs {
+    padding: $spacing-2 $spacing-3;
+  }
+
+  .profile-tab-link {
+    padding: $spacing-2 $spacing-2;
+    font-size: $font-size-sm;
   }
 }

@@ -102,8 +102,9 @@ class Post < ApplicationRecord
   def update_with_form_params(contentable_params, additional_params = {})
     contentable.assign_attributes(contentable_params)
 
-    # 通常投稿のみタグを適用
-    self.tag_names = additional_params[:tag_names] if general? && additional_params[:tag_names].present?
+
+    # 通常投稿は本文からハッシュタグを抽出してタグに反映
+    apply_hashtags_from_content if general?
 
     # バリデーションチェック（validates_associated :contentable を含む）
     return false unless valid?
@@ -128,9 +129,15 @@ class Post < ApplicationRecord
     return if normalized_name.blank?
 
     # 企業名タグを作成または取得（失敗時は例外を投げる）
-    tag = Tag.find_or_create_by!(name: normalized_name.downcase)
+    tag = Tag.find_or_create_by_names([ normalized_name ]).first
 
     # 既存のタグをクリアして新しいタグを設定
     self.tags = [ tag ]
+  end
+
+  # 本文に含まれるハッシュタグをタグとして設定
+  def apply_hashtags_from_content
+    hashtag_names = Tag.extract_from_text(contentable.content.to_s)
+    self.tags = Tag.find_or_create_by_names(hashtag_names)
   end
 end

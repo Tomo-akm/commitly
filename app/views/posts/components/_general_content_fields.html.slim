@@ -1,9 +1,10 @@
-.form-group
+.form-group data-controller="text-highlighter"
   = form.label :content, class: "form-label required"
-  = form.text_area :content, class: "form-textarea", rows: 5, placeholder: "commitメッセージを書いてください"
-
-/ タグフィールド（通常投稿専用）
-.form-group
-  = label_tag "post[tag_names]", "タグ", class: "form-label"
-  = text_field_tag "post[tag_names]", post.tag_names, class: "form-input", placeholder: "Ruby, Rails, プログラミング（カンマ区切り）"
-  .form-help タグをカンマ区切りで入力してください。例：Ruby, Rails, プログラミング
+  .text-input
+    .text-input__preview aria-hidden="true" data-text-highlighter-target="preview"
+    = form.text_area :content,
+      class: "form-textarea text-input__field",
+      rows: 5,
+      placeholder: "#タグ を本文に含めると自動でタグ化されます",
+      data: { action: "input->text-highlighter#update", "text-highlighter-target": "textarea" }
+  .text-input__chips data-text-highlighter-target="tagList" data-state="empty"

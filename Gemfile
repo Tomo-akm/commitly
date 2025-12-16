@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.0"
+gem "rails", "~> 8.1.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Database adapter
@@ -27,6 +27,7 @@ gem "chartkick"
 gem "groupdate"
 gem "bootstrap", "~> 5.3"
 gem "dartsass-rails"
+gem "image_processing", "~> 1.2"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
@@ -40,6 +41,13 @@ gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
+
+# LLM integration for AI features - 公式SDKに移行
+gem "openai"
+gem "anthropic"
+
+# Markdown rendering
+gem "redcarpet", "~> 3.6"
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false

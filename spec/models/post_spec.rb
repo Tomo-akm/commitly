@@ -148,22 +148,39 @@ RSpec.describe Post, type: :model do
         expect(post.reload.contentable.content).to eq('テスト投稿')
       end
 
-      it 'タグを設定できる' do
+      it '本文中のハッシュタグをタグとして設定する' do
         result = post.update_with_form_params(
-          { content: 'テスト投稿' },
-          { tag_names: 'Ruby, Rails' }
+          { content: 'テスト投稿 #Ruby #Rails' }
         )
         expect(result).to be true
-        expect(post.reload.tags.pluck(:name)).to contain_exactly('ruby', 'rails')
+        expect(post.reload.tags.pluck(:name)).to contain_exactly('Ruby', 'Rails')
       end
 
-      it 'タグが空の場合は設定されない' do
-        result = post.update_with_form_params(
-          { content: 'テスト投稿' },
-          { tag_names: '' }
-        )
+      it 'ハッシュタグがない場合はタグがクリアされる' do
+        post.update_with_form_params({ content: 'テスト投稿 #Ruby' })
+        expect(post.tags.pluck(:name)).to contain_exactly('Ruby')
+
+        result = post.update_with_form_params({ content: 'タグなしの投稿' })
         expect(result).to be true
         expect(post.reload.tags).to be_empty
+      end
+
+      it '大文字小文字を区別してタグを設定する' do
+        result = post.update_with_form_params({ content: '#Ruby #ruby #RUBY' })
+        expect(result).to be true
+        expect(post.reload.tags.pluck(:name)).to contain_exactly('Ruby', 'ruby', 'RUBY')
+      end
+
+      it '全角スペースでもハッシュタグを認識する' do
+        result = post.update_with_form_params({ content: 'テスト　#Ruby　#Rails' })
+        expect(result).to be true
+        expect(post.reload.tags.pluck(:name)).to contain_exactly('Ruby', 'Rails')
+      end
+
+      it '半角と全角スペースが混在していてもハッシュタグを認識する' do
+        result = post.update_with_form_params({ content: 'テスト #Ruby　#Rails #JavaScript' })
+        expect(result).to be true
+        expect(post.reload.tags.pluck(:name)).to contain_exactly('Ruby', 'Rails', 'JavaScript')
       end
     end
 
@@ -182,19 +199,18 @@ RSpec.describe Post, type: :model do
         expect(post.reload.contentable.selection_stage).to eq('es')
       end
 
-      it 'タグを渡しても無視される（企業名タグのみ設定される）' do
+      it '本文中のハッシュタグは無視され、企業名タグのみ設定される' do
         result = post.update_with_form_params(
           {
             company_name: '株式会社テスト',
             selection_stage: 'es',
             result: 'pending',
-            content: 'ES提出しました'
-          },
-          { tag_names: 'Ruby, Rails' }
+            content: 'ES提出しました #Ruby #Rails'
+          }
         )
         expect(result).to be true
         # 企業名タグのみが設定される
-        expect(post.reload.tags.pluck(:name)).to contain_exactly('テスト'.downcase)
+        expect(post.reload.tags.pluck(:name)).to contain_exactly('テスト')
       end
     end
 

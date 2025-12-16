@@ -1,0 +1,10 @@
+- if @error
+  = turbo_stream.replace "advice_form_#{@entry_sheet_item.id}" do
+    = render "vault/entry_sheet_items/advice_error", error: @error
+- else
+  = turbo_stream.replace "advice_form_#{@entry_sheet_item.id}" do
+    = render "vault/entry_sheet_items/advice_form", item: @entry_sheet_item
+  = turbo_stream.remove "retry_advice_button_#{@entry_sheet_item.id}"
+  = turbo_stream.update "advice_messages_#{@entry_sheet_item.id}", ""
+  - if @chat
+    = turbo_stream.remove "turbo_stream_for_chat_#{@chat.id}"

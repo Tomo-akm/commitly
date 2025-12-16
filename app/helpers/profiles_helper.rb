@@ -3,7 +3,7 @@
 module ProfilesHelper
   # プロフィールタブのリンクを生成
   def profile_tab_link(path, icon, label, is_active:)
-    link_to path, class: "nav-link #{'active' if is_active}", data: { turbo_frame: "profile_content", turbo_action: "advance" } do
+    link_to path, class: "nav-link profile-tab-link #{'active' if is_active}", data: { turbo_frame: "profile_content", turbo_action: "advance" } do
       concat content_tag(:i, "", class: "#{icon} me-2")
       concat label
     end
@@ -20,14 +20,14 @@ module ProfilesHelper
     current_page?(path)
   end
 
-  # いいねタブのパスを取得
-  def likes_tab_path
-    params[:id] ? user_profile_likes_path(params[:id]) : profile_likes_path
+  # Starタブのパスを取得
+  def stars_tab_path
+    profile_likes_path
   end
 
-  # いいねタブがアクティブかどうか
-  def likes_tab_active?
-    path = likes_tab_path
+  # Starタブがアクティブかどうか
+  def stars_tab_active?
+    path = stars_tab_path
     current_page?(path)
   end
 end

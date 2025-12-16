@@ -1,5 +1,17 @@
+- content_for :resizable_layout, true
+
+div[id="turbo_streams_container"]
+  - @entry_sheet.entry_sheet_items.each do |item|
+    - if item.chat
+      div[id="turbo_stream_for_chat_#{item.chat.id}"]
+        = turbo_stream_from "chat_#{item.chat.id}"
+
 h1.fw-bold.mb-4
   i.fas.fa-edit.me-2.text-primary
   | ES編集
 
 = render "form", entry_sheet: @entry_sheet
+
+- content_for :side_panel do
+  - @entry_sheet.entry_sheet_items.each do |item|
+    = render "vault/entry_sheet_items/advice_panel", item: item

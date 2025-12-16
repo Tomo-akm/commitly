@@ -21,7 +21,7 @@
 
       / リプライ本文
       .reply-text.mb-2
-        = simple_format(h(reply.content), class: 'mb-0')
+        = PostDecorator.new(reply).highlighted_content
 
       / アクションボタン
       .d-flex.align-items-center.gap-3.mt-2

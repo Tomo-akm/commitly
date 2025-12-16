@@ -1,3 +1,6 @@
+- content_for :head do
+  meta name="turbo-cache-control" content="no-cache"
+
 .container
   .row.justify-content-center
     .col-lg-8
@@ -15,7 +18,7 @@
               .d-flex.justify-content-between.align-items-center.mb-2
                 h3.h5.mb-0.font-semibold
                   i.fas.fa-book.me-2
-                  | commit log (#{@posts.count}件)
+                  | Commits (#{@posts.count}件)
               hr.my-3
 
               - if @posts.any?
@@ -38,7 +41,7 @@
             .d-flex.justify-content-between.align-items-center.mb-2
               h3.h5.mb-0.font-semibold
                 i.fas.fa-book.me-2
-                | commit log (#{@posts.count}件)
+                | Commits (#{@posts.count}件)
             hr.my-3
 
             - if @posts.any?

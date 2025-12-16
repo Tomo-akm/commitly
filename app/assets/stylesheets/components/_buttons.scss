@@ -13,14 +13,14 @@
 
   // Primary Button - モダンなグラデーション
   &.btn-primary {
-    background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+    background: linear-gradient(135deg, lighten($primary, 10%) 0%, $primary 100%);
     border: none;
     color: white;
     box-shadow: 0 4px 12px rgba($primary, 0.3);
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, darken($primary, 3%) 0%, darken($primary, 11%) 100%);
-      box-shadow: 0 6px 20px rgba($primary, 0.4);
+      background: linear-gradient(135deg, lighten($primary, 5%) 0%, darken($primary, 4%) 100%);
+      box-shadow: 0 6px 20px rgba($primary, 0.35);
       transform: translateY(-2px);
     }
 
@@ -64,6 +64,7 @@
   &.btn-error,
   &.btn-danger {
     @include button-variant($error, $error-dark);
+    border: none;
     box-shadow: 0 4px 12px rgba($error, 0.25);
   }
 
@@ -75,7 +76,7 @@
     box-shadow: none;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, $primary 0%, darken($primary, 8%) 100%);
+      background: linear-gradient(135deg, lighten($primary, 10%) 0%, $primary 100%);
       border-color: $primary;
       color: white;
       box-shadow: 0 4px 12px rgba($primary, 0.3);
@@ -145,94 +146,91 @@
 }
 
 // ============================================
-// インタラクションボタン（いいね・リプライ）
+// インタラクションボタン（Star・リプライ）
 // ============================================
 
-.like-button,
-.reply-button {
-  position: relative;
-  cursor: pointer !important;
-  transition: all 0.2s ease-in-out;
-  user-select: none;
-  display: inline-flex !important;
+%interaction-button {
+  display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border: none !important;
-  min-width: 4rem;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $border-radius-base;
+  border: none;
+  background: transparent;
+  color: $neutral-700;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: none;
+  transition: color $transition-speed-base $transition-timing-ease,
+              background-color $transition-speed-base $transition-timing-ease,
+              border-color $transition-speed-base $transition-timing-ease,
+              transform $transition-speed-base $transition-timing-ease;
+  appearance: none;
 
   i {
-    transition: transform 0.2s ease, color 0.2s ease;
-    font-size: 1rem;
-    pointer-events: none;
+    font-size: $font-size-base;
+    transition: transform $transition-speed-base $transition-timing-ease,
+                color $transition-speed-base $transition-timing-ease;
   }
 
   span {
-    font-size: 0.875rem;
-    pointer-events: none;
+    font-size: $font-size-sm;
     min-width: 1rem;
-    text-align: center;
   }
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    i {
-      transform: scale(1.2);
-    }
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: none;
   }
 }
 
-// いいねボタン固有のスタイル
+.inline-button-form {
+  display: inline;
+  margin: 0;
+}
+
 .like-button {
+  @extend %interaction-button;
+
   &:hover {
-    color: #dc3545;
-    border-color: #dc3545;
-    background-color: rgba(220, 53, 69, 0.1);
+    background-color: rgba($star, 0.12);
+    color: $star-dark;
 
     i {
-      color: #dc3545;
+      color: $star;
+      transform: scale(1.1);
     }
   }
 
   &.liked {
-    color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    background-color: rgba(220, 53, 69, 0.1) !important;
+    background-color: rgba($star, 0.18);
+    color: $star-dark;
 
     i {
-      color: #dc3545 !important;
+      color: $star-dark;
     }
 
     &:hover {
-      background-color: rgba(220, 53, 69, 0.15) !important;
-      color: #dc3545 !important;
+      background-color: rgba($star, 0.22);
     }
   }
 }
 
-// リプライボタン固有のスタイル
 .reply-button {
-  justify-content: flex-start !important;
-  text-align: left !important;
-
-  span {
-    text-align: left !important;
-  }
+  @extend %interaction-button;
 
   &:hover {
-    color: #0d6efd;
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.1);
+    background-color: rgba($info, 0.08);
+    color: $info-dark;
 
     i {
-      color: #0d6efd;
+      color: $info-dark;
+      transform: scale(1.05);
     }
   }
 }

@@ -57,7 +57,12 @@ module VaultHelper
   end
 
   def vault_card_header(title, icon: nil, style: :default, &block)
-    header_class = style == :light ? "card-header vault-light" : "card-header vault"
+    header_class = case style
+    when :light then "card-header vault-light"
+    when :warning then "card-header vault-warning"
+    when :success then "card-header vault-success"
+    else "card-header vault"
+    end
 
     content_tag :div, class: header_class do
       block_given? ? yield : render_card_title(title, icon)
@@ -66,6 +71,14 @@ module VaultHelper
 
   def vault_card_header_light(title, icon: nil, &block)
     vault_card_header(title, icon: icon, style: :light, &block)
+  end
+
+  def vault_card_header_warning(title, icon: nil, &block)
+    vault_card_header(title, icon: icon, style: :warning, &block)
+  end
+
+  def vault_card_header_success(title, icon: nil, &block)
+    vault_card_header(title, icon: icon, style: :success, &block)
   end
 
   private

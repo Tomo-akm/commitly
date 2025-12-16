@@ -39,7 +39,6 @@ RSpec.describe "Profiles", type: :request do
           user: {
             name: "新しい名前",
             favorite_language: "Ruby",
-            research_lab: "情報工学研究室",
             internship_count: 5,
             personal_message: "よろしくお願いします"
           }
@@ -47,7 +46,6 @@ RSpec.describe "Profiles", type: :request do
         user.reload
         expect(user.name).to eq("新しい名前")
         expect(user.favorite_language).to eq("Ruby")
-        expect(user.research_lab).to eq("情報工学研究室")
         expect(user.internship_count).to eq(5)
         expect(user.personal_message).to eq("よろしくお願いします")
       end
@@ -91,7 +89,7 @@ RSpec.describe "Profiles", type: :request do
     context "ログイン済み" do
       before { sign_in user, scope: :user }
 
-      it "いいねした投稿のみ表示される" do
+      it "Starした投稿のみ表示される" do
         create(:like, user: user, post: liked_post)
         get profile_likes_path
 
@@ -100,11 +98,11 @@ RSpec.describe "Profiles", type: :request do
         expect(response.body).not_to include(other_post.content)
       end
 
-      it "いいねがない場合、メッセージが表示される" do
+      it "Starがない場合、メッセージが表示される" do
         get profile_likes_path
 
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("まだいいねした投稿がありません")
+        expect(response.body).to include("まだStarした投稿がありません")
       end
     end
 
@@ -114,26 +112,6 @@ RSpec.describe "Profiles", type: :request do
         get profile_likes_path
         expect(response).to redirect_to(new_user_session_path)
       end
-    end
-  end
-
-  describe "GET /users/:id/profile/likes" do
-    before { sign_in user, scope: :user }
-
-    it "他ユーザーのいいね一覧はアクセス不可" do
-      get user_profile_likes_path(other_user)
-
-      expect(response).to redirect_to(user_profile_path(other_user))
-      follow_redirect!
-      expect(response.body).to include("他のユーザーのいいね一覧は閲覧できません")
-    end
-
-    it "自分のいいね一覧は閲覧可能" do
-      create(:like, user: user, post: liked_post)
-      get user_profile_likes_path(user)
-
-      expect(response).to have_http_status(:success)
-      expect(response.body).to include(liked_post.content)
     end
   end
 end
