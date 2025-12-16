@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
   describe 'validations' do
+    before do
+      Tag.delete_all
+    end
+
     it 'is valid with valid attributes' do
       tag = build(:tag)
       expect(tag).to be_valid

@@ -9,4 +9,16 @@ class TagsController < ApplicationController
     @q = @tag.posts.ransack(params[:q])
     @posts = @q.result(distinct: true).order(created_at: :desc).page(params[:page]).per(10)
   end
+
+  def autocomplete
+    q = params[:q].to_s
+
+    tags = Tag
+      .where("name ILIKE ?", "#{q}%")
+      .order(posts_count: :desc)
+      .limit(10)
+      .pluck(:name)
+
+    render json: tags
+  end
 end
