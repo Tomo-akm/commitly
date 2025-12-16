@@ -48,22 +48,21 @@ class User < ApplicationRecord
             allow_blank: true
 
   # アバター画像のバリデーション
-  validates :avatar, content_type: [ "image/png", "image/jpeg" ],
-                     size: { less_than: 5.megabytes, message: "は5MB未満にしてください" }
+  validates :avatar, content_type: { in: [ "image/png", "image/jpeg" ], message: "はPNGまたはJPEG形式を選択してください" },
+                     size: { less_than: 5.megabytes, message: "は5MB以下の画像を選択してください" },
+                     dimension: { width: { max: 4000 }, height: { max: 4000 } }
 
   DEFAULT_INTERNSHIP_COUNT = 0
 
   # アバター画像のURLを返す（リサイズ対応）
   def avatar_url(size: 100)
-    if avatar.attached?
-      Rails.application.routes.url_helpers.rails_representation_url(
-        avatar.variant(resize_to_limit: [ size, size ]).processed,
-        only_path: true
-      )
-    else
-      # DiceBear APIでデフォルト画像を生成（ハッシュ値でセキュア）
-      "https://api.dicebear.com/8.x/bottts/svg?seed=#{avatar_seed}&size=#{size}"
+    unless avatar.attached?
+      return "https://api.dicebear.com/8.x/bottts/svg?seed=#{avatar_seed}&size=#{size}"
     end
+    Rails.application.routes.url_helpers.rails_representation_url(
+      avatar.variant(resize_to_limit: [size, size]).processed,
+      only_path: true
+    )
   end
 
   # OmniAuth経由のユーザー作成または取得
