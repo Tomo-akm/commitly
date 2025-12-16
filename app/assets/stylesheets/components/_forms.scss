@@ -297,3 +297,41 @@ input[type="datetime-local"] {
     color: $neutral-700;
   }
 }
+
+// Tag Autocomplete
+.tag-autocomplete__list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: $spacing-1;
+  background: white;
+  border: $border-width-1 solid $neutral-300;
+  border-radius: $border-radius-base;
+  padding: $spacing-1 0;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+  box-shadow: $shadow-md;
+}
+
+.tag-autocomplete__item {
+  padding: $spacing-2 $spacing-3;
+  cursor: pointer;
+  color: $neutral-900;
+  transition: background-color $transition-speed-fast;
+
+  &:hover,
+  &.is-selected {
+    background: $neutral-100;
+  }
+
+  &.is-selected {
+    background: rgba($primary, 0.1);
+    color: $primary;
+    font-weight: $font-weight-medium;
+  }
+}
