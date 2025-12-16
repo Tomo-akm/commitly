@@ -29,11 +29,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        RAILS_ENV: development
-        BUNDLE_WITHOUT: "test"
-        BUNDLE_DEPLOYMENT: "false"
+      dockerfile: Dockerfile.dev
     container_name: commitly_web
     restart: unless-stopped
     depends_on:
@@ -68,11 +64,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        RAILS_ENV: development
-        BUNDLE_WITHOUT: "test"
-        BUNDLE_DEPLOYMENT: "false"
+      dockerfile: Dockerfile.dev
     container_name: commitly_worker
     restart: unless-stopped
     depends_on:
