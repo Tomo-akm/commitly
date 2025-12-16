@@ -7,10 +7,10 @@ class Entry < ApplicationRecord
   # 未読メッセージ数を取得
   def unread_count
     if last_read_at
-      room.messages.where("created_at > ?", last_read_at).count
+      room.direct_messages.where("created_at > ?", last_read_at).count
     else
       # 初回の場合は全メッセージを未読として扱う
-      room.messages.count
+      room.direct_messages.count
     end
   end
 

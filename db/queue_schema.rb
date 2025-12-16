@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_055817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,28 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
     t.index ["chattable_type", "chattable_id"], name: "index_chats_on_chattable"
     t.index ["user_id", "created_at"], name: "index_chats_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
+  create_table "direct_messages", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.bigint "room_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_direct_messages_on_created_at"
+    t.index ["room_id"], name: "index_direct_messages_on_room_id"
+    t.index ["user_id"], name: "index_direct_messages_on_user_id"
+  end
+
+  create_table "entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "last_read_at"
+    t.bigint "room_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["room_id"], name: "index_entries_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_entries_on_user_id_and_room_id", unique: true
+    t.index ["user_id"], name: "index_entries_on_user_id"
   end
 
   create_table "entry_sheet_item_templates", force: :cascade do |t|
@@ -154,6 +176,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -316,6 +343,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
 
   add_foreign_key "api_keys", "users"
   add_foreign_key "chats", "users"
+  add_foreign_key "direct_messages", "rooms"
+  add_foreign_key "direct_messages", "users"
+  add_foreign_key "entries", "rooms"
+  add_foreign_key "entries", "users"
   add_foreign_key "entry_sheet_item_templates", "users"
   add_foreign_key "entry_sheet_items", "entry_sheet_item_templates"
   add_foreign_key "entry_sheet_items", "entry_sheets"

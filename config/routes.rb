@@ -50,7 +50,7 @@ Rails.application.routes.draw do
 
   # DM機能
   resources :rooms, only: [ :index, :show, :create ] do
-    resources :messages, only: [ :create ]
+    resources :direct_messages, only: [ :create ]
     member do
       post :mark_as_read
     end

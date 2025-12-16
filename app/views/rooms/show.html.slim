@@ -17,9 +17,9 @@
 
     / メッセージ一覧
     .card-body.p-4#messages style="overflow-y: auto; height: 100%;" data-controller="message"
-      - if @messages.any?
-        - @messages.each do |message|
-          = render "messages/message", message: message, current_user: current_user
+      - if @direct_messages.any?
+        - @direct_messages.each do |direct_message|
+          = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
       - else
         .text-muted.text-center style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;"
           i.far.fa-comments.display-4.mb-3
@@ -31,7 +31,7 @@
     / メッセージ送信フォーム
     .card-body.p-1.bg-light style="flex-shrink: 0;"
       - other_user = @room.other_user(current_user)
-      = form_with model: @message, url: room_messages_path(other_user) do |f|
+      = form_with model: @direct_message, url: room_direct_messages_path(other_user) do |f|
         .input-group
           = f.text_area :content, placeholder: "メッセージを入力...", class: "form-control", rows: 2, required: true, style: "resize: none; border-radius: 20px 0 0 20px;"
           = f.submit "送信", class: "btn btn-gradient-primary", style: "border-radius: 0 20px 20px 0;"
@@ -77,9 +77,9 @@
 
             / メッセージ一覧
             .card-body.p-4#messages style="overflow-y: auto; height: 100%;" data-controller="message"
-              - if @messages.any?
-                - @messages.each do |message|
-                  = render "messages/message", message: message, current_user: current_user
+              - if @direct_messages.any?
+                - @direct_messages.each do |direct_message|
+                  = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
               - else
                 .text-muted.text-center style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;"
                   i.far.fa-comments.display-4.mb-3
@@ -91,7 +91,7 @@
             / メッセージ送信フォーム
             .card-body.p-1.bg-light style="flex-shrink: 0;"
               - other_user = @room.other_user(current_user)
-              = form_with model: @message, url: room_messages_path(other_user), data: { turbo_frame: "room_detail" } do |f|
+              = form_with model: @direct_message, url: room_direct_messages_path(other_user), data: { turbo_frame: "room_detail" } do |f|
                 .input-group
                   = f.text_area :content, placeholder: "メッセージを入力...", class: "form-control", rows: 2, required: true, style: "resize: none; border-radius: 20px 0 0 20px;"
                   = f.submit "送信", class: "btn btn-gradient-primary", style: "border-radius: 0 20px 20px 0;"

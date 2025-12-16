@@ -1,7 +1,7 @@
 class Room < ApplicationRecord
   has_many :entries, dependent: :destroy
   has_many :users, through: :entries
-  has_many :messages, dependent: :destroy
+  has_many :direct_messages, dependent: :destroy
 
   # 2人のユーザー間のルームを取得または作成
   def self.between(user1, user2)
@@ -30,6 +30,6 @@ class Room < ApplicationRecord
 
   # 最新メッセージ
   def latest_message
-    messages.order(created_at: :desc).first
+    direct_messages.order(created_at: :desc).first
   end
 end

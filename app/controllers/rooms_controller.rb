@@ -3,10 +3,10 @@ class RoomsController < ApplicationController
 
   def index
     @rooms = current_user.rooms
-                         .includes(:users, messages: :user)
-                         .left_joins(:messages)
+                         .includes(:users, direct_messages: :user)
+                         .left_joins(:direct_messages)
                          .group("rooms.id")
-                         .order("MAX(messages.created_at) DESC NULLS LAST")
+                         .order("MAX(direct_messages.created_at) DESC NULLS LAST")
   end
 
   def show
@@ -15,16 +15,16 @@ class RoomsController < ApplicationController
 
     mark_room_as_read
 
-    @messages = @room.messages.includes(:user).order(created_at: :asc)
-    @message = Message.new
+    @direct_messages = @room.direct_messages.includes(:user).order(created_at: :asc)
+    @direct_message = DirectMessage.new
 
     # 通常のリクエスト（turbo_frameでない）場合はDM一覧も取得
     unless turbo_frame_request?
       @rooms = current_user.rooms
-                           .includes(:users, messages: :user)
-                           .left_joins(:messages)
+                           .includes(:users, direct_messages: :user)
+                           .left_joins(:direct_messages)
                            .group("rooms.id")
-                           .order("MAX(messages.created_at) DESC NULLS LAST")
+                           .order("MAX(direct_messages.created_at) DESC NULLS LAST")
     end
   end
 
