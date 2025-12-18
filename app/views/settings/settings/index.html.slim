@@ -1,0 +1,20 @@
+.settings-container
+  .row.g-4
+    / サイドバー
+    .col-md-3
+      .card
+        .list-group.list-group-flush
+          = link_to settings_privacy_path, class: "list-group-item list-group-item-action" do
+            i.fas.fa-lock.me-2.text-primary
+            | プライバシー
+          = link_to settings_api_keys_path, class: "list-group-item list-group-item-action" do
+            i.fas.fa-key.me-2.text-primary
+            | APIキー
+
+    / メインコンテンツ
+    .col-md-9
+      .card
+        .card-body.text-center.py-5
+          i.fas.fa-cog.fa-3x.text-muted.mb-3
+          h4.fw-bold.mb-2 設定
+          p.text-muted 左のメニューから設定項目を選択してください

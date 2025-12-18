@@ -1,0 +1,97 @@
+.settings-privacy
+  .row.g-4
+    / サイドバー
+    .col-md-3
+      .card
+        .list-group.list-group-flush
+          = link_to settings_privacy_path, class: "list-group-item list-group-item-action active" do
+            i.fas.fa-lock.me-2
+            | プライバシー
+          = link_to settings_api_keys_path, class: "list-group-item list-group-item-action" do
+            i.fas.fa-key.me-2
+            | APIキー
+
+    / メインコンテンツ
+    .col-md-9
+      / ヘッダー
+      .d-flex.justify-content-between.align-items-center.mb-4
+        div
+          h1.fw-bold.mb-1
+            i.fas.fa-lock.me-2.text-primary
+            | プライバシー設定
+          p.text-muted.mb-0 投稿の公開範囲を設定します
+
+      / 公開範囲設定フォーム
+      .card
+        .card-body
+          = form_with model: current_user, url: settings_privacy_path, method: :patch do |f|
+            .mb-4
+              h5.card-title.fw-bold.mb-3
+                i.fas.fa-eye.me-2.text-primary
+                | 投稿の公開範囲
+
+              p.text-muted.small.mb-3
+                | この設定は、あなたの投稿をタイムラインや他のユーザーのプロフィールページで誰が閲覧できるかを制御します。
+
+              / 全体公開
+              .form-check.mb-3.p-3.border.rounded
+                = f.radio_button :post_visibility, "everyone", class: "form-check-input", id: "post_visibility_everyone"
+                = f.label :post_visibility, class: "form-check-label w-100", for: "post_visibility_everyone" do
+                  .d-flex.justify-content-between.align-items-start
+                    div
+                      strong.d-block
+                        i.fas.fa-globe.me-2.text-success
+                        | 全体公開
+                      small.text-muted すべてのユーザーに投稿が表示されます
+                    - if current_user.everyone?
+                      span.badge.bg-success.ms-2 現在の設定
+
+              / 相互フォローのみ
+              .form-check.mb-3.p-3.border.rounded
+                = f.radio_button :post_visibility, "mutual_followers", class: "form-check-input", id: "post_visibility_mutual_followers"
+                = f.label :post_visibility, class: "form-check-label w-100", for: "post_visibility_mutual_followers" do
+                  .d-flex.justify-content-between.align-items-start
+                    div
+                      strong.d-block
+                        i.fas.fa-user-friends.me-2.text-primary
+                        | 相互フォローのみ
+                      small.text-muted 相互フォロー関係にあるユーザーにのみ投稿が表示されます
+                    - if current_user.mutual_followers?
+                      span.badge.bg-primary.ms-2 現在の設定
+
+              / 自分だけ
+              .form-check.mb-3.p-3.border.rounded
+                = f.radio_button :post_visibility, "only_me", class: "form-check-input", id: "post_visibility_only_me"
+                = f.label :post_visibility, class: "form-check-label w-100", for: "post_visibility_only_me" do
+                  .d-flex.justify-content-between.align-items-start
+                    div
+                      strong.d-block
+                        i.fas.fa-lock.me-2.text-warning
+                        | 自分だけ
+                      small.text-muted 自分だけが投稿を閲覧できます
+                    - if current_user.only_me?
+                      span.badge.bg-warning.text-dark.ms-2 現在の設定
+
+            .d-grid
+              = f.submit "設定を保存", class: "btn btn-primary"
+
+      / 補足情報
+      .card.mt-4
+        .card-body
+          h5.card-title.fw-bold.mb-3
+            i.fas.fa-info-circle.me-2.text-info
+            | 補足事項
+
+          ul.mb-0
+            li.mb-2
+              strong プロフィールページ
+              |  は公開範囲の設定に関わらず常に閲覧可能です（投稿やヒートマップは設定に従います）
+            li.mb-2
+              strong リプライ
+              |  は、リプライ作成者・親投稿作成者・その他の閲覧者（作成者の公開範囲設定に従う）に表示されます
+            li.mb-2
+              strong タグ検索
+              |  では、自分の投稿は公開範囲に関わらず常に表示されます
+            li
+              strong フォローリスト
+              |  の閲覧可否も、この公開範囲設定に従います
