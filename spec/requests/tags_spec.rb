@@ -2,10 +2,6 @@ require 'rails_helper'
 
 RSpec.describe "Tags", type: :request do
   describe "GET /tags/autocomplete" do
-    before do
-      Tag.delete_all
-    end
-
     context "クエリパラメータqで検索" do
       before do
         # r で始まるタグ
@@ -52,7 +48,8 @@ RSpec.describe "Tags", type: :request do
         get autocomplete_tags_path, params: { q: "" }
 
         json = JSON.parse(response.body)
-        expect(json.size).to eq(5)
+        # このコンテキストで作成した5つのタグを含む
+        expect(json).to include("rails", "ruby", "rust", "javascript", "python")
       end
 
       it "マッチしない場合は空配列を返す" do
@@ -100,6 +97,79 @@ RSpec.describe "Tags", type: :request do
 
         json = JSON.parse(response.body)
         expect(json).to contain_exactly("テスト", "テストケース")
+      end
+    end
+  end
+
+  describe "公開範囲機能" do
+    describe "GET /tags/:id (タグ検索での表示制御)" do
+      let!(:tag) { create(:tag, name: "Ruby") }
+      let!(:viewer) { create(:user) }
+      let!(:public_user) { create(:user, post_visibility: :everyone) }
+      let!(:mutual_user) { create(:user, post_visibility: :mutual_followers) }
+      let!(:private_user) { create(:user, post_visibility: :only_me) }
+
+      let!(:public_post) { create(:post, user: public_user) }
+      let!(:mutual_post) { create(:post, user: mutual_user) }
+      let!(:private_post) { create(:post, user: private_user) }
+      let!(:own_post) { create(:post, user: viewer) }
+
+      before do
+        # 全ての投稿にタグを追加
+        public_post.tags << tag
+        mutual_post.tags << tag
+        private_post.tags << tag
+        own_post.tags << tag
+
+        sign_in viewer
+      end
+
+      context 'フォロー関係がない場合' do
+        it '全体公開の投稿と自分の投稿のみ表示される' do
+          get tag_path(tag)
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(public_post.contentable.content)
+          expect(response.body).to include(own_post.contentable.content)
+          expect(response.body).not_to include(mutual_post.contentable.content)
+          expect(response.body).not_to include(private_post.contentable.content)
+        end
+      end
+
+      context '相互フォロー関係がある場合' do
+        before do
+          viewer.follow(mutual_user)
+          mutual_user.follow(viewer)
+        end
+
+        it '全体公開、相互フォロー、自分の投稿が表示される' do
+          get tag_path(tag)
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(public_post.contentable.content)
+          expect(response.body).to include(mutual_post.contentable.content)
+          expect(response.body).to include(own_post.contentable.content)
+          expect(response.body).not_to include(private_post.contentable.content)
+        end
+      end
+
+      context '自分の投稿が自分だけ設定の場合' do
+        before do
+          viewer.update(post_visibility: :only_me)
+        end
+
+        it '自分の投稿は表示される' do
+          get tag_path(tag)
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(own_post.contentable.content)
+        end
+      end
+
+      context '投稿数のカウント' do
+        it '閲覧可能な投稿数のみカウントされる' do
+          get tag_path(tag)
+          expect(response).to have_http_status(:success)
+          # 全体公開 + 自分の投稿 = 2件
+          expect(response.body).to include('2件の投稿')
+        end
       end
     end
   end

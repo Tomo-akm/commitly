@@ -336,4 +336,128 @@ RSpec.describe Post, type: :model do
       end
     end
   end
+
+  describe '公開範囲機能' do
+    let(:viewer) { create(:user) }
+    let(:public_user) { create(:user, post_visibility: :everyone) }
+    let(:mutual_user) { create(:user, post_visibility: :mutual_followers) }
+    let(:private_user) { create(:user, post_visibility: :only_me) }
+
+    let!(:public_post) { create(:post, user: public_user) }
+    let!(:mutual_post) { create(:post, user: mutual_user) }
+    let!(:private_post) { create(:post, user: private_user) }
+
+    describe '.visible_to' do
+      context 'viewer が nil の場合' do
+        it '全体公開の投稿のみ返す' do
+          posts = Post.visible_to(nil)
+          expect(posts).to include(public_post)
+          expect(posts).not_to include(mutual_post, private_post)
+        end
+      end
+
+      context 'viewer が全体公開ユーザーの投稿を見る場合' do
+        it '全体公開の投稿が見える' do
+          posts = Post.visible_to(viewer)
+          expect(posts).to include(public_post)
+        end
+      end
+
+      context 'viewer が相互フォローユーザーの投稿を見る場合' do
+        context '相互フォロー関係がない場合' do
+          it '相互フォローのみの投稿は見えない' do
+            posts = Post.visible_to(viewer)
+            expect(posts).not_to include(mutual_post)
+          end
+        end
+
+        context '相互フォロー関係がある場合' do
+          before do
+            viewer.follow(mutual_user)
+            mutual_user.follow(viewer)
+          end
+
+          it '相互フォローのみの投稿が見える' do
+            posts = Post.visible_to(viewer)
+            expect(posts).to include(mutual_post)
+          end
+        end
+      end
+
+      context 'viewer が自分だけユーザーの投稿を見る場合' do
+        it '自分だけの投稿は見えない' do
+          posts = Post.visible_to(viewer)
+          expect(posts).not_to include(private_post)
+        end
+      end
+
+      context 'viewer が自分自身の投稿を見る場合' do
+        it '自分の投稿は公開範囲に関わらず見える' do
+          own_post = create(:post, user: viewer)
+          viewer.update(post_visibility: :only_me)
+
+          posts = Post.visible_to(viewer)
+          expect(posts).to include(own_post)
+        end
+      end
+    end
+
+    describe '#visible_to?' do
+      let(:post_owner) { create(:user, post_visibility: :only_me) }
+      let(:test_post) { create(:post, user: post_owner) }
+
+      context '投稿者本人が見る場合' do
+        it 'true を返す' do
+          expect(test_post.visible_to?(post_owner)).to be true
+        end
+      end
+
+      context '全体公開の投稿' do
+        before { post_owner.update(post_visibility: :everyone) }
+
+        it '誰でも見られる' do
+          expect(test_post.visible_to?(viewer)).to be true
+        end
+      end
+
+      context '相互フォローのみの投稿' do
+        before { post_owner.update(post_visibility: :mutual_followers) }
+
+        it '相互フォロー関係がある場合は見られる' do
+          viewer.follow(post_owner)
+          post_owner.follow(viewer)
+
+          expect(test_post.visible_to?(viewer)).to be true
+        end
+
+        it '相互フォロー関係がない場合は見られない' do
+          expect(test_post.visible_to?(viewer)).to be false
+        end
+      end
+
+      context '自分だけの投稿' do
+        before { post_owner.update(post_visibility: :only_me) }
+
+        it '他人には見られない' do
+          expect(test_post.visible_to?(viewer)).to be false
+        end
+      end
+
+      context 'リプライの場合' do
+        let(:parent_owner) { create(:user, post_visibility: :everyone) }
+        let(:parent_post) { create(:post, user: parent_owner) }
+        let(:reply) { create(:post, user: post_owner, parent: parent_post) }
+
+        before { post_owner.update(post_visibility: :only_me) }
+
+        it '親投稿の作成者には見える' do
+          expect(reply.visible_to?(parent_owner)).to be true
+        end
+
+        it '親投稿の作成者以外には見えない' do
+          expect(reply.visible_to?(viewer)).to be false
+        end
+      end
+    end
+  end
 end
