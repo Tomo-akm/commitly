@@ -36,12 +36,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      RAILS_ENV: development
       DB_HOST: db
       DB_USERNAME: commitly
       DB_PASSWORD: password
       DB_DATABASE: commitly_development
-      DATABASE_URL: postgres://commitly:password@db:5432/commitly_development
     command: bin/dev
     volumes:
       - .:/webapp
@@ -71,12 +69,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      RAILS_ENV: development
       DB_HOST: db
       DB_USERNAME: commitly
       DB_PASSWORD: password
       DB_DATABASE: commitly_development
-      DATABASE_URL: postgres://commitly:password@db:5432/commitly_development
     volumes:
       - .:/webapp
       - bundle:/usr/local/bundle
