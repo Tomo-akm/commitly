@@ -4,7 +4,7 @@
   h1.mb-4.fade-in
     span.badge.bg-primary.text-2xl ##{@tag.name}
     = " "
-    - total_count = params[:q].present? ? @posts.total_count : @tag.posts_count
+    - total_count = params[:q].present? ? @posts.total_count : @visible_posts_count
     small.text-muted.text-base = "(#{total_count}件の投稿)"
 
   = link_to "← 投稿一覧に戻る", posts_path, class: "btn btn-outline-secondary me-2 mb-3"
