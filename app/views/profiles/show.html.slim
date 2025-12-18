@@ -5,53 +5,18 @@
   .row.justify-content-center
     .col-lg-8
       = render "profile_header"
-      = render "heatmap_card"
 
-      / Posts Section with Tabs
-      - if user_signed_in? && @user == current_user
-        .card.card-primary.fade-in
-          = turbo_frame_tag "profile_content" do
-            = render "profile_tabs"
+      / ヒートマップと投稿は公開範囲に応じて表示
+      - if @posts_visible
+        = render "heatmap_card"
 
-            / タブコンテンツ
-            .card-body.p-4.slide-in-left
-              .d-flex.justify-content-between.align-items-center.mb-2
-                h3.h5.mb-0.font-semibold
-                  i.fas.fa-book.me-2
-                  | Commits (#{@posts.count}件)
-              hr.my-3
-
-              - if @posts.any?
-                .card-list
-                  - @posts.each do |post|
-                    = render 'shared/post', post: post
-              - else
-                .text-center.py-5.text-muted
-                  i.far.fa-sticky-note.display-4.mb-3
-                  p.mb-0 まだ投稿がありません
-                  p.text-sm 最初の投稿をしてみましょう！
-                  - if user_signed_in?
-                    = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top" }
-                  - else
-                    = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top", confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }
+        / 投稿セクション
+        - if user_signed_in? && @user == current_user
+          = render "posts_section"
+        - else
+          = render "posts_section_public"
       - else
-        / タブなしバージョン（他人のプロフィール）
-        .card.card-primary.fade-in
-          .card-body.p-4
-            .d-flex.justify-content-between.align-items-center.mb-2
-              h3.h5.mb-0.font-semibold
-                i.fas.fa-book.me-2
-                | Commits (#{@posts.count}件)
-            hr.my-3
-
-            - if @posts.any?
-              .card-list
-                - @posts.each do |post|
-                  = render 'shared/post', post: post
-            - else
-              .text-center.py-5.text-muted
-                i.far.fa-sticky-note.display-4.mb-3
-                p.mb-0 まだ投稿がありません
+        = render "private_message"
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

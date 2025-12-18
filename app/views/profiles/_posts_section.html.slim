@@ -1,0 +1,18 @@
+/ 投稿セクション（本人用・タブあり）
+.card.card-primary.fade-in
+  = turbo_frame_tag "profile_content" do
+    = render "profile_tabs"
+
+    .card-body.p-4.slide-in-left
+      .d-flex.justify-content-between.align-items-center.mb-2
+        h3.h5.mb-0.font-semibold
+          i.fas.fa-book.me-2
+          | Commits (#{@posts.count}件)
+      hr.my-3
+
+      - if @posts.any?
+        .card-list
+          - @posts.each do |post|
+            = render 'shared/post', post: post
+      - else
+        = render 'profiles/empty_posts'
