@@ -18,6 +18,13 @@ class User < ApplicationRecord
   has_many :following, through: :active_follows, source: :followed
   has_many :followers, through: :passive_follows, source: :follower
 
+  # 投稿の公開範囲設定
+  enum :post_visibility, {
+    everyone: 0,         # 全体公開
+    mutual_followers: 1, # 相互フォローのみ
+    only_me: 2           # 自分だけ
+  }, default: :everyone
+
   # ユーザーをフォローする
   # Follow モデルのバリデーションにより自分自身のフォローや重複は自動的に防止される
   def follow(other_user)
@@ -33,6 +40,11 @@ class User < ApplicationRecord
   # exists? を使用してデータベースレベルで効率的にチェック
   def following?(other_user)
     active_follows.exists?(followed: other_user)
+  end
+
+  # 相互フォロー関係かどうかを判定
+  def mutual_follow?(other_user)
+    following?(other_user) && other_user.following?(self)
   end
 
   has_many :entry_sheets, dependent: :destroy

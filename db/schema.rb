@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_18_163612) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -105,8 +105,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
 
   create_table "follows", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "followed_id"
-    t.integer "follower_id"
+    t.bigint "followed_id"
+    t.bigint "follower_id"
     t.datetime "updated_at", null: false
     t.index ["followed_id"], name: "index_follows_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
@@ -164,8 +164,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
 
   create_table "post_tags", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "post_id", null: false
-    t.integer "tag_id", null: false
+    t.bigint "post_id", null: false
+    t.bigint "tag_id", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id", "tag_id"], name: "index_post_tags_on_post_id_and_tag_id", unique: true
     t.index ["post_id"], name: "index_post_tags_on_post_id"
@@ -178,7 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
     t.datetime "created_at", null: false
     t.bigint "parent_id"
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
@@ -331,6 +331,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_09_000000) do
     t.integer "internship_count"
     t.string "name"
     t.text "personal_message"
+    t.integer "post_visibility", default: 0, null: false
     t.string "provider"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"

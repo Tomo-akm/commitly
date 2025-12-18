@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include PostVisibilityFilterable
+
   belongs_to :user
   belongs_to :contentable, polymorphic: true
   belongs_to :parent, class_name: "Post", optional: true
