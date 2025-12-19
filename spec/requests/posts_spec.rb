@@ -475,4 +475,46 @@ RSpec.describe "Posts", type: :request do
       end
     end
   end
+
+  describe "GET /posts/:id" do
+    let(:post_owner) { create(:user, post_visibility: :everyone) }
+    let(:parent_post) { create(:post, user: post_owner) }
+
+    context 'リプライの公開範囲フィルタリング' do
+      let(:reply_author_public) { create(:user, post_visibility: :everyone) }
+      let(:reply_author_private) { create(:user, post_visibility: :only_me) }
+      let!(:public_reply) { create(:post, user: reply_author_public, parent: parent_post) }
+      let!(:private_reply) { create(:post, user: reply_author_private, parent: parent_post) }
+
+      context 'ログインユーザーが親投稿を閲覧する場合' do
+        it '全体公開のリプライのみ表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(public_reply.contentable.content)
+          expect(response.body).not_to include(private_reply.contentable.content)
+        end
+      end
+
+      context '親投稿の作成者が閲覧する場合' do
+        before { sign_in post_owner, scope: :user }
+
+        it '自分だけ設定のリプライも表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(public_reply.contentable.content)
+          expect(response.body).to include(private_reply.contentable.content)
+        end
+      end
+
+      context 'リプライ作成者本人が親投稿を閲覧する場合' do
+        before { sign_in reply_author_private, scope: :user }
+
+        it '自分のリプライは表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(private_reply.contentable.content)
+        end
+      end
+    end
+  end
 end

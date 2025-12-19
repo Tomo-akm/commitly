@@ -400,6 +400,53 @@ RSpec.describe Post, type: :model do
           expect(posts).to include(own_post)
         end
       end
+
+      context 'リプライの公開範囲' do
+        let(:parent_owner) { create(:user, post_visibility: :everyone) }
+        let(:parent_post) { create(:post, user: parent_owner) }
+        let(:reply_author) { create(:user, post_visibility: :only_me) }
+        let!(:reply) { create(:post, user: reply_author, parent: parent_post) }
+
+        context '親投稿の作成者が見る場合' do
+          it 'リプライ作成者が「自分だけ」設定でもリプライが見える' do
+            posts = Post.visible_to(parent_owner)
+            expect(posts).to include(reply)
+          end
+        end
+
+        context '第三者が見る場合' do
+          it 'リプライ作成者が「自分だけ」設定の場合、リプライは見えない' do
+            posts = Post.visible_to(viewer)
+            expect(posts).not_to include(reply)
+          end
+        end
+
+        context 'リプライ作成者が「全体公開」設定の場合' do
+          before { reply_author.update(post_visibility: :everyone) }
+
+          it '第三者にもリプライが見える' do
+            posts = Post.visible_to(viewer)
+            expect(posts).to include(reply)
+          end
+        end
+
+        context 'リプライ作成者が「相互フォローのみ」設定の場合' do
+          before { reply_author.update(post_visibility: :mutual_followers) }
+
+          it '相互フォロー関係があればリプライが見える' do
+            viewer.follow(reply_author)
+            reply_author.follow(viewer)
+
+            posts = Post.visible_to(viewer)
+            expect(posts).to include(reply)
+          end
+
+          it '相互フォロー関係がなければリプライは見えない' do
+            posts = Post.visible_to(viewer)
+            expect(posts).not_to include(reply)
+          end
+        end
+      end
     end
 
     describe '#visible_to?' do
@@ -456,6 +503,71 @@ RSpec.describe Post, type: :model do
 
         it '親投稿の作成者以外には見えない' do
           expect(reply.visible_to?(viewer)).to be false
+        end
+      end
+    end
+
+    describe '#visible_replies_count' do
+      let(:parent_owner) { create(:user, post_visibility: :everyone) }
+      let(:parent_post) { create(:post, user: parent_owner) }
+
+      context 'リプライが存在しない場合' do
+        it '0を返す' do
+          expect(parent_post.visible_replies_count(viewer)).to eq(0)
+        end
+      end
+
+      context '全体公開のリプライのみの場合' do
+        let(:public_user) { create(:user, post_visibility: :everyone) }
+
+        it 'リプライ数を正しくカウントする' do
+          create(:post, user: public_user, parent: parent_post)
+          create(:post, user: public_user, parent: parent_post)
+
+          expect(parent_post.visible_replies_count(viewer)).to eq(2)
+        end
+      end
+
+      context '自分だけのリプライが含まれる場合' do
+        let(:private_user) { create(:user, post_visibility: :only_me) }
+        let(:public_user) { create(:user, post_visibility: :everyone) }
+
+        it '閲覧者に見えるリプライのみカウントする' do
+          create(:post, user: public_user, parent: parent_post)
+          create(:post, user: private_user, parent: parent_post)
+
+          expect(parent_post.visible_replies_count(viewer)).to eq(1)
+        end
+
+        it '親投稿の作成者には全てのリプライがカウントされる' do
+          create(:post, user: public_user, parent: parent_post)
+          create(:post, user: private_user, parent: parent_post)
+
+          expect(parent_post.visible_replies_count(parent_owner)).to eq(2)
+        end
+      end
+
+      context 'ネストしたリプライ（孫、ひ孫）が含まれる場合' do
+        let(:public_user) { create(:user, post_visibility: :everyone) }
+        let(:private_user) { create(:user, post_visibility: :only_me) }
+
+        it '公開範囲を考慮して再帰的にカウントする' do
+          # 親投稿に2つのリプライ
+          reply1 = create(:post, user: public_user, parent: parent_post)
+          reply2 = create(:post, user: private_user, parent: parent_post)
+
+          # reply1 に1つの孫リプライ（全体公開）
+          create(:post, user: public_user, parent: reply1)
+
+          # reply2 に1つの孫リプライ（自分だけ）
+          create(:post, user: private_user, parent: reply2)
+
+          # 閲覧者から見える: reply1（公開）+ reply1の孫（公開）= 2
+          expect(parent_post.visible_replies_count(viewer)).to eq(2)
+
+          # 親投稿の作成者から見える: reply1（公開）+ reply1の孫（公開）+ reply2（親投稿作成者なので見える）= 3
+          # 孫リプライ2は「自分だけ」設定で、親投稿の作成者でも見えない
+          expect(parent_post.visible_replies_count(parent_owner)).to eq(3)
         end
       end
     end

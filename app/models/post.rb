@@ -89,6 +89,31 @@ class Post < ApplicationRecord
     Post.connection.select_value(sanitized_sql).to_i
   end
 
+  # 公開範囲を考慮したリプライ数を再帰的にカウント
+  def visible_replies_count(viewer)
+    # 再帰CTEで全ての子孫リプライIDを取得
+    sql = <<-SQL.squish
+      WITH RECURSIVE reply_tree AS (
+        SELECT id, parent_id
+        FROM posts
+        WHERE parent_id = ?
+        UNION ALL
+        SELECT p.id, p.parent_id
+        FROM posts p
+        INNER JOIN reply_tree rt ON rt.id = p.parent_id
+      )
+      SELECT id FROM reply_tree
+    SQL
+
+    sanitized_sql = Post.sanitize_sql_array([ sql, id ])
+    descendant_ids = Post.connection.select_values(sanitized_sql)
+
+    return 0 if descendant_ids.empty?
+
+    # 子孫リプライに対して公開範囲フィルタリング
+    Post.where(id: descendant_ids).visible_to(viewer).count
+  end
+
   # 投稿タイプを判定
   def general?
     contentable_type == "GeneralContent"

@@ -27,7 +27,11 @@ class PostsController < ApplicationController
     # 投稿の可視性チェック
     unless @post.visible_to?(current_user)
       redirect_to posts_path, alert: "この投稿を閲覧する権限がありません。"
+      return
     end
+
+    # リプライの公開範囲フィルタリング
+    @visible_replies = @post.replies.visible_to(current_user).order(created_at: :asc)
   end
 
   # GET /posts/new

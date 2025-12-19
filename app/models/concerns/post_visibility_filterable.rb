@@ -16,6 +16,7 @@ module PostVisibilityFilterable
       # 1. 本人の投稿
       # 2. 全体公開の投稿
       # 3. 相互フォローのみの投稿（相互フォロー関係のユーザー）
+      # 4. リプライの親投稿者が閲覧者の場合
       joins(:user)
         .joins(sanitize_sql_array([
           "LEFT OUTER JOIN follows AS f1 ON f1.followed_id = users.id AND f1.follower_id = ?",
@@ -25,10 +26,12 @@ module PostVisibilityFilterable
           "LEFT OUTER JOIN follows AS f2 ON f2.follower_id = users.id AND f2.followed_id = ?",
           viewer.id
         ]))
+        .joins("LEFT OUTER JOIN posts AS parent_posts ON posts.parent_id = parent_posts.id")
         .where(
           "posts.user_id = :viewer_id OR " \
           "users.post_visibility = :everyone OR " \
-          "(users.post_visibility = :mutual_followers AND f1.id IS NOT NULL AND f2.id IS NOT NULL)",
+          "(users.post_visibility = :mutual_followers AND f1.id IS NOT NULL AND f2.id IS NOT NULL) OR " \
+          "(posts.parent_id IS NOT NULL AND parent_posts.user_id = :viewer_id)",
           viewer_id: viewer.id,
           everyone: User.post_visibilities[:everyone],
           mutual_followers: User.post_visibilities[:mutual_followers]
