@@ -3,12 +3,6 @@ FROM public.ecr.aws/docker/library/ruby:3.3.5
 
 ENV TZ=Asia/Tokyo
 
-# Development environment settings
-ENV RAILS_ENV=development
-ENV BUNDLE_DEPLOYMENT=false
-ENV BUNDLE_WITHOUT="test"
-ENV BUNDLE_PATH=/usr/local/bundle
-
 ARG RUBYGEMS_VERSION=3.5.23
 
 # Install system dependencies (Ruby, Node.js, Yarn, PostgreSQL client, libvips for image processing)

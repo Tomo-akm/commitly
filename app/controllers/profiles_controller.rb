@@ -1,10 +1,12 @@
 class ProfilesController < ApplicationController
-  before_action :authenticate_user!, except: [ :show ]
+  before_action :authenticate_user!, except: [ :show, :following, :followers ]
   before_action :set_user, only: [ :show, :likes ]
 
   def show
-    @posts = @user.posts.includes(:contentable, :user, :likes, :tags).order(created_at: :desc)
+    @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc)
     prepare_heatmap_data
+    # プロフィールの投稿・ヒートマップの可視性判定
+    @posts_visible = posts_visible_to_viewer?
   end
 
   def likes
@@ -39,13 +41,15 @@ class ProfilesController < ApplicationController
 
   def following
     @user  = User.find(params[:id])
-    @users = @user.following
+    @follow_list_visible = follow_list_visible_to_viewer?
+    @users = @follow_list_visible ? @user.following : []
     render "show_follow"
   end
 
   def followers
     @user  = User.find(params[:id])
-    @users = @user.followers
+    @follow_list_visible = follow_list_visible_to_viewer?
+    @users = @follow_list_visible ? @user.followers : []
     render "show_follow"
   end
 
@@ -64,6 +68,7 @@ class ProfilesController < ApplicationController
     @date_6_months_ago = 6.months.ago.to_date
 
     @active_user_counts_6_months = @user.posts
+                                         .visible_to(current_user)
                                          .where(created_at: heatmap_date_range)
                                          .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
                                          .count
@@ -72,5 +77,23 @@ class ProfilesController < ApplicationController
 
   def heatmap_date_range
     @date_6_months_ago.beginning_of_day..@date.end_of_day
+  end
+
+  # 投稿・ヒートマップの可視性判定
+  def posts_visible_to_viewer?
+    return true if @user == current_user # 本人は常に見える
+    return true if @user.everyone? # 全体公開は誰でも見える
+    return true if @user.mutual_followers? && current_user&.mutual_follow?(@user) # 相互フォローのみ
+
+    false # それ以外は見えない
+  end
+
+  # フォローリストの可視性判定
+  def follow_list_visible_to_viewer?
+    return true if @user == current_user # 本人は常に見える
+    return true if @user.everyone? # 全体公開は誰でも見える（ログアウト時も含む）
+    return true if @user.mutual_followers? && current_user&.mutual_follow?(@user) # 相互フォローのみ
+
+    false # それ以外は見えない
   end
 end

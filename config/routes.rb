@@ -33,6 +33,8 @@ Rails.application.routes.draw do
 
   # Settings（設定エリア）
   namespace :settings do
+    root "settings#index"
+    resource :privacy, only: [ :show, :update ], controller: "privacy"
     resources :api_keys, only: [ :index, :create, :destroy ]
   end
 

@@ -7,7 +7,12 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
         .d-flex.align-items-center
           = render "shared/avatar", user: post.user, size: 35, class_name: "me-2"
           .d-flex.flex-column
-            span.text-dark.font-medium = post.user.name
+            .d-flex.align-items-center
+              span.text-dark.font-medium = post.user.name
+              - if post.user.mutual_followers?
+                i.fas.fa-user-friends.ms-2.text-muted.small title="相互フォローのみ"
+              - elsif post.user.only_me?
+                i.fas.fa-lock.ms-2.text-muted.small title="自分だけ"
             span.text-muted.text-xs
               i.far.fa-clock.me-1
               = japanese_time_ago(post.created_at)

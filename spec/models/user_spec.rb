@@ -195,4 +195,59 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'post_visibility enum' do
+    it 'デフォルトで everyone が設定される' do
+      user = create(:user)
+      expect(user.post_visibility).to eq('everyone')
+      expect(user.everyone?).to be true
+    end
+
+    it 'mutual_followers に設定できる' do
+      user = create(:user, post_visibility: :mutual_followers)
+      expect(user.post_visibility).to eq('mutual_followers')
+      expect(user.mutual_followers?).to be true
+    end
+
+    it 'only_me に設定できる' do
+      user = create(:user, post_visibility: :only_me)
+      expect(user.post_visibility).to eq('only_me')
+      expect(user.only_me?).to be true
+    end
+  end
+
+  describe '#mutual_follow?' do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    context '相互フォロー関係の場合' do
+      before do
+        user_a.follow(user_b)
+        user_b.follow(user_a)
+      end
+
+      it 'true を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be true
+        expect(user_b.mutual_follow?(user_a)).to be true
+      end
+    end
+
+    context 'Aだけがフォローしている場合' do
+      before do
+        user_a.follow(user_b)
+      end
+
+      it 'false を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be false
+        expect(user_b.mutual_follow?(user_a)).to be false
+      end
+    end
+
+    context 'フォロー関係がない場合' do
+      it 'false を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be false
+        expect(user_b.mutual_follow?(user_a)).to be false
+      end
+    end
+  end
 end
