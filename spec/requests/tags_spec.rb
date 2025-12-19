@@ -20,36 +20,41 @@ RSpec.describe "Tags", type: :request do
         expect(response.content_type).to match(%r{application/json})
 
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly("rails", "ruby", "rust")
+        tag_names = json.map { |tag| tag["name"] }
+        expect(tag_names).to contain_exactly("rails", "ruby", "rust")
       end
 
       it "大文字小文字を区別せずに検索する" do
         get autocomplete_tags_path, params: { q: "R" }
 
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly("rails", "ruby", "rust")
+        tag_names = json.map { |tag| tag["name"] }
+        expect(tag_names).to contain_exactly("rails", "ruby", "rust")
       end
 
       it "posts_count降順でソートされる" do
         get autocomplete_tags_path, params: { q: "r" }
 
         json = JSON.parse(response.body)
-        expect(json).to eq([ "ruby", "rails", "rust" ])
+        tag_names = json.map { |tag| tag["name"] }
+        expect(tag_names).to eq([ "ruby", "rails", "rust" ])
       end
 
       it "完全一致でも検索できる" do
         get autocomplete_tags_path, params: { q: "rails" }
 
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly("rails")
+        tag_names = json.map { |tag| tag["name"] }
+        expect(tag_names).to contain_exactly("rails")
       end
 
       it "空文字の場合は全てのタグを返す" do
         get autocomplete_tags_path, params: { q: "" }
 
         json = JSON.parse(response.body)
+        tag_names = json.map { |tag| tag["name"] }
         # このコンテキストで作成した5つのタグを含む
-        expect(json).to include("rails", "ruby", "rust", "javascript", "python")
+        expect(tag_names).to include("rails", "ruby", "rust", "javascript", "python")
       end
 
       it "マッチしない場合は空配列を返す" do
@@ -79,9 +84,10 @@ RSpec.describe "Tags", type: :request do
         get autocomplete_tags_path, params: { q: "react" }
 
         json = JSON.parse(response.body)
+        tag_names = json.map { |tag| tag["name"] }
         # posts_countが高い順（react15, react14, ..., react6）
-        expect(json.first).to eq("react15")
-        expect(json.last).to eq("react6")
+        expect(tag_names.first).to eq("react15")
+        expect(tag_names.last).to eq("react6")
       end
     end
 
@@ -96,7 +102,8 @@ RSpec.describe "Tags", type: :request do
         get autocomplete_tags_path, params: { q: "テスト" }
 
         json = JSON.parse(response.body)
-        expect(json).to contain_exactly("テスト", "テストケース")
+        tag_names = json.map { |tag| tag["name"] }
+        expect(tag_names).to contain_exactly("テスト", "テストケース")
       end
     end
   end
