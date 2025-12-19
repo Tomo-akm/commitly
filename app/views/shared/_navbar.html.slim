@@ -45,7 +45,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
                   i.fas.fa-user.me-2
                   | プロフィール
               li
-                = link_to settings_root_path, class: "dropdown-item" do
+                = link_to Settings::Navigation.default_path, class: "dropdown-item" do
                   i.fas.fa-cog.me-2
                   | 設定
               li
