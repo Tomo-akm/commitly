@@ -1,15 +1,6 @@
 .settings-container
   .row.g-4
-    / サイドバー
-    .col-md-3
-      .card
-        .list-group.list-group-flush
-          = link_to settings_privacy_path, class: "list-group-item list-group-item-action" do
-            i.fas.fa-lock.me-2.text-primary
-            | プライバシー
-          = link_to settings_api_keys_path, class: "list-group-item list-group-item-action" do
-            i.fas.fa-key.me-2.text-primary
-            | APIキー
+    = render "settings/shared/sidebar"
 
     / メインコンテンツ
     .col-md-9
