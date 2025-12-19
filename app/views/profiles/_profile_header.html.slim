@@ -27,6 +27,14 @@
 
     .profile-info-item
       .profile-icon
+        i.fas.fa-graduation-cap
+      .profile-label 卒業年度
+      .profile-value = @user.graduation_year.present? ? "#{@user.graduation_year}年卒" : "ー"
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
         i.fas.fa-code
       .profile-label 好きな言語
       .profile-value = @user.favorite_language.present? ? @user.favorite_language : "ー"

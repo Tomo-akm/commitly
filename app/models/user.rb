@@ -58,6 +58,9 @@ class User < ApplicationRecord
             presence: true,
             numericality: { greater_than_or_equal_to: 0 },
             allow_blank: true
+  validates :graduation_year,
+            numericality: { only_integer: true, greater_than_or_equal_to: 2000, less_than_or_equal_to: 2100 },
+            allow_blank: true
 
   # アバター画像のバリデーション
   validates :avatar, content_type: { in: [ "image/png", "image/jpeg" ], message: "はPNGまたはJPEG形式を選択してください" },

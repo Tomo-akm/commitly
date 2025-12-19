@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_18_163612) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_19_020040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -328,6 +328,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_18_163612) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "favorite_language"
+    t.integer "graduation_year"
     t.integer "internship_count"
     t.string "name"
     t.text "personal_message"

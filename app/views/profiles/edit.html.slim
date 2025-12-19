@@ -22,6 +22,11 @@
               = form.text_field :name, class: "form-input", placeholder: "例: 山田太郎"
 
             .form-group
+              = form.label :graduation_year, "卒業年度", class: "form-label"
+              = form.number_field :graduation_year, class: "form-input", min: 2000, max: 2100, placeholder: "2026"
+              .form-help 卒業予定の年度を入力してください（例: 2026）
+
+            .form-group
               = form.label :avatar, "アバター画像", class: "form-label"
               = form.file_field :avatar, class: "form-input", accept: "image/png, image/jpeg", data: { avatar_size_validator_target: "input", action: "change->avatar-size-validator#validate" }
               = turbo_frame_tag "avatar-preview" do
