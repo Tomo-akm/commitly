@@ -26,8 +26,7 @@ class PostsController < ApplicationController
   def show
     # 投稿の可視性チェック
     unless @post.visible_to?(current_user)
-      redirect_to posts_path, alert: "この投稿を閲覧する権限がありません。"
-      return
+      redirect_to posts_path, alert: "この投稿を閲覧する権限がありません。" and return
     end
 
     # リプライの公開範囲フィルタリング
