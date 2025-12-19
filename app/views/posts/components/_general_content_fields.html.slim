@@ -7,9 +7,8 @@
       rows: 5,
       placeholder: "#タグ を本文に含めると自動でタグ化されます",
       data: { \
-        action: "input->text-highlighter#update input->tag-autocomplete#onInput keydown->tag-autocomplete#onKeyDown", \
+          action: "input->text-highlighter#update input->tag-autocomplete#onInput keydown->tag-autocomplete#onKeyDown", \
         "text-highlighter-target": "textarea", \
         "tag-autocomplete-target": "textarea" \
       }
     ul.tag-autocomplete__list(hidden data-tag-autocomplete-target="list")
-  .text-input__chips data-text-highlighter-target="tagList" data-state="empty"
