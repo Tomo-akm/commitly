@@ -18,12 +18,16 @@ module VaultHelper
     content_tag(:span, config[:text], class: "badge rounded-pill #{config[:class]}#{size_class}")
   end
 
-  def vault_empty_state(icon:, title:, message:, button_text: nil, button_path: nil)
+  def vault_empty_state(icon:, title:, message:, button_text: nil, button_path: nil, size: :md)
+    icon_class = size == :sm ? "fa-2x mb-3" : "fa-3x mb-4"
+    title_tag = size == :sm ? :h5 : :h3
+    message_class = size == :sm ? "text-muted mb-3 text-sm" : "text-muted mb-4"
+
     content_tag :div, class: "text-center py-5" do
       parts = [
-        content_tag(:i, "", class: "fas fa-#{icon} fa-3x text-muted mb-4"),
-        content_tag(:h3, title, class: "text-muted"),
-        content_tag(:p, message, class: "text-muted mb-4")
+        content_tag(:i, "", class: "fas fa-#{icon} #{icon_class} text-muted"),
+        content_tag(title_tag, title, class: "text-muted"),
+        content_tag(:p, message, class: message_class)
       ]
 
       if button_text && button_path

@@ -20,7 +20,7 @@ html
       .resizable-layout[data-controller="resizable-layout"]
 
         .left-container[data-resizable-layout-target="left"]
-          = render "shared/vault_header"
+          = render "shared/navbar", context: :vault
 
           main.main-container
             .container.py-5
@@ -39,7 +39,7 @@ html
 
   - else
     body.d-flex.flex-column.min-vh-100
-      = render "shared/vault_header"
+      = render "shared/navbar", context: :vault
 
       main.container.py-5.flex-grow-1
         = render "shared/flash"
