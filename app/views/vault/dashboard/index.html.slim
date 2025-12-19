@@ -78,7 +78,7 @@
                       = vault_datetime_with_icon es.deadline, icon: "calendar-alt"
                   = entry_sheet_status_badge(es)
         - else
-          = vault_empty_state icon: "clock", title: "締切が設定されたESはありません", message: "", button_text: "新規作成", button_path: new_vault_entry_sheet_path
+          = vault_empty_state icon: "clock", title: "直近2週間の締切はありません", message: "", size: :sm
 
   / 最近のES
   .col-lg-6
@@ -95,4 +95,4 @@
                     = vault_datetime_with_icon es.created_at.to_date, icon: "calendar-plus"
                   = entry_sheet_status_badge(es)
         - else
-          = vault_empty_state icon: "folder-open", title: "ESがまだありません", message: "", button_text: "新規作成", button_path: new_vault_entry_sheet_path
+          = vault_empty_state icon: "folder-open", title: "ESがまだありません", message: "", button_text: "新規作成", button_path: new_vault_entry_sheet_path, size: :sm

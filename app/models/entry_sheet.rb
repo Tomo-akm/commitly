@@ -17,7 +17,11 @@ class EntrySheet < ApplicationRecord
   validates :status, presence: true
 
   # スコープ
-  scope :upcoming_deadline, -> { where.not(deadline: nil).order(deadline: :asc) }
+  scope :upcoming_deadline, lambda {
+    where.not(deadline: nil)
+         .where(deadline: Time.current..2.weeks.from_now)
+         .order(deadline: :asc)
+  }
   scope :recent, -> { order(created_at: :desc) }
 
   # ネストフォーム用
