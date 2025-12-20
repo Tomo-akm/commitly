@@ -9,14 +9,25 @@
             = request.path.include?('following') ? 'フォロー中' : 'フォロワー'
 
         .card-body.p-4
-          - if @users.any?
-            ul.list-group
-              - @users.each do |user|
-                li.list-group-item.d-flex.justify-content-between.align-items-center
-                  = link_to user.name, user_profile_path(user)
-                  - if user_signed_in? && current_user != user
-                    = turbo_frame_tag dom_id(user, "follow_button") do
-                      = render "profiles/follow_button", user: user
+          - if @follow_list_visible
+            - if @users.any?
+              ul.list-group
+                - @users.each do |user|
+                  li.list-group-item.d-flex.justify-content-between.align-items-center
+                    = link_to user.name, user_profile_path(user)
+                    - if user_signed_in? && current_user != user
+                      = turbo_frame_tag dom_id(user, "follow_button") do
+                        = render "profiles/follow_button", user: user
+            - else
+              .text-center.py-5.text-muted
+                p まだ誰もいません。
           - else
-            .text-center.py-5.text-muted
-              p まだ誰もいません。
+            / 非公開メッセージ
+            .text-center.py-5
+              i.fas.fa-lock.display-1.text-muted.mb-3
+              h4.mb-3 このユーザーはフォローリストを非公開にしています
+              p.text-muted.mb-0
+                - if @user.mutual_followers?
+                  | 相互フォロー関係を結ぶと、フォローリストが閲覧できるようになります
+                - else
+                  | フォローリストは本人のみ閲覧可能です

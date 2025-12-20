@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
-  resources :tags, only: [ :index, :show ]
+  resources :tags, only: [ :index, :show ] do
+    collection do
+      get :autocomplete
+    end
+  end
   get "home/index"
   get "profile", to: "profiles#show"
   get "profile/likes", to: "profiles#likes", as: "profile_likes"
@@ -29,6 +33,8 @@ Rails.application.routes.draw do
 
   # Settings（設定エリア）
   namespace :settings do
+    root "settings#index"
+    resource :privacy, only: [ :show, :update ], controller: "privacy"
     resources :api_keys, only: [ :index, :create, :destroy ]
   end
 

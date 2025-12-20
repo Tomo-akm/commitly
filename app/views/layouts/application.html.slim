@@ -24,7 +24,7 @@ html
     = javascript_importmap_tags
 
   body.d-flex.flex-column.min-vh-100
-    = render "shared/header"
+    = render "shared/navbar", context: :community
 
     main.container.py-5.flex-grow-1
       = render "shared/flash"

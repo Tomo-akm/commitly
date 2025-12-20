@@ -1,0 +1,8 @@
+.text-center.py-5.text-muted
+  i.far.fa-sticky-note.display-4.mb-3
+  p.mb-0 まだ投稿がありません
+  p.text-sm 最初の投稿をしてみましょう！
+  - if user_signed_in?
+    = link_to "新しい投稿", new_post_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top" }
+  - else
+    = link_to "新しい投稿", new_user_session_path, class: "btn btn-gradient-primary mt-2", data: { turbo_frame: "_top", confirm: "投稿するにはログインが必要です。ログインページに移動しますか？" }

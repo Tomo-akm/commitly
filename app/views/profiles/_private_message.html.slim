@@ -1,0 +1,10 @@
+/ 非公開メッセージ
+.card.card-primary.fade-in
+  .card-body.p-5.text-center
+    i.fas.fa-lock.display-1.text-muted.mb-3
+    h4.mb-3 このユーザーは投稿を非公開にしています
+    p.text-muted.mb-0
+      - if @user.mutual_followers?
+        | 相互フォロー関係を結ぶと、投稿が閲覧できるようになります
+      - else
+        | 投稿は本人のみ閲覧可能です

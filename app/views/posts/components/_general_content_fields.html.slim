@@ -1,4 +1,4 @@
-.form-group data-controller="text-highlighter"
+.form-group data-controller="text-highlighter tag-autocomplete" data-tag-autocomplete-url-value=autocomplete_tags_path
   = form.label :content, class: "form-label required"
   .text-input
     .text-input__preview aria-hidden="true" data-text-highlighter-target="preview"
@@ -6,5 +6,9 @@
       class: "form-textarea text-input__field",
       rows: 5,
       placeholder: "#タグ を本文に含めると自動でタグ化されます",
-      data: { action: "input->text-highlighter#update", "text-highlighter-target": "textarea" }
-  .text-input__chips data-text-highlighter-target="tagList" data-state="empty"
+      data: { \
+          action: "input->text-highlighter#update input->tag-autocomplete#onInput keydown->tag-autocomplete#onKeyDown", \
+        "text-highlighter-target": "textarea", \
+        "tag-autocomplete-target": "textarea" \
+      }
+    ul.tag-autocomplete__list(hidden data-tag-autocomplete-target="list")

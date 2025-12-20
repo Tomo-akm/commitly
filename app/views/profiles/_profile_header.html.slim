@@ -3,8 +3,12 @@
   .card-header.bg-primary.text-white.p-4
     .d-flex.justify-content-between.align-items-center
       h2.h3.mb-0.font-bold.d-flex.align-items-center
-        i.fas.fa-user-circle.me-2
+        = render "shared/avatar", user: @user, size: 48, class_name: "me-2"
         = @user.name
+        - if @user.mutual_followers?
+          i.fas.fa-user-friends.ms-2.text-white-50 title="相互フォローのみ"
+        - elsif @user.only_me?
+          i.fas.fa-lock.ms-2.text-white-50 title="自分だけ"
       .d-flex.gap-2
         - if user_signed_in?
           - if @user == current_user
