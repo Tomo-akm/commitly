@@ -2,8 +2,8 @@
 
 .container
   .row
-    / サイドバー（モバイルでは2番目に表示）
-    .col-lg-3.order-2.order-lg-1
+    / 左サイドバー - 人気タグ（モバイルでは3番目に表示）
+    .col-lg-3.order-3.order-lg-1
       .card.card-primary.fade-in.card-decorative
         .card-header.bg-info.text-white
           h5.mb-0.font-semibold
@@ -22,7 +22,7 @@
             p.text-muted.mb-0.text-center まだタグがありません
 
     / メインコンテンツ（モバイルでは1番目に表示）
-    .col-lg-9.order-1.order-lg-2
+    .col-lg-6.order-1.order-lg-2
       .text-center.mb-4.fade-in
         h1.display-4.font-bold.text-primary Commitly
         p.lead.text-muted.mt-3
@@ -47,6 +47,41 @@
 
       .d-flex.justify-content-center.mt-4
         = paginate @posts
+
+    / 右サイドバー - ES管理（モバイルでは2番目に表示）
+    .col-lg-3.order-2.order-lg-3
+      - if user_signed_in?
+        - es_count = current_user.entry_sheets.count
+        - upcoming_count = current_user.entry_sheets.upcoming_deadline.count
+
+        .card.card-primary.fade-in.card-decorative.border-primary
+          .card-header.bg-gradient-primary.text-white
+            h5.mb-0.font-semibold
+              i.fas.fa-briefcase.me-2
+              | ES管理（Vault）
+
+          .card-body.p-4.text-center
+            - if es_count == 0
+              / 未登録状態
+              .mb-3
+                i.fas.fa-folder-open.fa-3x.text-muted.mb-2
+                p.text-muted.mb-1.small ESがまだ登録されていません
+              = link_to vault_root_path, class: "btn btn-primary w-100" do
+                i.fas.fa-plus.me-2
+                | ESを作成する
+            - else
+              / 登録済み状態
+              .d-flex.justify-content-around.mb-3
+                div
+                  .fs-2.fw-bold.text-primary = es_count
+                  small.text-muted 件のES
+                - if upcoming_count > 0
+                  div
+                    .fs-2.fw-bold.text-warning = upcoming_count
+                    small.text-muted 締切間近
+              = link_to vault_root_path, class: "btn btn-outline-primary w-100" do
+                i.fas.fa-eye.me-2
+                | Vaultを開く
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

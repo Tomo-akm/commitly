@@ -13,11 +13,14 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
     .collapse.navbar-collapse#navbarSupportedContent
       ul.navbar-nav.ms-auto.align-items-lg-center
         - if user_signed_in?
+          / 就活Vault - ES数バッジ付きドロップダウン
+          - es_count = current_user.entry_sheets.count
           li.nav-item.dropdown[data-bs-display="static"]
             a.nav-link.dropdown-toggle.text-white.d-flex.align-items-center.gap-2 href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
               span.icon-24
                 i.fas.fa-briefcase
               | 就活Vault
+              span.badge.bg-success.rounded-pill.ms-1 = es_count
             ul.dropdown-menu
               li
                 = link_to vault_root_path, class: "dropdown-item d-flex align-items-center gap-2" do
