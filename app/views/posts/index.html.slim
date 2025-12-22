@@ -16,7 +16,7 @@
                 .d-flex.justify-content-between.align-items-center.mb-1.p-2.rounded.hover-scale.transition-all
                   span.badge-modern ##{tag.name}
                   span.text-muted.text-sm.font-semibold = tag.visible_posts_count
-            .separator-gradient.my-2
+            .my-2
             = link_to "すべてのタグを見る", tags_path, class: "btn btn-sm btn-outline-primary w-100"
           - else
             p.text-muted.mb-0.text-center まだタグがありません
@@ -48,37 +48,43 @@
       .d-flex.justify-content-center.mt-4
         = paginate @posts
 
-    / 右サイドバー - ES管理（モバイルでは2番目に表示）
+    / 右サイドバー - Vault（モバイルでは2番目に表示）
     .col-lg-3.order-2.order-lg-3
       - if user_signed_in?
-        - es_count = current_user.entry_sheets.count
-        - upcoming_count = current_user.entry_sheets.upcoming_deadline.count
+        - es_count = @vault_es_count || 0
+        - progress_company_count = @vault_progress_company_count || 0
+        - company_progress = @vault_progress_companies || []
 
         .card.card-primary.fade-in.card-decorative.border-primary
           .card-header.bg-gradient-primary.text-white
             h5.mb-0.font-semibold
               i.fas.fa-briefcase.me-2
-              | ES管理（Vault）
+              | Vault
 
-          .card-body.p-4.text-center
-            - if es_count == 0
-              / 未登録状態
-              .mb-3
-                i.fas.fa-folder-open.fa-3x.text-muted.mb-2
-                p.text-muted.mb-1.small ESがまだ登録されていません
-              = link_to vault_root_path, class: "btn btn-primary w-100" do
-                i.fas.fa-plus.me-2
-                | ESを作成する
-            - else
-              / 登録済み状態
-              .d-flex.justify-content-around.mb-3
-                div
-                  .fs-2.fw-bold.text-primary = es_count
-                  small.text-muted 件のES
-                - if upcoming_count > 0
-                  div
-                    .fs-2.fw-bold.text-warning = upcoming_count
-                    small.text-muted 締切間近
+          .card-body.p-4
+            .d-flex.justify-content-between.align-items-center.mb-3
+              div
+                .fs-4.fw-bold.text-primary = es_count
+                small.text-muted ES
+              div.text-end
+                .fs-4.fw-bold.text-primary = progress_company_count
+                small.text-muted 選考中の企業
+            - if company_progress.any?
+              .separator-gradient.my-2
+              ul.list-unstyled.mb-3
+                - company_progress.each do |company|
+                  li.d-flex.justify-content-between.align-items-center.mb-2
+                    span.text-ellipsis = company[:company_name]
+                    span.d-flex.align-items-center.gap-2
+                      span.badge.rounded-pill.bg-light.text-dark = company[:selection_stage_ja]
+                      - case company[:result]
+                      - when "passed"
+                        span.badge.rounded-pill.bg-success.text-white = company[:result_ja]
+                      - when "failed"
+                        span.badge.rounded-pill.bg-danger.text-white = company[:result_ja]
+                      - when "pending"
+                        span.badge.rounded-pill.bg-warning.text-dark = company[:result_ja]
+            .d-grid.gap-2
               = link_to vault_root_path, class: "btn btn-outline-primary w-100" do
                 i.fas.fa-eye.me-2
                 | Vaultを開く
