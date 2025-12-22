@@ -1,40 +1,84 @@
-.row.justify-content-center.fade-in
-  .col-lg-10
-    .card.card-primary.shadow-lg
-      .card-body.p-5
-        / ヒーローセクション
-        .text-center.mb-5
-          h1.display-4.font-bold.mb-3 Commitly
-          p.lead.mb-4 情報系大学生向けの就活version管理SNS
-          p.fs-5.mb-4.text-muted 毎日commitして、みんなで理想のmain branchに向かおう！
-          = link_to "commit logを見る！", posts_path, class: "btn btn-gradient-primary btn-lg px-4 py-2 font-bold"
+.row.fade-in
+  .col-12
+    .py-5
+      / ヒーローセクション
+      .text-center.mb-5
+        h1.display-4.font-bold.mb-3 Commitly
+        p.lead.mb-4 情報系大学生向けの就活version管理SNS
+        p.fs-5.mb-4.text-muted 毎日commitして、みんなで理想のmain branchに向かおう！
+        = link_to "commit logを見る！", posts_path, class: "btn btn-gradient-primary btn-lg px-5 py-3 font-bold"
 
-        / 特徴セクション
-        .text-center.mb-5
-          h2.h3.mb-3.font-semibold Commitlyの特徴
-          p.text-muted 情報系大学生の就活をgitで管理する3つの機能
+      / 特徴セクション
+      .text-center.mb-5
+        h2.h3.mb-3.font-semibold Commitlyの特徴
+        p.text-muted 情報系大学生の就活をgitで管理する3つの機能
+        hr.separator-gradient.my-3
 
-        .row.g-4
-          .col-md-4.fade-in
-            .card.card-hover.h-100
-              .card-body.text-center.p-4
-                .icon-circle.bg-primary-light.mb-3
-                  i.fab.fa-git-alt.text-primary.fs-4
-                h5.card-title.font-semibold みんなのcommit log確認
-                p.card-text.text-muted 同期・先輩のcommit履歴をgit logで確認。マージ済みの就活戦略を参考にして、自分のbranchも育てよう！
+      .row.g-4
+        .col-md-4.fade-in
+          .card.h-100.border-0.shadow-sm
+            .card-body.text-center.p-4
+              .icon-circle.bg-primary-light.mb-3
+                i.fab.fa-git-alt.text-primary.fs-4
+              h5.card-title.font-semibold みんなのcommit log確認
+              p.card-text.text-muted 同期・先輩のcommit履歴をgit logで確認。マージ済みの就活戦略を参考にして、自分のbranchも育てよう！
 
-          .col-md-4.fade-in
-            .card.card-hover.h-100
-              .card-body.text-center.p-4
-                .icon-circle.bg-secondary-light.mb-3
-                  i.fas.fa-upload.text-secondary.fs-4
-                h5.card-title.font-semibold 就活進捗をpush
-                p.card-text.text-muted 面接、ES、コーディングテストの結果をcommitしてpush！コンフリクトなしで、みんなで就活リポジトリを共有しよう。
+        .col-md-4.fade-in
+          .card.h-100.border-0.shadow-sm
+            .card-body.text-center.p-4
+              .icon-circle.bg-secondary-light.mb-3
+                i.fas.fa-upload.text-secondary.fs-4
+              h5.card-title.font-semibold 就活進捗をpush
+              p.card-text.text-muted 面接、ES、コーディングテストの結果をcommitしてpush！コンフリクトなしで、みんなで就活リポジトリを共有しよう。
 
-          .col-md-4.fade-in
-            .card.card-hover.h-100
-              .card-body.text-center.p-4
-                .icon-circle.bg-info-light.mb-3
-                  i.fas.fa-code.text-info.fs-4
-                h5.card-title.font-semibold 情報系就活生専用repository
-                p.card-text.text-muted プログラミング面接対策、研究室選択、インターン情報など。同期・先輩がforkした就活ノウハウが満載！
+        .col-md-4.fade-in
+          .card.h-100.border-0.shadow-sm
+            .card-body.text-center.p-4
+              .icon-circle.bg-info-light.mb-3
+                i.fas.fa-code.text-info.fs-4
+              h5.card-title.font-semibold 就活ログを“見える化”
+              p.card-text.text-muted 投稿とタグで就活の流れが見渡せる。やることが整理されて、次の一手が決めやすくなります。
+
+      / できることセクション
+      .text-center.mt-5.mb-4
+        h2.h3.mb-3.font-semibold Commitlyでできること
+        p.text-muted 就活SNSとVaultをまとめて使えるように設計しています
+        hr.separator-gradient.my-3
+
+      .row.g-4
+        .col-md-6
+          .card.h-100.border-0.shadow-sm.card-decorative
+            .card-body.p-4
+              .d-flex.align-items-center.gap-3.mb-3
+                .icon-circle.bg-primary-light
+                  i.fas.fa-comments.text-primary.fs-4
+                div
+                  h5.card-title.font-semibold.mb-1 SNS機能
+                  p.text-muted.mb-0.small 交流しながら就活を進める
+              ul.text-muted.mb-3
+                li commit logの投稿・検索
+                li タグで投稿を探す
+                li いいね・リプライで交流
+                li プロフィールと活動ヒートマップ
+              = link_to "commit logを見る", posts_path, class: "btn btn-outline-primary w-100"
+              p.text-muted.small.mt-2.mb-0
+                i.fas.fa-bolt.ml-1.me-1
+                | 今すぐ閲覧できます（ログイン不要）
+        .col-md-6
+          .card.h-100.border-0.shadow-sm.card-decorative
+            .card-body.p-4
+              .d-flex.align-items-center.gap-3.mb-3
+                .icon-circle.bg-info-light
+                  i.fas.fa-briefcase.text-info.fs-4
+                div
+                  h5.card-title.font-semibold.mb-1 Vault機能
+                  p.text-muted.mb-0.small ESと進捗をひとまとめ
+              ul.text-muted.mb-3
+                li ESの作成・一覧・締切管理
+                li 企業別の選考進捗を可視化
+                li テンプレートでES作成を効率化
+                li AI添削パネルでブラッシュアップ
+              = link_to "Vaultを覗く", vault_root_path, class: "btn btn-outline-primary w-100"
+              p.text-muted.small.mt-2.mb-0
+                i.fas.fa-lock.ml-1.me-1
+                | Vaultはログインが必要です
