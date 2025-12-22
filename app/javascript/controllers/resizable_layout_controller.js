@@ -5,6 +5,7 @@ export default class extends Controller {
 
   connect() {
     this.isDragging = false
+    this.activePointerId = null
   }
 
   disconnect() {
@@ -20,6 +21,8 @@ export default class extends Controller {
 
     if (this.#isMobile()) {
       this.sidePanelTarget.style.display = "block"
+    } else {
+      this.#syncLayout()
     }
   }
 
@@ -29,6 +32,9 @@ export default class extends Controller {
 
     if (this.#isMobile()) {
       this.sidePanelTarget.style.display = "none"
+    } else {
+      this.dividerTarget.style.right = ""
+      this.leftTarget.style.marginRight = ""
     }
   }
 
@@ -36,29 +42,48 @@ export default class extends Controller {
     if (this.#isMobile()) return
 
     this.isDragging = true
-    document.addEventListener("mousemove", this.#resizePanel)
-    document.addEventListener("mouseup", this.#stopResize)
+    this.activePointerId = event.pointerId
+    this.dividerTarget.setPointerCapture?.(event.pointerId)
+    window.addEventListener("pointermove", this.#resizePanel)
+    window.addEventListener("pointerup", this.#stopResize)
+    window.addEventListener("pointercancel", this.#stopResize)
     event.preventDefault()
   }
 
   #resizePanel = (event) => {
     if (!this.isDragging) return
+    if (this.activePointerId !== null && event.pointerId !== this.activePointerId) return
 
-    const newWidth = window.innerWidth - event.clientX
+    const pointerEvent = event?.clientX ? event : (event.touches ? event.touches[0] : null)
+    if (!pointerEvent) return
+
+    const newWidth = window.innerWidth - pointerEvent.clientX
     const width = Math.max(300, Math.min(600, newWidth))
     this.sidePanelTarget.style.width = `${width}px`
+    this.#syncLayout()
   }
 
-  #stopResize = () => {
+  #stopResize = (event) => {
     this.isDragging = false
-    document.removeEventListener("mousemove", this.#resizePanel)
-    document.removeEventListener("mouseup", this.#stopResize)
+    if (this.activePointerId !== null) {
+      this.dividerTarget.releasePointerCapture?.(this.activePointerId)
+    }
+    this.activePointerId = null
+    window.removeEventListener("pointermove", this.#resizePanel)
+    window.removeEventListener("pointerup", this.#stopResize)
+    window.removeEventListener("pointercancel", this.#stopResize)
   }
 
   #switchPanel(panelId) {
     this.element.querySelectorAll(".side-panel-content").forEach(panel => {
       panel.style.display = (panel.dataset.panelId === panelId) ? "block" : "none"
     })
+  }
+
+  #syncLayout() {
+    const panelWidth = parseFloat(this.sidePanelTarget.style.width) || this.sidePanelTarget.offsetWidth
+    this.dividerTarget.style.right = `${panelWidth}px`
+    this.leftTarget.style.marginRight = `${panelWidth}px`
   }
 
   #isMobile() {
@@ -71,4 +96,3 @@ export default class extends Controller {
     this.element.classList.remove("panel-open")
   }
 }
-

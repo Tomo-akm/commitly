@@ -12,16 +12,20 @@
   .left-container {
     flex: 1;
     overflow-y: auto;
-    background: #fff;
   }
 
   // リサイズ用divider
   .resize-divider {
     width: 6px;
-    background: #e0e0e0;
+    background: $panel-border-color;
     cursor: ew-resize;
     display: none; // 初期非表示
     transition: background-color 0.2s;
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    right: 0;
+    z-index: 1040;
 
     &:hover {
       background-color: rgba(0, 123, 255, 0.3);
@@ -35,12 +39,16 @@
   // 右側: AIパネル
   .side-panel {
     width: 0;
-    max-width: 500px;
+    max-width: 600px;
     overflow-y: auto;
-    background: #fafafa;
-    border-left: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    background: $panel-bg;
+    border-left: 1px solid $panel-border-color;
     display: none; // 初期非表示
-    transition: width 0.25s;
+    z-index: 1050;
 
     .side-panel-content {
       height: 100%;
@@ -75,6 +83,15 @@
 
     .resize-divider {
       display: block;
+    }
+
+    .left-container {
+      .container {
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        padding-right: 0;
+      }
     }
   }
 }
