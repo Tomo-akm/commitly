@@ -8,6 +8,9 @@ module Llm
       when "anthropic"
         # Anthropic公式SDK
         Anthropic::Client.new(api_key: api_key)
+      when "google_ai_studio"
+        # REST streamingのためSDK不要
+        nil
       else
         raise "Unknown provider: #{provider}"
       end

@@ -53,12 +53,19 @@
                 td
                   small.text-muted = company[:updated_at].strftime('%Y/%m/%d')
     - else
+      / 完全に空の状態：中央に大きく表示
       .text-center.py-5
-        i.fas.fa-clipboard-list.fa-3x.text-muted.mb-3
-        p.text-muted.mb-0 就活記録がまだありません。
-        p.text-muted
-          = link_to "commit log", posts_path, class: "text-decoration-none fw-bold"
-          | から就活記録を投稿してみましょう！
+        .mb-4
+          i.fas.fa-rocket.fa-4x.text-primary.mb-3
+          h3.fw-bold.text-primary 就活記録を始めましょう！
+          p.text-muted.mb-4
+            | commit logで就活の進捗を記録すると、
+            br
+            | 企業別の選考状況がここに表示されます。
+
+        = link_to posts_path, class: "btn btn-primary btn-lg" do
+          i.fas.fa-clipboard-list.me-2
+          | commit logから記録
 
 / ES一覧
 .row.g-4
