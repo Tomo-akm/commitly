@@ -1,4 +1,6 @@
 class TagsController < ApplicationController
+  before_action :set_right_nav_data, only: %i[index show]
+
   def index
     @q = Tag.ransack(params[:q])
     @tags = @q.result(distinct: true).with_posts.popular.page(params[:page]).per(20)
