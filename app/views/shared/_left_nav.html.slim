@@ -1,0 +1,68 @@
+nav.left-nav
+  = link_to root_path, class: "left-nav__brand d-flex align-items-center gap-2 text-decoration-none" do
+    span Commitly
+    - if local_assigns[:context] == :vault
+      span.badge.bg-light.text-primary 就活記録Vault
+    - else
+      span.badge.bg-light.text-primary 就活記録SNS
+
+  .left-nav__section
+    span.left-nav__section-title SNS
+    = link_to posts_path, class: "left-nav__link" do
+      span.icon-24
+        i.fas.fa-home
+      span ホーム
+    = link_to profile_path, class: "left-nav__link" do
+      span.icon-24
+        i.fas.fa-user
+      span プロフィール
+
+  - if user_signed_in?
+    .left-nav__section
+      span.left-nav__section-title Vault
+      = link_to vault_root_path, class: "left-nav__link" do
+        span.icon-24
+          i.fas.fa-home
+        span ダッシュボード
+      = link_to vault_entry_sheets_path, class: "left-nav__link" do
+        span.icon-24
+          i.fas.fa-file-alt
+        span ES一覧
+      = link_to vault_entry_sheet_item_templates_path, class: "left-nav__link" do
+        span.icon-24
+          i.fas.fa-bookmark
+        span テンプレート
+
+    .left-nav__section
+      span.left-nav__section-title メニュー
+      = link_to Settings::Navigation.default_path, class: "left-nav__link" do
+        span.icon-24
+          i.fas.fa-cog
+        span 設定
+  - else
+    .left-nav__section
+      span.left-nav__section-title メニュー
+      = link_to "ログイン", new_user_session_path, class: "left-nav__link"
+      = link_to "新規登録", new_user_registration_path, class: "left-nav__link"
+
+  .left-nav__section
+    span.left-nav__section-title リンク
+    = link_to "ホーム・コンセプト", home_index_path, class: "left-nav__link"
+    = link_to "Git Tips", "#", data: { bs_toggle: "modal", bs_target: "#helpModal" }, class: "left-nav__link"
+
+  - if user_signed_in?
+    .left-nav__user
+      .d-flex.align-items-center.gap-2
+        = render "shared/avatar", user: current_user, size: 28, class_name: ""
+        span = current_user&.name
+        .dropdown.ms-auto
+          button.btn.btn-link.text-muted.p-0.post-menu-trigger[
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="ユーザーメニューを開く"
+          ]
+            i.fas.fa-ellipsis-h
+          ul.dropdown-menu.dropdown-menu-end
+            li
+              = link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "dropdown-item text-danger"
