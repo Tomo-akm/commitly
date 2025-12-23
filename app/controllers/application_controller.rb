@@ -18,9 +18,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_popular_tags
-    visible_post_ids = Post.visible_to(current_user).pluck(:id)
+    visible_posts_subquery = Post.visible_to(current_user).select(:id)
     @popular_tags = Tag.joins(:posts)
-                       .where(posts: { id: visible_post_ids })
+                       .where(posts: { id: visible_posts_subquery })
                        .group("tags.id")
                        .select("tags.*, COUNT(posts.id) AS visible_posts_count")
                        .order("COUNT(posts.id) DESC")

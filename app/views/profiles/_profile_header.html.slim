@@ -72,8 +72,8 @@
 
     .separator-gradient
 
-    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user), linkable: user_signed_in?
+    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user), linkable: true
 
     .separator-gradient
 
-    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user), linkable: user_signed_in?
+    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user), linkable: true

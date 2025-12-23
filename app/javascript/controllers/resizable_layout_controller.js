@@ -54,10 +54,9 @@ export default class extends Controller {
     if (!this.isDragging) return
     if (this.activePointerId !== null && event.pointerId !== this.activePointerId) return
 
-    const pointerEvent = event?.clientX ? event : (event.touches ? event.touches[0] : null)
-    if (!pointerEvent) return
+    if (typeof event.clientX !== "number") return
 
-    const newWidth = window.innerWidth - pointerEvent.clientX
+    const newWidth = window.innerWidth - event.clientX
     const width = Math.max(300, Math.min(600, newWidth))
     this.sidePanelTarget.style.width = `${width}px`
     this.#syncLayout()

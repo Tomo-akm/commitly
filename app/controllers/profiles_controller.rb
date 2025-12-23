@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!, except: [ :show, :following, :followers ]
-  before_action :set_user, only: [ :show, :likes ]
+  before_action :set_user, only: [ :show, :likes, :following, :followers ]
   before_action :set_right_nav_data, only: [ :show, :likes, :following, :followers ]
 
   def show
@@ -41,14 +41,12 @@ class ProfilesController < ApplicationController
   end
 
   def following
-    @user  = User.find(params[:id])
     @follow_list_visible = follow_list_visible_to_viewer?
     @users = @follow_list_visible ? @user.following : []
     render "show_follow"
   end
 
   def followers
-    @user  = User.find(params[:id])
     @follow_list_visible = follow_list_visible_to_viewer?
     @users = @follow_list_visible ? @user.followers : []
     render "show_follow"
