@@ -59,6 +59,8 @@ nav.left-nav
     = link_to "Git Tips", "#", data: { bs_toggle: "modal", bs_target: "#helpModal" }, class: "left-nav__link"
 
   - if user_signed_in?
+    = link_to new_post_path, class: "left-nav__cta", data: { turbo_frame: "main" } do
+      span Commit
     .left-nav__user
       .d-flex.align-items-center.gap-2
         = render "shared/avatar", user: current_user, size: 28, class_name: ""
