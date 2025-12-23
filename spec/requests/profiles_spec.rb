@@ -93,6 +93,30 @@ RSpec.describe "Profiles", type: :request do
         expect(user.name).to eq(old_name)
         expect(response).to have_http_status(:unprocessable_entity)
       end
+
+      it "卒業年度が2000年未満の場合は更新できない" do
+        patch profile_path, params: {
+          user: {
+            name: user.name,
+            graduation_year: 1999
+          }
+        }
+        user.reload
+        expect(user.graduation_year).to be_nil
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "卒業年度が2100年を超える場合は更新できない" do
+        patch profile_path, params: {
+          user: {
+            name: user.name,
+            graduation_year: 2101
+          }
+        }
+        user.reload
+        expect(user.graduation_year).to be_nil
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
   end
 

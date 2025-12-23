@@ -34,6 +34,11 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
 
+      it '範囲外の卒業年度（2150年）の場合は無効' do
+        user = build(:user, graduation_year: 2150)
+        expect(user).not_to be_valid
+      end
+
       it '空欄の場合は有効（任意項目）' do
         user = build(:user, graduation_year: nil)
         expect(user).to be_valid
