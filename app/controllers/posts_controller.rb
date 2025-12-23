@@ -12,7 +12,6 @@ class PostsController < ApplicationController
             .order(created_at: :desc)
             .page(params[:page])
             .per(10)
-
   end
 
   # GET /posts/1 or /posts/1.json
@@ -138,5 +137,4 @@ class PostsController < ApplicationController
         params.expect(job_hunting_content: [ :company_name, :selection_stage, :result, :content ])
       end
     end
-
 end
