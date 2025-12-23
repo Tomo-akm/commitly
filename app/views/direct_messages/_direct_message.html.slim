@@ -1,0 +1,15 @@
+- is_own_message = direct_message.user == current_user
+
+.mb-3.slide-in-left class="#{is_own_message ? 'text-end' : 'text-start'}"
+  .d-inline-block style="max-width: 70%;"
+    - unless is_own_message
+      .d-flex.align-items-center.mb-1
+        i.fas.fa-user-circle.text-primary.me-2 style="font-size: 24px;"
+        small.text-muted.font-semibold
+          = direct_message.user.name
+
+    .p-3.rounded-3.transition-all class="#{is_own_message ? 'bg-primary text-white' : 'bg-light'}"
+      = simple_format(h(direct_message.content), class: 'mb-0')
+
+    small.text-muted.d-block.mt-1.text-sm
+      = direct_message.created_at.strftime('%Y/%m/%d %H:%M')

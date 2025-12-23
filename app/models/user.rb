@@ -9,6 +9,9 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :entries, dependent: :destroy
+  has_many :rooms, through: :entries
+  has_many :direct_messages, dependent: :destroy
   has_many :active_follows, class_name:  "Follow",
            foreign_key: "follower_id",
            dependent:   :destroy
@@ -94,6 +97,11 @@ class User < ApplicationRecord
 
   def email_required?
     super && provider.blank?
+  end
+
+  # 全未読メッセージ数
+  def total_unread_messages_count
+    entries.sum(&:unread_count)
   end
 
   private

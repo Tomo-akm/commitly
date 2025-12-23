@@ -12,6 +12,23 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
 
     .collapse.navbar-collapse#navbarSupportedContent
       ul.navbar-nav.ms-auto.align-items-lg-center
+        li.nav-item
+          = link_to posts_path, class: "nav-link text-white" do
+            i.fas.fa-history.me-2
+            | commit log
+        - if user_signed_in?
+          li.nav-item
+            = link_to rooms_path, class: "nav-link text-white" do
+              i.fas.fa-comments.me-2
+              | DM
+              span#total-unread-badge
+                - if current_user.total_unread_messages_count > 0
+                  span.badge.bg-danger.rounded-pill.ms-1 = current_user.total_unread_messages_count
+        li.nav-item
+          a.nav-link.text-white href="#" data-bs-toggle="modal" data-bs-target="#helpModal"
+            i.fas.fa-question-circle.me-2
+            | Git Tips
+
         - if user_signed_in?
           / 就活Vault - ES数バッジ付きドロップダウン
           li.nav-item.dropdown[data-bs-display="static"]
