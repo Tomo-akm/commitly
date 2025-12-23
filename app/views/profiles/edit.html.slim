@@ -32,7 +32,7 @@
               = turbo_frame_tag "avatar-preview" do
                 - if @user.avatar.attached?
                   .current-avatar.mt-2
-                    = image_tag @user.avatar.variant(resize_to_limit: [100, 100]).processed, class: "rounded-circle avatar-circle", size: "100x100"
+                    = image_tag @user.avatar.variant(resize_to_limit: [200, 200]).processed, class: "rounded-circle avatar-circle", size: "100x100"
                     = link_to "削除", profile_path(avatar_purge: true), data: { turbo_method: :patch, turbo_confirm: "アバター画像を削除してもよろしいですか？" }, class: "btn btn-danger btn-sm ms-2"
               .form-help 画像ファイル（PNG, JPEG）のみ、5MBまで
               .text-danger.mt-1 style="display:none;" data-avatar-size-validator-target="error"

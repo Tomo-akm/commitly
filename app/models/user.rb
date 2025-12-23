@@ -73,12 +73,13 @@ class User < ApplicationRecord
   DEFAULT_INTERNSHIP_COUNT = 0
 
   # アバター画像のURLを返す（リサイズ対応）
-  def avatar_url(size: 100)
+  def avatar_url(size: 100, scale: 2)
+    scaled_size = (size.to_i * scale.to_i).clamp(1, 4000)
     unless avatar.attached?
-      return "https://api.dicebear.com/8.x/bottts/svg?seed=#{avatar_seed}&size=#{size}"
+      return "https://api.dicebear.com/8.x/bottts/svg?seed=#{avatar_seed}&size=#{scaled_size}"
     end
     Rails.application.routes.url_helpers.rails_representation_url(
-      avatar.variant(resize_to_limit: [ size, size ]).processed,
+      avatar.variant(resize_to_limit: [ scaled_size, scaled_size ]).processed,
       only_path: true
     )
   end
