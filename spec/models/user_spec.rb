@@ -22,6 +22,28 @@ RSpec.describe User, type: :model do
       user = build(:user, password: nil)
       expect(user).not_to be_valid
     end
+
+    describe 'graduation_year' do
+      it '有効な卒業年度（2026年）の場合は有効' do
+        user = build(:user, graduation_year: 2026)
+        expect(user).to be_valid
+      end
+
+      it '範囲外の卒業年度（1999年）の場合は無効' do
+        user = build(:user, graduation_year: 1999)
+        expect(user).not_to be_valid
+      end
+
+      it '範囲外の卒業年度（2150年）の場合は無効' do
+        user = build(:user, graduation_year: 2150)
+        expect(user).not_to be_valid
+      end
+
+      it '空欄の場合は有効（任意項目）' do
+        user = build(:user, graduation_year: nil)
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe 'associations' do
