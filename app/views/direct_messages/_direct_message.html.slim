@@ -1,6 +1,5 @@
 - is_own_message = direct_message.user == current_user
-
-.mb-3.slide-in-left class="#{is_own_message ? 'text-end' : 'text-start'}"
+.mb-3 class="#{is_own_message ? 'text-end' : 'text-start'}"
   .d-inline-block style="max-width: 70%;"
     - unless is_own_message
       .d-flex.align-items-center.mb-1
