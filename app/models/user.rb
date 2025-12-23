@@ -56,7 +56,7 @@ class User < ApplicationRecord
   has_many :api_keys, dependent: :destroy
   has_many :chats, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 15 }
   validates :internship_count,
             presence: true,
             numericality: { greater_than_or_equal_to: 0 },
