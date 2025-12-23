@@ -289,6 +289,125 @@ RSpec.describe "Posts", type: :request do
     end
   end
 
+  describe "公開範囲機能" do
+    describe "GET /posts (タイムラインでの表示制御)" do
+      let!(:viewer) { create(:user) }
+      let!(:public_user) { create(:user, post_visibility: :everyone) }
+      let!(:mutual_user) { create(:user, post_visibility: :mutual_followers) }
+      let!(:private_user) { create(:user, post_visibility: :only_me) }
+
+      let!(:public_post) { create(:post, user: public_user) }
+      let!(:mutual_post) { create(:post, user: mutual_user) }
+      let!(:private_post) { create(:post, user: private_user) }
+
+      before do
+        sign_in viewer
+      end
+
+      context 'ログイン状態でフォロー関係がない場合' do
+        it '全体公開の投稿のみ表示される' do
+          get posts_path
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(public_post.contentable.content)
+          expect(response.body).not_to include(mutual_post.contentable.content)
+          expect(response.body).not_to include(private_post.contentable.content)
+        end
+      end
+
+      context '相互フォロー関係がある場合' do
+        before do
+          viewer.follow(mutual_user)
+          mutual_user.follow(viewer)
+        end
+
+        it '全体公開と相互フォローの投稿が表示される' do
+          get posts_path
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(public_post.contentable.content)
+          expect(response.body).to include(mutual_post.contentable.content)
+          expect(response.body).not_to include(private_post.contentable.content)
+        end
+      end
+
+      context '自分の投稿の場合' do
+        let!(:own_post) { create(:post, user: viewer) }
+
+        before do
+          viewer.update(post_visibility: :only_me)
+        end
+
+        it '公開範囲に関わらず自分の投稿は表示される' do
+          get posts_path
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include(own_post.contentable.content)
+        end
+      end
+    end
+
+    describe "GET /posts/:id (個別投稿へのアクセス制御)" do
+      let!(:viewer) { create(:user) }
+      let!(:post_owner) { create(:user, post_visibility: :only_me) }
+      let!(:test_post) { create(:post, user: post_owner) }
+
+      before do
+        sign_in viewer
+      end
+
+      context '閲覧権限がない場合' do
+        it 'リダイレクトされる' do
+          get post_path(test_post)
+          expect(response).to redirect_to(posts_path)
+          follow_redirect!
+          expect(response.body).to include('この投稿を閲覧する権限がありません')
+        end
+      end
+
+      context '全体公開の投稿' do
+        before { post_owner.update(post_visibility: :everyone) }
+
+        it 'アクセスできる' do
+          get post_path(test_post)
+          expect(response).to have_http_status(:success)
+        end
+      end
+
+      context '相互フォローのみの投稿' do
+        before { post_owner.update(post_visibility: :mutual_followers) }
+
+        context '相互フォロー関係がある場合' do
+          before do
+            viewer.follow(post_owner)
+            post_owner.follow(viewer)
+          end
+
+          it 'アクセスできる' do
+            get post_path(test_post)
+            expect(response).to have_http_status(:success)
+          end
+        end
+
+        context '相互フォロー関係がない場合' do
+          it 'リダイレクトされる' do
+            get post_path(test_post)
+            expect(response).to redirect_to(posts_path)
+          end
+        end
+      end
+
+      context '投稿者本人の場合' do
+        before do
+          sign_in post_owner
+          post_owner.update(post_visibility: :only_me)
+        end
+
+        it 'アクセスできる' do
+          get post_path(test_post)
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+  end
+
   describe "リプライ機能" do
     let!(:parent_post) { create(:post, user: user) }
 
@@ -352,6 +471,48 @@ RSpec.describe "Posts", type: :request do
           expect {
             post posts_path, params: invalid_reply_attributes
           }.not_to change(Post, :count)
+        end
+      end
+    end
+  end
+
+  describe "GET /posts/:id" do
+    let(:post_owner) { create(:user, post_visibility: :everyone) }
+    let(:parent_post) { create(:post, user: post_owner) }
+
+    context 'リプライの公開範囲フィルタリング' do
+      let(:reply_author_public) { create(:user, post_visibility: :everyone) }
+      let(:reply_author_private) { create(:user, post_visibility: :only_me) }
+      let!(:public_reply) { create(:post, user: reply_author_public, parent: parent_post) }
+      let!(:private_reply) { create(:post, user: reply_author_private, parent: parent_post) }
+
+      context 'ログインユーザーが親投稿を閲覧する場合' do
+        it '全体公開のリプライのみ表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(public_reply.contentable.content)
+          expect(response.body).not_to include(private_reply.contentable.content)
+        end
+      end
+
+      context '親投稿の作成者が閲覧する場合' do
+        before { sign_in post_owner, scope: :user }
+
+        it '自分だけ設定のリプライも表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(public_reply.contentable.content)
+          expect(response.body).to include(private_reply.contentable.content)
+        end
+      end
+
+      context 'リプライ作成者本人が親投稿を閲覧する場合' do
+        before { sign_in reply_author_private, scope: :user }
+
+        it '自分のリプライは表示される' do
+          get post_path(parent_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(private_reply.contentable.content)
         end
       end
     end

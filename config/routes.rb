@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations",
+    passwords: "users/passwords",
     omniauth_callbacks: "users/omniauth_callbacks"
   }, skip: [ :registrations ]
 
@@ -16,7 +17,11 @@ Rails.application.routes.draw do
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
   end
-  resources :tags, only: [ :index, :show ]
+  resources :tags, only: [ :index, :show ] do
+    collection do
+      get :autocomplete
+    end
+  end
   get "home/index"
   get "profile", to: "profiles#show"
   get "profile/likes", to: "profiles#likes", as: "profile_likes"
@@ -29,6 +34,8 @@ Rails.application.routes.draw do
 
   # Settings（設定エリア）
   namespace :settings do
+    root "settings#index"
+    resource :privacy, only: [ :show, :update ], controller: "privacy"
     resources :api_keys, only: [ :index, :create, :destroy ]
   end
 
@@ -45,6 +52,14 @@ Rails.application.routes.draw do
 
     resources :entry_sheet_items, only: [] do
       resource :advice, only: [ :create, :destroy ], module: :entry_sheet_items
+    end
+  end
+
+  # DM機能
+  resources :rooms, only: [ :index, :show, :create ] do
+    resources :direct_messages, only: [ :create ]
+    member do
+      post :mark_as_read
     end
   end
 

@@ -51,3 +51,6 @@
 # Ignore Kamal secrets
 /.kamal/secrets
 /config/deploy.yml
+
+# Ignore production credentials bundle
+#/config/credentials/production.yml.enc

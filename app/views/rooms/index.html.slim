@@ -1,0 +1,46 @@
+- content_for :title, "DM"
+
+.container#dm-container
+  .row.g-3
+    / 左側：DM一覧
+    .col-12.col-md-5.col-lg-4#room-list-column
+      .card.card-primary.fade-in.card-decorative style="height: calc(100vh - 150px);"
+        .card-header.bg-info.text-white
+          h5.mb-0.font-semibold
+            i.fas.fa-comments.me-2
+            | メッセージ
+
+        .card-body.p-0 style="overflow-y: auto; height: calc(100% - 60px);"
+          - if @rooms.any?
+            .list-group.list-group-flush
+              - @rooms.each do |room|
+                = render "rooms/room_list_item", room: room, current_user: current_user
+          - else
+            .text-center.py-5.text-muted
+              i.far.fa-comments.display-4.mb-3
+              p.mb-0 まだDMがありません
+              p.text-sm ユーザーのプロフィールから<br>DMを送信できます
+
+    / 右側：メッセージ詳細
+    .col-12.col-md-7.col-lg-8#room-detail-column
+      .card.card-primary.fade-in style="height: calc(100vh - 150px); display: flex; flex-direction: column;"
+        = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;" do
+          .card-body.d-flex.align-items-center.justify-content-center.text-muted style="flex: 1;"
+            .text-center
+              i.far.fa-comment-dots.display-1.mb-3
+              p.lead DMを選択してください
+
+/ モバイル用のスタイル
+style
+  |
+    @media (max-width: 767px) {
+      #dm-container:not(.show-detail) #room-detail-column {
+        display: none !important;
+      }
+      #dm-container.show-detail #room-list-column {
+        display: none !important;
+      }
+      #dm-container.show-detail #room-detail-column {
+        display: block !important;
+      }
+    }

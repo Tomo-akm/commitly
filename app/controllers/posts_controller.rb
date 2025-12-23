@@ -2,22 +2,27 @@ class PostsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
   before_action :set_post, only: %i[ show edit update destroy ]
   before_action :check_post_ownership, only: %i[ edit update destroy ]
+  before_action :set_right_nav_data, only: %i[ index show new edit ]
 
   # GET /posts or /posts.json
   def index
-    @q = Post.top_level.ransack(params[:q])  # リプライを除外
+    @q = Post.top_level.visible_to(current_user).ransack(params[:q])  # リプライを除外し、公開範囲フィルタを適用
     @posts = @q.result(distinct: true)
-            .includes(:contentable, :likes, :user, :tags, :replies)  # N+1対策（repliesも追加）
+            .preload(:contentable, :likes, :user, :tags, :replies)  # N+1対策（preloadを使用してポリモーフィック関連に対応）
             .order(created_at: :desc)
             .page(params[:page])
             .per(10)
-
-    # サイドバー用のタグ一覧（投稿数上位10個）
-    @popular_tags = Tag.with_posts.popular.limit(10)
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+    # 投稿の可視性チェック
+    unless @post.visible_to?(current_user)
+      redirect_to posts_path, alert: "この投稿を閲覧する権限がありません。" and return
+    end
+
+    # リプライの公開範囲フィルタリング
+    @visible_replies = @post.replies.visible_to(current_user).order(created_at: :asc)
   end
 
   # GET /posts/new

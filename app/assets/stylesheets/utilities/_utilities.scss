@@ -303,6 +303,17 @@
 }
 
 // アイコンサイズバリエーション
+.icon-24 {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
 .icon-sm {
   width: 35px;
   height: 35px;
@@ -533,4 +544,13 @@
 
 .pre-wrap {
   white-space: pre-wrap !important;
+}
+
+// ============================================
+// アバター画像
+// ============================================
+
+.avatar-circle {
+  background-color: transparent;
+  object-fit: cover;
 }

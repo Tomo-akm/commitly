@@ -23,12 +23,22 @@ html
     = javascript_include_tag "chartkick", "data-turbo-track": "reload"
     = javascript_importmap_tags
 
-  body.d-flex.flex-column.min-vh-100
-    = render "shared/header"
+  - auth_page = controller_name == "sessions" || controller_name == "registrations" || controller_name == "passwords"
+  - body_classes = [ "app-shell" ]
+  - body_classes << "app-shell--single" unless content_for?(:right_nav)
+  - body_classes << "app-shell--auth" if auth_page
+  body class=body_classes.join(" ")
+    .app-shell__frame
+      .app-shell__left
+        = render "shared/left_nav", context: :community
 
-    main.container.py-5.flex-grow-1
-      = render "shared/flash"
-      = yield
+      main.app-shell__main
+        .app-shell__main-inner class=(auth_page ? "app-shell__main-inner--auth" : "")
+          .container.py-5
+            = render "shared/flash"
+            = yield
 
-    = render "shared/footer"
+      = render_right_nav do
+        = yield :right_nav
+
     = render "shared/help_modal"

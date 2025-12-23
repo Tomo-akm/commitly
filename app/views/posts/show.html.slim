@@ -1,41 +1,38 @@
-.container
-  .row.justify-content-center
-    .col-lg-8
-      / 戻るボタン
-      .mb-3
-        = link_to "javascript:history.back()", class: "back-button text-decoration-none d-inline-flex align-items-center" do
-          i.fas.fa-chevron-left.me-2
-          span 戻る
+- content_for :right_nav do
+  = render "shared/right_nav"
 
-      / 投稿カードを表示
-      = render 'shared/post', post: @post
 
-      / リプライ投稿フォーム（ログインしている場合のみ）
-      - if user_signed_in?
-        .mt-4.x-reply-container
-          .d-flex.align-items-start.gap-3
-            / ユーザーアイコン
-            .icon-circle.bg-gradient-secondary.icon-md
-              i.fas.fa-user
+/ 戻るボタン
+= render "shared/back_button"
 
-            / フォーム部分
-            .flex-grow-1
-              = form_with(url: posts_path, method: :post, class: "x-reply-form") do |f|
-                = hidden_field_tag 'post[parent_id]', @post.id
-                .d-flex.align-items-start.gap-2
-                  = text_area_tag 'general_content[content]', '',
-                    class: 'form-control x-reply-input',
-                    rows: 1,
-                    placeholder: 'Post your reply',
-                    required: true,
-                    data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
-                  = f.submit 'Reply', class: 'btn btn-reply'
+/ 投稿カードを表示
+= render 'shared/post', post: @post
 
-      / リプライ一覧
-      - if @post.replies.present?
-        .replies-container.mt-4
-          - @post.replies.order(created_at: :asc).each do |reply|
-            = render 'posts/components/reply_item', reply: reply
+/ リプライ投稿フォーム（ログインしている場合のみ）
+- if user_signed_in?
+  .mt-4.x-reply-container
+    .d-flex.align-items-start.gap-3
+      / ユーザーアイコン
+      = render "shared/avatar", user: current_user, size: 40
+
+      / フォーム部分
+      .flex-grow-1
+        = form_with(url: posts_path, method: :post, class: "x-reply-form") do |f|
+          = hidden_field_tag 'post[parent_id]', @post.id
+          .d-flex.align-items-start.gap-2
+            = text_area_tag 'general_content[content]', '',
+              class: 'form-control x-reply-input',
+              rows: 1,
+              placeholder: 'Post your reply',
+              required: true,
+              data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
+            = f.submit 'Reply', class: 'btn btn-reply'
+
+/ リプライ一覧
+- if @visible_replies.present?
+  .replies-container.mt-4
+    - @visible_replies.each do |reply|
+      = render 'posts/components/reply_item', reply: reply
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

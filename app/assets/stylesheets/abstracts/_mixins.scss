@@ -313,10 +313,10 @@
 // グラデーション区切り線
 @mixin separator-gradient($color, $margin-y: $spacing-2) {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, $color 50%, transparent 100%);
+  background: linear-gradient(90deg, rgba($color, 0.35) 0%, rgba($color, 0.7) 50%, rgba($color, 0.35) 100%);
   border: none;
   margin: $margin-y 0;
-  opacity: 0.5;
+  opacity: 0.9;
 }
 
 // アイコン付きボックス

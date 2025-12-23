@@ -3,8 +3,12 @@
   .card-header.bg-primary.text-white.p-4
     .d-flex.justify-content-between.align-items-center
       h2.h3.mb-0.font-bold.d-flex.align-items-center
-        i.fas.fa-user-circle.me-2
+        = render "shared/avatar", user: @user, size: 48, class_name: "me-2"
         = @user.name
+        - if @user.mutual_followers?
+          i.fas.fa-user-friends.ms-2.text-white-50 title="相互フォローのみ"
+        - elsif @user.only_me?
+          i.fas.fa-lock.ms-2.text-white-50 title="自分だけ"
       .d-flex.gap-2
         - if user_signed_in?
           - if @user == current_user
@@ -12,12 +16,23 @@
           - else
             = turbo_frame_tag dom_id(@user, "follow_button") do
               = render "profiles/follow_button", user: @user
+            = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-light" do
+              i.fas.fa-comment.me-1
+              | DMを送る
   .card-body.p-4
     .profile-info-item
       .profile-icon
         i.fas.fa-id-card
       .profile-label 名前
       .profile-value = @user.name
+
+    .separator-gradient
+
+    .profile-info-item
+      .profile-icon
+        i.fas.fa-graduation-cap
+      .profile-label 卒業年度
+      .profile-value = @user.graduation_year.present? ? "#{@user.graduation_year}年卒" : "ー"
 
     .separator-gradient
 
@@ -57,8 +72,8 @@
 
     .separator-gradient
 
-    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user), linkable: user_signed_in?
+    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user), linkable: true
 
     .separator-gradient
 
-    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user), linkable: user_signed_in?
+    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user), linkable: true

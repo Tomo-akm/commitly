@@ -1,0 +1,7 @@
+- active_tab = local_assigns.fetch(:active_tab, nil)
+
+.col-md-3
+  .card
+    .list-group.list-group-flush
+      - Settings::Navigation.tabs(self).each do |tab|
+        = settings_nav_link tab.label, tab.path, icon: tab.icon, active: active_tab == tab.key || current_page?(tab.path)

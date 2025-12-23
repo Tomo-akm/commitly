@@ -1,19 +1,19 @@
 - content_for :title, @post.contentable.title
+- content_for :right_nav do
+  = render "shared/right_nav"
 
-.container
-  .row.justify-content-center
-    .col-lg-6
-      h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in = @post.contentable.title
 
-      .mb-4.text-center
-        = link_to "つぶやき", new_post_path, class: "btn #{@post.general? ? 'btn-primary' : 'btn-outline-primary'} me-2"
-        = link_to "就活記録", new_post_path(type: 'job_hunting'), class: "btn #{@post.job_hunting? ? 'btn-primary' : 'btn-outline-primary'} me-2"
-        = link_to "インターン体験記", new_post_path(type: 'intern_experience'), class: "btn #{@post.intern_experience? ? 'btn-primary' : 'btn-outline-primary'}"
+h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in = @post.contentable.title
 
-      .card.card-primary.fade-in
-        .card-body.p-4
-          = render "posts/components/form"
+.mb-4.text-center
+  = link_to "つぶやき", new_post_path, class: "btn #{@post.general? ? 'btn-primary' : 'btn-outline-primary'} me-2"
+  = link_to "就活記録", new_post_path(type: 'job_hunting'), class: "btn #{@post.job_hunting? ? 'btn-primary' : 'btn-outline-primary'} me-2"
+  = link_to "インターン体験記", new_post_path(type: 'intern_experience'), class: "btn #{@post.intern_experience? ? 'btn-primary' : 'btn-outline-primary'}"
 
-          hr.my-3
-          .d-flex.justify-content-center.gap-2
-            = link_to "commit logへ", posts_path, class: "btn btn-secondary"
+.card.card-primary.fade-in
+  .card-body.p-4
+    = render "posts/components/form"
+
+    hr.my-3
+    .d-flex.justify-content-center.gap-2
+      = link_to "commit logへ", posts_path, class: "btn btn-secondary"

@@ -14,7 +14,7 @@ ENV BUNDLE_PATH=/usr/local/bundle
 
 ARG RUBYGEMS_VERSION=3.5.23
 
-# Install system dependencies (Ruby, Node.js, Yarn, PostgreSQL client)
+# Install system dependencies (Ruby, Node.js, Yarn, PostgreSQL client, libvips for image processing)
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 RUN set -uex && \
     apt-get update && \
@@ -24,6 +24,7 @@ RUN set -uex && \
       gnupg \
       libpq-dev \
       postgresql-client \
+      libvips \
       vim && \
     mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \

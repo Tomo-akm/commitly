@@ -15,34 +15,33 @@ html
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
 
-  - if content_for?(:resizable_layout)
-    body
-      .resizable-layout[data-controller="resizable-layout"]
+  body class=(content_for?(:right_nav) ? "app-shell" : "app-shell app-shell--single")
+    .app-shell__frame
+      .app-shell__left
+        = render "shared/left_nav", context: :vault
 
-        .left-container[data-resizable-layout-target="left"]
-          = render "shared/vault_header"
-
-          main.main-container
+      - if content_for?(:resizable_layout)
+        .resizable-layout[data-controller="resizable-layout"]
+          .left-container[data-resizable-layout-target="left"]
             .container.py-5
               = render "shared/flash"
               = yield
 
-          = render "shared/footer"
+          .resize-divider[
+            data-resizable-layout-target="divider"
+            data-action="pointerdown->resizable-layout#startResize"
+          ]
 
-        .resize-divider[
-          data-resizable-layout-target="divider"
-          data-action="mousedown->resizable-layout#startResize"
-        ]
+          .side-panel[data-resizable-layout-target="sidePanel"]
+            = yield :side_panel
+      - else
+        main.app-shell__main
+          .app-shell__main-inner
+            .container.py-5
+              = render "shared/flash"
+              = yield
 
-        .side-panel[data-resizable-layout-target="sidePanel"]
-          = yield :side_panel
+        = render_right_nav do
+          = yield :right_nav
 
-  - else
-    body.d-flex.flex-column.min-vh-100
-      = render "shared/vault_header"
-
-      main.container.py-5.flex-grow-1
-        = render "shared/flash"
-        = yield
-
-      = render "shared/footer"
+    = render "shared/help_modal"

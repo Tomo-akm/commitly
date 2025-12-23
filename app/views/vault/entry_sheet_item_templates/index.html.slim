@@ -1,13 +1,14 @@
 / ヘッダー
-.d-flex.justify-content-between.align-items-center.mb-5
+.d-flex.flex-column.flex-md-row.justify-content-md-between.align-items-start.gap-3.mb-5
   div
     h1.fw-bold.mb-1
       i.fas.fa-bookmark.me-2.text-primary
       | テンプレート一覧
     p.text-muted.mb-0 よく使う回答をテンプレートとして保存
-  = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-primary" do
-    i.fas.fa-plus.me-2
-    | 新規テンプレート作成
+  .d-flex.flex-wrap.gap-2
+    = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-primary" do
+      i.fas.fa-plus.me-2
+      | 新規テンプレート作成
 
 / タグフィルタ
 - if @available_tags.any?

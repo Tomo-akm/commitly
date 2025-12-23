@@ -1,8 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
-// 本文中の #タグ とURLをハイライトし、検出されたタグ一覧を表示するコントローラー
+// 本文中の #タグ とURLをハイライトするコントローラー
 export default class extends Controller {
-  static targets = [ "textarea", "preview", "tagList" ]
+  static targets = [ "textarea", "preview" ]
 
   connect() {
     this.element.classList.add("text-input--enhanced")
@@ -15,9 +15,7 @@ export default class extends Controller {
 
   update() {
     const text = this.textareaTarget.value || ""
-    const tags = this.extractHashtags(text)
     this.renderPreview(text)
-    this.renderTags(tags)
   }
 
   renderPreview(text) {
@@ -49,36 +47,6 @@ export default class extends Controller {
       )
 
     this.previewTarget.innerHTML = highlighted
-  }
-
-  renderTags(tags) {
-    if (!this.hasTagListTarget) return
-
-    this.tagListTarget.innerHTML = ""
-
-    tags.forEach((name) => {
-      const chip = document.createElement("span")
-      chip.className = "hashtag-chip"
-      chip.textContent = name
-      this.tagListTarget.appendChild(chip)
-    })
-
-    this.tagListTarget.dataset.state = tags.length > 0 ? "has-tags" : "empty"
-  }
-
-  extractHashtags(text) {
-    const seen = new Set()
-    const tags = []
-
-    for (const match of text.matchAll(this.hashtagPattern)) {
-      const tagWithHash = match[2] // キャプチャグループ2: #tag
-      const tag = tagWithHash.slice(1) // #を除去
-      if (seen.has(tag)) continue
-      seen.add(tag)
-      tags.push(tag)
-    }
-
-    return tags
   }
 
   escapeHtml(unsafe) {

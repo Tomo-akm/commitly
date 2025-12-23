@@ -367,6 +367,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_142945) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "favorite_language"
+    t.integer "graduation_year"
     t.integer "internship_count"
     t.string "name"
     t.text "personal_message"

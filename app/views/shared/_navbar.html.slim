@@ -1,0 +1,77 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
+  .container
+    = link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do
+      span.fw-bold Commitly
+      - if local_assigns[:context] == :vault
+        span.badge.bg-light.text-primary 就活記録Vault
+      - else
+        span.badge.bg-light.text-primary 就活記録SNS
+
+    button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+      span.navbar-toggler-icon
+
+    .collapse.navbar-collapse#navbarSupportedContent
+      ul.navbar-nav.ms-auto.align-items-lg-center
+        li.nav-item
+          = link_to posts_path, class: "nav-link text-white" do
+            i.fas.fa-history.me-2
+            | commit log
+        - if user_signed_in?
+          li.nav-item
+            = link_to rooms_path, class: "nav-link text-white" do
+              i.fas.fa-comments.me-2
+              | DM
+              span#total-unread-badge
+                - if current_user.total_unread_messages_count > 0
+                  span.badge.bg-danger.rounded-pill.ms-1 = current_user.total_unread_messages_count
+        li.nav-item
+          a.nav-link.text-white href="#" data-bs-toggle="modal" data-bs-target="#helpModal"
+            i.fas.fa-question-circle.me-2
+            | Git Tips
+
+        - if user_signed_in?
+          / 就活Vault - ES数バッジ付きドロップダウン
+          li.nav-item.dropdown[data-bs-display="static"]
+            a.nav-link.dropdown-toggle.text-white.d-flex.align-items-center.gap-2 href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+              span.icon-24
+                i.fas.fa-briefcase
+              | 就活Vault
+            ul.dropdown-menu
+              li
+                = link_to vault_root_path, class: "dropdown-item d-flex align-items-center gap-2" do
+                  span.icon-24
+                    i.fas.fa-home
+                  | ダッシュボード
+              li
+                = link_to vault_entry_sheets_path, class: "dropdown-item d-flex align-items-center gap-2" do
+                  span.icon-24
+                    i.fas.fa-file-alt
+                  | ES一覧
+              li
+                = link_to vault_entry_sheet_item_templates_path, class: "dropdown-item d-flex align-items-center gap-2" do
+                  span.icon-24
+                    i.fas.fa-bookmark
+                  | テンプレート
+
+          li.nav-item.dropdown[data-bs-display="static"]
+            a.nav-link.dropdown-toggle.text-white.d-flex.align-items-center.gap-2 href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+              = render "shared/avatar", user: current_user, size: 24, class_name: ""
+              = current_user&.name
+            ul.dropdown-menu
+              li
+                = link_to profile_path, class: "dropdown-item" do
+                  i.fas.fa-user.me-2
+                  | プロフィール
+              li
+                = link_to Settings::Navigation.default_path, class: "dropdown-item" do
+                  i.fas.fa-cog.me-2
+                  | 設定
+              li
+                hr.dropdown-divider
+              li
+                = link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" }, class: "dropdown-item text-danger"
+        - else
+          li.nav-item
+            = link_to "ログイン", new_user_session_path, class: "nav-link text-white"
+          li.nav-item
+            = link_to "新規登録", new_user_registration_path, class: "nav-link text-white"

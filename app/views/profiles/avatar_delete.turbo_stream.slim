@@ -1,0 +1,11 @@
+/ アバター画像プレビューを更新（空にする）
+= turbo_stream.update "avatar-preview" do
+  / アバターが削除されたので空
+
+/ フラッシュメッセージを表示
+= turbo_stream.prepend "flash-messages" do
+  .toast.show.text-bg-success role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast"
+    .toast-body
+      i.fas.fa-check-circle
+      span アバター画像を削除しました。
+    button.btn-close type="button" data-bs-dismiss="toast" aria-label="閉じる"

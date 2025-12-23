@@ -6,6 +6,8 @@ class Message < ApplicationRecord
     self.content ||= ""
     self.content += chunk_content
 
+    Rails.logger.info "[Broadcast] message_id=#{id} bytes=#{chunk_content.to_s.bytesize} t=#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}"
+
     broadcast_update_to(
       "chat_#{chat_id}",
       target: "message_#{id}_content",

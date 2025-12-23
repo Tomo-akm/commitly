@@ -1,18 +1,23 @@
-.row.justify-content-center
-  .col-12.col-md-8.col-lg-5
-    .card.shadow-sm
-      .card-body.p-4
-        h2.h4.mb-4.text-center Forgot your password?
+.card.card-primary.fade-in.shadow-sm
+  .card-body.p-5
+    .text-center.mb-5
+      .mb-3
+        i.fas.fa-key.fa-3x.text-primary style="opacity: 0.8;"
+      h2.h3.mb-2.font-bold.text-primary パスワードをリセット
+      p.text-muted.small 登録したメールアドレスにパスワードリセット用のリンクをお送りします
 
-        = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
-          = render "devise/shared/error_messages", resource: resource
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+      .form-group
+        = f.label :email, "メールアドレス", class: "form-label"
+        .input-group
+          span.input-group-text.bg-light
+            i.fas.fa-envelope.text-muted
+          = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "example@example.com"
 
-          .mb-3
-            = f.label :email, class: "form-label"
-            = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control"
+      .d-grid.gap-2.mb-4
+        = f.submit "パスワードリセットメールを送信", class: "btn btn-gradient-primary btn-lg"
 
-          .d-grid.gap-2
-            = f.submit "Send me reset password instructions", class: "btn btn-primary"
+    hr.my-4
 
-        .mt-3
-          = render "devise/shared/links"
+    .mt-4
+      = render "devise/shared/links"

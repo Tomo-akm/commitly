@@ -22,6 +22,28 @@ RSpec.describe User, type: :model do
       user = build(:user, password: nil)
       expect(user).not_to be_valid
     end
+
+    describe 'graduation_year' do
+      it '有効な卒業年度（2026年）の場合は有効' do
+        user = build(:user, graduation_year: 2026)
+        expect(user).to be_valid
+      end
+
+      it '範囲外の卒業年度（1999年）の場合は無効' do
+        user = build(:user, graduation_year: 1999)
+        expect(user).not_to be_valid
+      end
+
+      it '範囲外の卒業年度（2150年）の場合は無効' do
+        user = build(:user, graduation_year: 2150)
+        expect(user).not_to be_valid
+      end
+
+      it '空欄の場合は有効（任意項目）' do
+        user = build(:user, graduation_year: nil)
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe 'associations' do
@@ -260,6 +282,61 @@ RSpec.describe User, type: :model do
       create(:post, user: user, contentable: intern_content4)
 
       expect(user.intern_participations_count).to eq(3)
+    end
+  end
+
+  describe 'post_visibility enum' do
+    it 'デフォルトで everyone が設定される' do
+      user = create(:user)
+      expect(user.post_visibility).to eq('everyone')
+      expect(user.everyone?).to be true
+    end
+
+    it 'mutual_followers に設定できる' do
+      user = create(:user, post_visibility: :mutual_followers)
+      expect(user.post_visibility).to eq('mutual_followers')
+      expect(user.mutual_followers?).to be true
+    end
+
+    it 'only_me に設定できる' do
+      user = create(:user, post_visibility: :only_me)
+      expect(user.post_visibility).to eq('only_me')
+      expect(user.only_me?).to be true
+    end
+  end
+
+  describe '#mutual_follow?' do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    context '相互フォロー関係の場合' do
+      before do
+        user_a.follow(user_b)
+        user_b.follow(user_a)
+      end
+
+      it 'true を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be true
+        expect(user_b.mutual_follow?(user_a)).to be true
+      end
+    end
+
+    context 'Aだけがフォローしている場合' do
+      before do
+        user_a.follow(user_b)
+      end
+
+      it 'false を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be false
+        expect(user_b.mutual_follow?(user_a)).to be false
+      end
+    end
+
+    context 'フォロー関係がない場合' do
+      it 'false を返す' do
+        expect(user_a.mutual_follow?(user_b)).to be false
+        expect(user_b.mutual_follow?(user_a)).to be false
+      end
     end
   end
 end

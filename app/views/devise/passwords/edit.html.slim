@@ -1,26 +1,37 @@
-.row.justify-content-center
-  .col-12.col-md-8.col-lg-5
-    .card.shadow-sm
-      .card-body.p-4
-        h2.h4.mb-4.text-center Change your password
+.card.card-primary.fade-in.shadow-sm
+  .card-body.p-5
+    .text-center.mb-5
+      .mb-3
+        i.fas.fa-lock.fa-3x.text-primary style="opacity: 0.8;"
+      h2.h3.mb-2.font-bold.text-primary 新しいパスワードを設定
+      p.text-muted.small セキュリティを保つため、安全なパスワードを設定してください
 
-        = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
-          = render "devise/shared/error_messages", resource: resource
-          = f.hidden_field :reset_password_token
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+      = render "devise/shared/error_messages", resource: resource
+      = f.hidden_field :reset_password_token
 
-          .mb-3
-            = f.label :password, "New password", class: "form-label"
-            .form-text.mb-1
-              - if @minimum_password_length
-                | (#{@minimum_password_length} characters minimum)
-            = f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control"
+      .form-group
+        = f.label :password, "新しいパスワード", class: "form-label"
+        - if @minimum_password_length
+          small.text-muted.d-block.mb-1
+            i.fas.fa-info-circle.me-1
+            | #{@minimum_password_length}文字以上
+        .input-group
+          span.input-group-text.bg-light
+            i.fas.fa-lock.text-muted
+          = f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control", placeholder: "安全なパスワードを入力"
 
-          .mb-3
-            = f.label :password_confirmation, "Confirm new password", class: "form-label"
-            = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control"
+      .form-group
+        = f.label :password_confirmation, "パスワード（確認）", class: "form-label"
+        .input-group
+          span.input-group-text.bg-light
+            i.fas.fa-lock.text-muted
+          = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "もう一度パスワードを入力"
 
-          .d-grid.gap-2
-            = f.submit "Change my password", class: "btn btn-primary"
+      .d-grid.gap-2.mb-4
+        = f.submit "パスワードを変更", class: "btn btn-gradient-primary btn-lg"
 
-        .mt-3
-          = render "devise/shared/links"
+    hr.my-4
+
+    .mt-4
+      = render "devise/shared/links"
