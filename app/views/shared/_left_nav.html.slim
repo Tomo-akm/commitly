@@ -16,6 +16,14 @@ nav.left-nav
       span.icon-24
         i.fas.fa-user
       span プロフィール
+    - if user_signed_in?
+      = link_to rooms_path, class: "left-nav__link", data: { turbo_frame: "_top" } do
+        span.icon-24
+          i.fas.fa-comments
+        span DM
+        span#left-unread-badge
+          - if current_user.total_unread_messages_count > 0
+            span.badge.bg-danger.rounded-pill.ms-auto = current_user.total_unread_messages_count
 
   - if user_signed_in?
     .left-nav__section
