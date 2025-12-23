@@ -24,7 +24,7 @@ body.side-panel-open .app-shell__frame {
   max-width: none;
   margin: 0;
   margin-left: $spacing-1;
-  padding-left: clamp($spacing-6, calc((100vw - 1400px) / 2 + #{$spacing-6}), 200px);
+  padding-left: clamp(1.5rem, calc((100vw - 1400px) / 2 + 1.5rem), 200px);
 }
 
 .app-shell--single {
@@ -75,7 +75,7 @@ body.side-panel-open .app-shell__frame {
 
 .app-shell__main-inner {
   width: 100%;
-  max-width: 900px;
+  max-width: 700px;
   min-height: 100vh;
   padding: $spacing-8 0;
 }
