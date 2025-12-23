@@ -1,0 +1,40 @@
+/ メッセージ詳細を更新
+= turbo_stream.replace "room_detail" do
+  = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id } do
+    / ヘッダー
+    .card-header.bg-primary.text-white.p-3 style="flex-shrink: 0;"
+      .d-flex.align-items-center.justify-content-between
+        .d-flex.align-items-center
+          / モバイルのみ表示される戻るボタン
+          button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
+            i.fas.fa-arrow-left
+          i.fas.fa-user-circle.me-3 style="font-size: 40px;"
+          h5.mb-0.font-bold = @room.other_user(current_user).name
+        = link_to user_profile_path(@room.other_user(current_user)), target: "_top", class: "btn btn-sm btn-light" do
+          i.fas.fa-user.me-1
+          | プロフィール
+
+    / メッセージ一覧
+    .card-body.p-4#messages style="overflow-y: auto; height: 100%;" data-controller="message"
+      - if @direct_messages.any?
+        - @direct_messages.each do |direct_message|
+          = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
+      - else
+        .text-muted.text-center style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;"
+          i.far.fa-comments.display-4.mb-3
+          p.mb-0 まだメッセージがありません
+          p.text-sm 最初のメッセージを送信してみましょう！
+
+    .separator-gradient.mx-3 style="flex-shrink: 0;"
+
+    / メッセージ送信フォーム
+    .card-body.p-1.bg-light style="flex-shrink: 0;"
+      - other_user = @room.other_user(current_user)
+      = form_with model: @direct_message, url: room_direct_messages_path(other_user) do |f|
+        .input-group
+          = f.text_area :content, placeholder: "メッセージを入力...", class: "form-control", rows: 2, required: true, style: "resize: none; border-radius: 20px 0 0 20px;"
+          = f.submit "送信", class: "btn btn-gradient-primary", style: "border-radius: 0 20px 20px 0;"
+
+/ DM一覧の該当アイテムを更新
+= turbo_stream.replace "room_#{@room.id}" do
+  = render "rooms/room_list_item", room: @room, current_user: current_user

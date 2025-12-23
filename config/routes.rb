@@ -54,6 +54,14 @@ Rails.application.routes.draw do
     end
   end
 
+  # DM機能
+  resources :rooms, only: [ :index, :show, :create ] do
+    resources :direct_messages, only: [ :create ]
+    member do
+      post :mark_as_read
+    end
+  end
+
   # API endpoints for heatmap data
   namespace :api do
     namespace :v1 do

@@ -2,7 +2,8 @@ class Model < ApplicationRecord
   has_many :chats
 
   ALLOWED_MODELS = {
-    "anthropic" => %w[claude-opus-4-1 claude-sonnet-4-5 claude-haiku-4-5]
+    "anthropic" => %w[claude-opus-4-1 claude-sonnet-4-5 claude-haiku-4-5],
+    "google_ai_studio" => %w[gemini-3-flash-preview]
     # "openai" => %w[gpt-5 gpt-5-mini gpt-5-nano gpt-5-pro]
   }.freeze
 

@@ -15,7 +15,7 @@
   .x-reply-input {
     border: none;
     border-radius: 1.5rem;
-    padding: 0.625rem 1rem;
+    padding: $spacing-2 $spacing-3;
     font-size: 0.9375rem;
     background-color: $reply-input-bg;
     resize: none;
@@ -29,10 +29,6 @@
       outline: none;
       background-color: $reply-input-focus-bg;
       box-shadow: none;
-    }
-
-    &::placeholder {
-      color: $reply-placeholder-color;
     }
   }
 
@@ -90,14 +86,11 @@
     resize: none;
     overflow-y: auto;
     background-color: transparent;
+    padding: $spacing-2 $spacing-3;
     min-height: 60px;
     max-height: 300px;
     transition: height 0.1s ease;
     @include custom-scrollbar;
-
-    &::placeholder {
-      color: $reply-placeholder-color;
-    }
 
     &:focus {
       outline: none;

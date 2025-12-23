@@ -16,6 +16,9 @@
           - else
             = turbo_frame_tag dom_id(@user, "follow_button") do
               = render "profiles/follow_button", user: @user
+            = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-light" do
+              i.fas.fa-comment.me-1
+              | DMを送る
   .card-body.p-4
     .profile-info-item
       .profile-icon

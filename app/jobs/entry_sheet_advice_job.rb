@@ -3,14 +3,17 @@ class EntrySheetAdviceJob < ApplicationJob
   queue_as :default
 
   def perform(entry_sheet_item_id, user_id, model_id, title, content, char_limit)
+    Rails.logger.info "[EntrySheetAdviceJob] ジョブ開始: item=#{entry_sheet_item_id}, user=#{user_id}, model=#{model_id}"
+
     @entry_sheet_item = EntrySheetItem.find(entry_sheet_item_id)
     @user = User.find(user_id)
     @model = Model.find(model_id)
+    Rails.logger.info "[EntrySheetAdviceJob] モデル情報: provider=#{@model.provider}, model_id=#{@model.model_id}"
 
     chat = @entry_sheet_item.chat or raise "Chatが見つかりません"
 
     api_key = @user.api_keys.for_provider(@model.provider).pick(:api_key)
-    raise "#{@model.provider} のAPIキーが登録されていません" unless api_key
+    raise "#{@model.provider} のAPIキーが登録されていません" if api_key.blank?
 
     prompt = build_advice_prompt(
       company_name: @entry_sheet_item.entry_sheet.company_name,

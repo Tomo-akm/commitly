@@ -138,10 +138,25 @@ export default class extends Controller {
     this.selectedIndex = -1
 
     tags.forEach(tag => {
+      const name = typeof tag === "string" ? tag : tag.name
+      const count = typeof tag === "string" ? null : tag.posts_count
+      if (!name) return
+
       const li = document.createElement("li")
-      li.textContent = `#${tag}`
-      li.dataset.tag = tag
-      li.className = "tag-autocomplete__item"
+      li.dataset.tag = name
+      li.className = "tag-autocomplete__item d-flex justify-content-between align-items-center"
+
+      const label = document.createElement("span")
+      label.textContent = `#${name}`
+      li.appendChild(label)
+
+      if (typeof count === "number") {
+        const badge = document.createElement("span")
+        badge.className = "badge bg-light text-dark"
+        badge.textContent = count
+        li.appendChild(badge)
+      }
+
       li.addEventListener("mousedown", e => {
         e.preventDefault() // textarea blur 防止
         this.select(e)

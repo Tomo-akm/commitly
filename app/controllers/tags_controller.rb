@@ -19,7 +19,8 @@ class TagsController < ApplicationController
       .where("name ILIKE ?", "#{q}%")
       .order(posts_count: :desc)
       .limit(10)
-      .pluck(:name)
+      .pluck(:name, :posts_count)
+      .map { |name, count| { name:, posts_count: count } }
 
     render json: tags
   end

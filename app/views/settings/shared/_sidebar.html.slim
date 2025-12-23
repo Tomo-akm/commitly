@@ -3,5 +3,5 @@
 .col-md-3
   .card
     .list-group.list-group-flush
-      = settings_nav_link "プライバシー", settings_privacy_path, icon: "fas fa-lock", active: active_tab == :privacy || current_page?(settings_privacy_path)
-      = settings_nav_link "APIキー", settings_api_keys_path, icon: "fas fa-key", active: active_tab == :api_keys || current_page?(settings_api_keys_path)
+      - Settings::Navigation.tabs(self).each do |tab|
+        = settings_nav_link tab.label, tab.path, icon: tab.icon, active: active_tab == tab.key || current_page?(tab.path)
