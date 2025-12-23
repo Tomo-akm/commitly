@@ -10,8 +10,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
             .d-flex.align-items-center
               span.text-dark.font-medium = post.user.name
               - if post.user.graduation_year.present?
-                span.badge.rounded-pill.bg-success.ms-2.text-xs
-                  i.fas.fa-graduation-cap.me-1
+                span.badge.rounded-pill.bg-primary.ms-2.text-xs
                   = "#{post.user.graduation_year % 100}卒"
               - if post.user.mutual_followers?
                 i.fas.fa-user-friends.ms-2.text-muted.small title="相互フォローのみ"

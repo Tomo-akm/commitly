@@ -1,93 +1,32 @@
 - content_for :title, "Commitly"
+- content_for :right_nav do
+  = render "shared/right_nav"
 
-.container
-  .row
-    / 左サイドバー - 人気タグ（モバイルでは3番目に表示）
-    .col-lg-3.order-3.order-lg-1
-      .card.card-primary.fade-in.card-decorative
-        .card-header.bg-info.text-white
-          h5.mb-0.font-semibold
-            i.fas.fa-tags.me-2
-            | 人気タグ
-        .card-body.p-3
-          - if @popular_tags.any?
-            - @popular_tags.each do |tag|
-              = link_to tag_path(tag.id), class: "text-decoration-none" do
-                .d-flex.justify-content-between.align-items-center.mb-1.p-2.rounded.hover-scale.transition-all
-                  span.badge-modern ##{tag.name}
-                  span.text-muted.text-sm.font-semibold = tag.visible_posts_count
-            .my-2
-            = link_to "すべてのタグを見る", tags_path, class: "btn btn-sm btn-outline-primary w-100"
-          - else
-            p.text-muted.mb-0.text-center まだタグがありません
 
-    / メインコンテンツ（モバイルでは1番目に表示）
-    .col-lg-6.order-1.order-lg-2
-      .text-center.mb-4.fade-in
-        h1.display-4.font-bold.text-primary Commitly
-        p.lead.text-muted.mt-3
-          | 毎日コミットして、理想のmain branchに向かおう
-          br
-          | みんなの就活進捗をcommit logで確認しよう！
+.text-center.mb-4.fade-in
+  h1.display-4.font-bold.text-primary Commitly
+  p.lead.text-muted.mt-3
+    | 毎日コミットして、理想のmain branchに向かおう
+    br
+    | みんなの就活進捗をcommit logで確認しよう！
 
-      .text-center.mb-4
-        = link_to "new commit", new_post_path, class: "btn btn-gradient-primary btn-lg"
+.text-center.mb-4
+  = link_to "Commit", new_post_path, class: "btn btn-gradient-primary btn-lg"
 
-      / 検索フォーム（Ransack）
-      = search_form_for @q, local: true, class: "mb-4" do |f|
-        .input-group
-          = f.search_field :content_search_cont, placeholder: "投稿内容で検索...", class: "form-control"
-          button.btn.btn-primary type="submit"
-            i.fas.fa-search
-            |  検索
+/ 検索フォーム（Ransack）
+= search_form_for @q, local: true, class: "mb-4" do |f|
+  .input-group
+    = f.search_field :content_search_cont, placeholder: "投稿内容で検索...", class: "form-control"
+    button.btn.btn-primary type="submit"
+      i.fas.fa-search
+      |  検索
 
-      .card-list#posts
-        - @posts.each do |post|
-          = render 'shared/post', post: post
+.card-list#posts
+  - @posts.each do |post|
+    = render 'shared/post', post: post
 
-      .d-flex.justify-content-center.mt-4
-        = paginate @posts
-
-    / 右サイドバー - Vault（モバイルでは2番目に表示）
-    .col-lg-3.order-2.order-lg-3
-      - if user_signed_in?
-        - es_count = @vault_es_count || 0
-        - progress_company_count = @vault_progress_company_count || 0
-        - company_progress = @vault_progress_companies || []
-
-        .card.card-primary.fade-in.card-decorative.border-primary
-          .card-header.bg-gradient-primary.text-white
-            h5.mb-0.font-semibold
-              i.fas.fa-briefcase.me-2
-              | Vault
-
-          .card-body.p-4
-            .d-flex.justify-content-between.align-items-center.mb-3
-              div
-                .fs-4.fw-bold.text-primary = es_count
-                small.text-muted ES
-              div.text-end
-                .fs-4.fw-bold.text-primary = progress_company_count
-                small.text-muted 選考中の企業
-            - if company_progress.any?
-              .separator-gradient.my-2
-              ul.list-unstyled.mb-3
-                - company_progress.each do |company|
-                  li.d-flex.justify-content-between.align-items-center.mb-2
-                    span.text-ellipsis = company[:company_name]
-                    span.d-flex.align-items-center.gap-2
-                      span.badge.rounded-pill.bg-light.text-dark = company[:selection_stage_ja]
-                      - case company[:result]
-                      - when "passed"
-                        span.badge.rounded-pill.bg-success.text-white = company[:result_ja]
-                      - when "failed"
-                        span.badge.rounded-pill.bg-danger.text-white = company[:result_ja]
-                      - when "pending"
-                        span.badge.rounded-pill.bg-warning.text-dark = company[:result_ja]
-            .d-grid.gap-2
-              = link_to vault_root_path, class: "btn btn-outline-primary w-100" do
-                i.fas.fa-eye.me-2
-                | Vaultを開く
+.d-flex.justify-content-center.mt-4
+  = paginate @posts
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

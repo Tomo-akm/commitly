@@ -1,4 +1,6 @@
 - content_for :title, "##{@tag.name}の投稿"
+- content_for :right_nav do
+  = render "shared/right_nav"
 
 .container
   h1.mb-4.fade-in

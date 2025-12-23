@@ -12,6 +12,14 @@ module ApplicationHelper
     end
   end
 
+  def render_right_nav
+    return unless content_for?(:right_nav)
+
+    content_tag(:div, class: "app-shell__right") do
+      yield
+    end
+  end
+
   private
 
   # 相対時間を日本語で表示

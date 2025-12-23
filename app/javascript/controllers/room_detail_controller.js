@@ -54,13 +54,17 @@ export default class extends Controller {
       return sum + parseInt(badge.textContent)
     }, 0)
 
-    const totalBadgeContainer = document.getElementById("total-unread-badge")
-    if (totalBadgeContainer) {
+    const badgeTargets = [
+      document.getElementById("total-unread-badge"),
+      document.getElementById("left-unread-badge"),
+    ].filter(Boolean)
+
+    badgeTargets.forEach((container) => {
       if (total > 0) {
-        totalBadgeContainer.innerHTML = `<span class="badge bg-danger rounded-pill ms-1">${total}</span>`
+        container.innerHTML = `<span class="badge bg-danger rounded-pill ms-1">${total}</span>`
       } else {
-        totalBadgeContainer.innerHTML = ""
+        container.innerHTML = ""
       }
-    }
+    })
   }
 }

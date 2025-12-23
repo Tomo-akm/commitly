@@ -1,22 +1,22 @@
 - content_for :head do
   meta name="turbo-cache-control" content="no-cache"
+- content_for :right_nav do
+  = render "shared/right_nav"
 
-.container
-  .row.justify-content-center
-    .col-lg-8
-      = render "profile_header"
 
-      / ヒートマップと投稿は公開範囲に応じて表示
-      - if @posts_visible
-        = render "heatmap_card"
+= render "profile_header"
 
-        / 投稿セクション
-        - if user_signed_in? && @user == current_user
-          = render "posts_section"
-        - else
-          = render "posts_section_public"
-      - else
-        = render "private_message"
+/ ヒートマップと投稿は公開範囲に応じて表示
+- if @posts_visible
+  = render "heatmap_card"
+
+  / 投稿セクション
+  - if user_signed_in? && @user == current_user
+    = render "posts_section"
+  - else
+    = render "posts_section_public"
+- else
+  = render "private_message"
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

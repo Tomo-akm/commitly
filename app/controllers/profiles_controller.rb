@@ -1,6 +1,7 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!, except: [ :show, :following, :followers ]
-  before_action :set_user, only: [ :show, :likes ]
+  before_action :set_user, only: [ :show, :likes, :following, :followers ]
+  before_action :set_right_nav_data, only: [ :show, :likes, :following, :followers ]
 
   def show
     @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc)
@@ -40,14 +41,12 @@ class ProfilesController < ApplicationController
   end
 
   def following
-    @user  = User.find(params[:id])
     @follow_list_visible = follow_list_visible_to_viewer?
     @users = @follow_list_visible ? @user.following : []
     render "show_follow"
   end
 
   def followers
-    @user  = User.find(params[:id])
     @follow_list_visible = follow_list_visible_to_viewer?
     @users = @follow_list_visible ? @user.followers : []
     render "show_follow"
@@ -56,7 +55,13 @@ class ProfilesController < ApplicationController
   private
 
   def set_user
-    @user = params[:id] ? User.find(params[:id]) : current_user
+    if params[:id]
+      @user = User.find(params[:id])
+    elsif current_user
+      @user = current_user
+    else
+      redirect_to new_user_session_path, alert: "ログインが必要です。" and return
+    end
   end
 
   def profile_params

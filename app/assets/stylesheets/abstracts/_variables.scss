@@ -24,6 +24,11 @@ $neutral-500: #737373;
 $neutral-700: #404040;
 $neutral-900: #2e5077;
 
+// Layout Colors - レイアウト共通カラー
+$layout-border-color: rgba($neutral-300, 0.7);
+$panel-bg: #fff;
+$panel-border-color: $neutral-300;
+
 // Semantic Colors - 意味を持つカラー
 $success: #22c55e;
 $success-dark: #16a34a;

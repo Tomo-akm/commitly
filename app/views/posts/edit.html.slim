@@ -1,16 +1,13 @@
 - content_for :title, "commit rebase"
+- content_for :right_nav do
+  = render "shared/right_nav"
 
-.container
-  .row.justify-content-center
-    .col-lg-6
-      h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in commit rebase
 
-      / 戻るボタン
-      .mb-3
-        = link_to "javascript:history.back()", class: "back-button text-decoration-none d-inline-flex align-items-center" do
-          i.fas.fa-chevron-left.me-2
-          span 戻る
+h1.text-center.display-5.font-bold.mb-4.text-primary.fade-in commit rebase
 
-      .card.card-primary.fade-in
-        .card-body.p-4
-          = render "posts/components/form", post: @post
+/ 戻るボタン
+= render "shared/back_button"
+
+.card.card-primary.fade-in
+  .card-body.p-4
+    = render "posts/components/form", post: @post
