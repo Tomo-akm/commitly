@@ -50,6 +50,17 @@ RSpec.describe "Profiles", type: :request do
         expect(user.personal_message).to eq("よろしくお願いします")
       end
 
+      it "卒業年度を更新できる" do
+        patch profile_path, params: {
+          user: {
+            name: user.name,
+            graduation_year: 2026
+          }
+        }
+        user.reload
+        expect(user.graduation_year).to eq(2026)
+      end
+
       it "更新後にプロフィールページにリダイレクトする" do
         patch profile_path, params: {
           user: {
@@ -80,6 +91,30 @@ RSpec.describe "Profiles", type: :request do
         }
         user.reload
         expect(user.name).to eq(old_name)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "卒業年度が2000年未満の場合は更新できない" do
+        patch profile_path, params: {
+          user: {
+            name: user.name,
+            graduation_year: 1999
+          }
+        }
+        user.reload
+        expect(user.graduation_year).to be_nil
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "卒業年度が2100年を超える場合は更新できない" do
+        patch profile_path, params: {
+          user: {
+            name: user.name,
+            graduation_year: 2101
+          }
+        }
+        user.reload
+        expect(user.graduation_year).to be_nil
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
