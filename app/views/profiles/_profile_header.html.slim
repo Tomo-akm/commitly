@@ -33,7 +33,7 @@
       .profile-icon
         i.fas.fa-briefcase
       .profile-label インターン・説明会参加回数
-      .profile-value = @user.internship_count.present? ? "#{@user.internship_count}回" : "ー"
+      .profile-value = @user.intern_participations_count > 0 ? "#{@user.intern_participations_count}回" : "ー"
 
     .separator-gradient
 

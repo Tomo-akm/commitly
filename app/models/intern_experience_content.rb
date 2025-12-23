@@ -20,7 +20,7 @@ class InternExperienceContent < ApplicationRecord
   }.freeze
 
   validates :company_name, presence: true, length: { maximum: 100 }
-  validates :event_name, length: { maximum: 100 }, allow_blank: true
+  validates :event_name, presence: true, length: { maximum: 100 }
   validates :duration_days, numericality: { only_integer: true, greater_than: 0 }, allow_blank: true
   validates :content, presence: true, length: { maximum: 5000 }
 
@@ -31,13 +31,13 @@ class InternExperienceContent < ApplicationRecord
 
   def self.duration_presets_for_select
     [
-      ["1日", DURATION_PRESETS[:one_day]],
-      ["3日間", DURATION_PRESETS[:three_days]],
-      ["1週間", DURATION_PRESETS[:one_week]],
-      ["2週間", DURATION_PRESETS[:two_weeks]],
-      ["1ヶ月", DURATION_PRESETS[:one_month]],
-      ["3ヶ月", DURATION_PRESETS[:three_months]],
-      ["6ヶ月", DURATION_PRESETS[:six_months]]
+      [ "1日", DURATION_PRESETS[:one_day] ],
+      [ "3日間", DURATION_PRESETS[:three_days] ],
+      [ "1週間", DURATION_PRESETS[:one_week] ],
+      [ "2週間", DURATION_PRESETS[:two_weeks] ],
+      [ "1ヶ月", DURATION_PRESETS[:one_month] ],
+      [ "3ヶ月", DURATION_PRESETS[:three_months] ],
+      [ "6ヶ月", DURATION_PRESETS[:six_months] ]
     ]
   end
 

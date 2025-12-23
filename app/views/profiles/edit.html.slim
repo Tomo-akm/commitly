@@ -27,8 +27,9 @@
 
             .form-group
               = form.label :internship_count, "インターン・説明会参加回数", class: "form-label"
-              = form.number_field :internship_count, class: "form-input", min: 0, placeholder: "0"
-              .form-help 参加した回数を入力してください
+              .form-input.bg-light style="cursor: not-allowed; padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 0.375rem;"
+                = @user.intern_participations_count > 0 ? "#{@user.intern_participations_count}回" : "0回"
+              .form-help インターン体験記の投稿から自動でカウントされます
 
             .form-group
               = form.label :personal_message, "一言", class: "form-label"

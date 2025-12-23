@@ -36,9 +36,10 @@ RSpec.describe InternExperienceContent, type: :model do
       expect(intern_experience_content).to be_valid
     end
 
-    it 'event_nameが空白でも有効であること' do
+    it 'event_nameが必須であること' do
       intern_experience_content = build(:intern_experience_content, event_name: nil)
-      expect(intern_experience_content).to be_valid
+      expect(intern_experience_content).not_to be_valid
+      expect(intern_experience_content.errors[:event_name]).to include("を入力してください")
     end
 
     it 'event_nameが100文字を超える場合、無効であること' do
@@ -232,14 +233,14 @@ RSpec.describe InternExperienceContent, type: :model do
       expect(intern_experience_content.formatted_duration).to eq("3ヶ月")
     end
 
-    it '6ヶ月（180日）の場合、"6ヶ月"を返すこと' do
+    it '6ヶ月（180日）の場合、"6ヶ月以上"を返すこと' do
       intern_experience_content = build(:intern_experience_content, duration_days: 180)
-      expect(intern_experience_content.formatted_duration).to eq("6ヶ月")
+      expect(intern_experience_content.formatted_duration).to eq("6ヶ月以上")
     end
 
-    it 'プリセット以外の日数の場合、"X日間"を返すこと' do
+    it 'プリセット以外の日数の場合、nilを返すこと' do
       intern_experience_content = build(:intern_experience_content, duration_days: 21)
-      expect(intern_experience_content.formatted_duration).to eq("21日間")
+      expect(intern_experience_content.formatted_duration).to be_nil
     end
   end
 
@@ -248,8 +249,8 @@ RSpec.describe InternExperienceContent, type: :model do
       options = InternExperienceContent.duration_presets_for_select
       expect(options).to be_a(Array)
       expect(options.size).to eq(7)
-      expect(options.first).to eq(["1日", 1])
-      expect(options.last).to eq(["6ヶ月", 180])
+      expect(options.first).to eq([ "1日", 1 ])
+      expect(options.last).to eq([ "6ヶ月", 180 ])
     end
   end
 end
