@@ -11,7 +11,7 @@
             i.fas.fa-arrow-left
           i.fas.fa-user-circle.me-3 style="font-size: 40px;"
           h5.mb-0.font-bold = @room.other_user(current_user).name
-        = link_to user_profile_path(@room.other_user(current_user)), target: "_top", class: "btn btn-sm btn-light" do
+        = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "btn btn-sm btn-light" do
           i.fas.fa-user.me-1
           | プロフィール
 
@@ -71,7 +71,7 @@
                     i.fas.fa-arrow-left
                   i.fas.fa-user-circle.me-3 style="font-size: 40px;"
                   h5.mb-0.font-bold = @room.other_user(current_user).name
-                = link_to user_profile_path(@room.other_user(current_user)), target: "_top", class: "btn btn-sm btn-light" do
+                = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "btn btn-sm btn-light" do
                   i.fas.fa-user.me-1
                   | プロフィール
 
@@ -110,4 +110,3 @@
           display: block !important;
         }
       }
-
