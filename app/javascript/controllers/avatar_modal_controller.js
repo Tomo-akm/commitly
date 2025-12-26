@@ -5,21 +5,22 @@ import { Modal } from 'bootstrap';
 export default class extends Controller {
   static values = {
     avatarUrl: String,
-    modalId: String,
   };
 
   openModal(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    const modalElement = document.getElementById(this.modalIdValue);
+    const modalElement = document.getElementById('avatarModal');
     if (!modalElement) return;
 
-    const imageEl = modalElement.querySelector('[data-avatar-modal-image]');
+    // モーダルの画像を更新
+    const imageEl = modalElement.querySelector('#avatarModalImage');
     if (imageEl) {
       imageEl.src = this.avatarUrlValue;
     }
 
+    // モーダルを開く
     const modal = Modal.getOrCreateInstance(modalElement);
     modal.show();
   }

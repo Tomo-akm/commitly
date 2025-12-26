@@ -554,13 +554,3 @@
   background-color: transparent;
   object-fit: cover;
 }
-
-.avatar-zoom-trigger {
-  box-shadow: none;
-
-  &:hover,
-  &:focus {
-    box-shadow: none;
-    transform: none;
-  }
-}
