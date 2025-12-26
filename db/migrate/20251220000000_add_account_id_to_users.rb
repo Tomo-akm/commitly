@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddAccountIdToUsers < ActiveRecord::Migration[7.0]
+class AddAccountIdToUsers < ActiveRecord::Migration[8.1]
   class MigrationUser < ActiveRecord::Base
     self.table_name = "users"
   end
