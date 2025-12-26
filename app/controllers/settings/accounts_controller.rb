@@ -9,7 +9,7 @@ module Settings
 
     def update
       # パスワードユーザー（provider.blank?）の場合のみパスワード検証
-      if current_user.provider.blank? && !current_user.valid_password?(params[:user][:current_password].to_s)
+      if current_user.provider.blank? && (params[:user][:current_password].blank? || !current_user.valid_password?(params[:user][:current_password]))
         current_user.errors.add(:current_password, "が正しくありません")
         render :show, status: :unprocessable_entity
         return
