@@ -1,5 +1,5 @@
-import { Controller } from '@hotwired/stimulus';
-import { Modal } from 'bootstrap';
+import { Controller } from "@hotwired/stimulus";
+import { Modal } from "bootstrap";
 
 // アバター拡大表示コントローラー
 export default class extends Controller {
