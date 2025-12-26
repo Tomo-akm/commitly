@@ -12,10 +12,11 @@ nav.left-nav
       span.icon-24
         i.fas.fa-home
       span ホーム
-    = link_to profile_path, class: "left-nav__link" do
-      span.icon-24
-        i.fas.fa-user
-      span プロフィール
+    - if user_signed_in?
+      = link_to user_profile_path(current_user.account_id), class: "left-nav__link" do
+        span.icon-24
+          i.fas.fa-user
+        span プロフィール
     - if user_signed_in?
       = link_to rooms_path, class: "left-nav__link", data: { turbo_frame: "_top" } do
         span.icon-24

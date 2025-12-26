@@ -1,4 +1,4 @@
-span id="reply_button_#{post.id}" data-controller="reply" data-reply-post-id-value=post.id data-reply-post-content-value=post.content data-reply-user-name-value=post.user.name data-reply-user-avatar-url-value=post.user.avatar_url(size: 40)
+span id="reply_button_#{post.id}" data-controller="reply" data-reply-post-id-value=post.id data-reply-post-content-value=post.content data-reply-user-name-value=post.user.name data-reply-user-avatar-url-value=post.user.avatar_url(size: 40) data-reply-user-account-id-value=post.user.account_id
   button.reply-button type="button" data-action="click->reply#openModal" aria-label="リプライする"
     i.fa-regular.fa-comment
     span.ms-1= post.visible_replies_count(current_user)

@@ -11,7 +11,13 @@ module ProfilesHelper
 
   # commit logタブのパスを取得
   def commit_log_tab_path
-    params[:id] ? user_profile_path(params[:id]) : profile_path
+    if params[:account_id]
+      user_profile_path(params[:account_id])
+    elsif current_user
+      user_profile_path(current_user.account_id)
+    else
+      root_path
+    end
   end
 
   # commit logタブがアクティブかどうか
@@ -22,7 +28,9 @@ module ProfilesHelper
 
   # Starタブのパスを取得
   def stars_tab_path
-    profile_likes_path
+    return root_path unless current_user
+
+    user_profile_likes_path(current_user.account_id)
   end
 
   # Starタブがアクティブかどうか

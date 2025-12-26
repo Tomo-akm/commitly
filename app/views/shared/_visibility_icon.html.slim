@@ -1,0 +1,7 @@
+/ 公開範囲アイコンを表示
+/ user: ユーザーオブジェクト
+/ icon_class: アイコンに適用する追加のCSSクラス（オプション）
+- if user.mutual_followers?
+  i.fas.fa-user-friends class=icon_class title="相互フォローのみ"
+- elsif user.only_me?
+  i.fas.fa-lock class=icon_class title="自分だけ"

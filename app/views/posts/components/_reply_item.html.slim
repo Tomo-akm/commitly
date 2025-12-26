@@ -10,13 +10,10 @@
       / ユーザー情報とタイムスタンプ
       .d-flex.align-items-center.justify-content-between.mb-2
         .d-flex.align-items-center.gap-1
-          = link_to user_profile_path(reply.user), class: "text-decoration-none" do
+          = link_to user_profile_path(reply.user.account_id), class: "text-decoration-none" do
             .d-flex.align-items-center
               span.fw-semibold.text-dark = reply.user.name
-              - if reply.user.mutual_followers?
-                i.fas.fa-user-friends.ms-2.text-muted.small title="相互フォローのみ"
-              - elsif reply.user.only_me?
-                i.fas.fa-lock.ms-2.text-muted.small title="自分だけ"
+              = render "shared/visibility_icon", user: reply.user, icon_class: "ms-2 text-muted small"
           span.text-muted.small · #{japanese_time_ago(reply.created_at)}
 
         / 自分のリプライの場合のみ3点メニュー

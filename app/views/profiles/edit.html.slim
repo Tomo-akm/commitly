@@ -51,5 +51,5 @@
               = form.text_area :personal_message, class: "form-textarea", rows: 4, placeholder: "自己紹介や一言メッセージを入力してください"
 
             .d-flex.gap-2.justify-content-end
-              = link_to "キャンセル", profile_path, class: "btn btn-secondary"
+              = link_to "キャンセル", user_profile_path(current_user.account_id), class: "btn btn-secondary"
               = form.submit "更新", class: "btn btn-gradient-primary", data: { avatar_size_validator_target: "submit" }

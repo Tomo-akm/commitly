@@ -56,7 +56,16 @@ class User < ApplicationRecord
   has_many :api_keys, dependent: :destroy
   has_many :chats, dependent: :destroy
 
+  ACCOUNT_ID_MIN_LENGTH = 3
+  ACCOUNT_ID_MAX_LENGTH = 20
+  ACCOUNT_ID_DEFAULT_LENGTH = 12
+
   validates :name, presence: true, length: { maximum: 50 }
+  validates :account_id,
+            presence: true,
+            length: { in: ACCOUNT_ID_MIN_LENGTH..ACCOUNT_ID_MAX_LENGTH },
+            format: { with: /\A[a-zA-Z0-9_]+\z/ },
+            uniqueness: true
   validates :internship_count,
             presence: true,
             numericality: { greater_than_or_equal_to: 0 },
@@ -90,6 +99,7 @@ class User < ApplicationRecord
       user.email = auth.info.email
       user.name = extract_name_from_auth(auth)
       user.password = Devise.friendly_token[0, 20]
+      user.account_id = generate_unique_account_id
       user.internship_count = DEFAULT_INTERNSHIP_COUNT
     end
   end
@@ -118,5 +128,12 @@ class User < ApplicationRecord
   # OAuth認証データから名前を抽出
   def self.extract_name_from_auth(auth)
     auth.info.name.presence || auth.info.email.split("@").first
+  end
+
+  def self.generate_unique_account_id
+    loop do
+      account_id = SecureRandom.alphanumeric(ACCOUNT_ID_DEFAULT_LENGTH)
+      return account_id unless exists?(account_id: account_id)
+    end
   end
 end

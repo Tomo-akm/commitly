@@ -31,6 +31,15 @@
           = f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control", placeholder: "山田太郎"
 
       .form-group
+        = f.label :account_id, "ユーザーID", class: "form-label"
+        .input-group
+          span.input-group-text.bg-light
+            i.fas.fa-id-badge.text-muted
+          = f.text_field :account_id, autocomplete: "username", class: "form-control", placeholder: "sample_user", maxlength: User::ACCOUNT_ID_MAX_LENGTH
+        small.text-muted.d-block.mt-1
+          | 英数字と_のみ、#{User::ACCOUNT_ID_MIN_LENGTH}〜#{User::ACCOUNT_ID_MAX_LENGTH}文字
+
+      .form-group
         = f.label :email, "メールアドレス", class: "form-label"
         .input-group
           span.input-group-text.bg-light

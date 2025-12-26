@@ -23,18 +23,17 @@ Rails.application.routes.draw do
     end
   end
   get "home/index"
-  get "profile", to: "profiles#show"
-  get "profile/likes", to: "profiles#likes", as: "profile_likes"
   get "profile/edit", to: "profiles#edit", as: "edit_profile"
   patch "profile", to: "profiles#update"
-  get "users/:id/profile", to: "profiles#show", as: "user_profile"
-  get "users/:id/profile/likes", to: "profiles#likes", as: "user_profile_likes"
-  get "users/:id/following", to: "profiles#following", as: "following_user"
-  get "users/:id/followers", to: "profiles#followers", as: "followers_user"
+  get "users/:account_id", to: "profiles#show", as: "user_profile"
+  get "users/:account_id/likes", to: "profiles#likes", as: "user_profile_likes"
+  get "users/:account_id/following", to: "profiles#following", as: "following_user"
+  get "users/:account_id/followers", to: "profiles#followers", as: "followers_user"
 
   # Settings（設定エリア）
   namespace :settings do
     root "settings#index"
+    resource :account, only: [ :show, :update ]
     resource :privacy, only: [ :show, :update ], controller: "privacy"
     resources :api_keys, only: [ :index, :create, :destroy ]
   end
