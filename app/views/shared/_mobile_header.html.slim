@@ -1,0 +1,41 @@
+/ モバイルヘッダー（992px未満で表示）
+header.mobile-header
+  = link_to root_path, class: "mobile-header__brand" do
+    span.mobile-header__brand-title Commitly
+    - if local_assigns[:context] == :vault
+      span.mobile-header__brand-badge 就活記録Vault
+    - else
+      span.mobile-header__brand-badge 就活記録SNS
+
+  - if user_signed_in?
+    .dropdown.mobile-header__menu
+      button.mobile-header__avatar[
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        aria-label="メニューを開く"
+      ]
+        = render "shared/avatar", user: current_user, size: 32, class_name: ""
+      ul.dropdown-menu.dropdown-menu-end.mobile-header__dropdown
+        li
+          = link_to user_profile_path(current_user.account_id), class: "dropdown-item d-flex align-items-center gap-2" do
+            i.fas.fa-user
+            span プロフィール
+        li
+          hr.dropdown-divider
+        li
+          = link_to home_index_path, class: "dropdown-item d-flex align-items-center gap-2" do
+            i.fas.fa-house
+            span ホーム・コンセプト
+        li
+          = link_to "#", class: "dropdown-item d-flex align-items-center gap-2", data: { bs_toggle: "modal", bs_target: "#helpModal" } do
+            i.fas.fa-lightbulb
+            span Git Tips
+        li
+          hr.dropdown-divider
+        li
+          = link_to destroy_user_session_path, class: "dropdown-item d-flex align-items-center gap-2 text-danger", data: { turbo_method: :delete, turbo_confirm: "ログアウトしますか？" } do
+            i.fas.fa-sign-out-alt
+            span ログアウト
+  - else
+    = link_to "ログイン", new_user_session_path, class: "mobile-header__login-link"
