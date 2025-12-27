@@ -67,7 +67,7 @@ RSpec.describe "Profiles", type: :request do
             name: "新しい名前"
           }
         }
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(user_profile_path(user.account_id))
       end
 
       it "成功メッセージが表示される" do
@@ -126,7 +126,7 @@ RSpec.describe "Profiles", type: :request do
 
       it "Starした投稿のみ表示される" do
         create(:like, user: user, post: liked_post)
-        get profile_likes_path
+        get user_profile_likes_path(user.account_id)
 
         expect(response).to have_http_status(:success)
         expect(response.body).to include(liked_post.content)
@@ -134,7 +134,7 @@ RSpec.describe "Profiles", type: :request do
       end
 
       it "Starがない場合、メッセージが表示される" do
-        get profile_likes_path
+        get user_profile_likes_path(user.account_id)
 
         expect(response).to have_http_status(:success)
         expect(response.body).to include("まだStarした投稿がありません")
@@ -144,7 +144,7 @@ RSpec.describe "Profiles", type: :request do
     context "未ログイン" do
       it "ログインページにリダイレクト" do
         sign_out user
-        get profile_likes_path
+        get user_profile_likes_path(user.account_id)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -163,7 +163,7 @@ RSpec.describe "Profiles", type: :request do
 
       context '全体公開の場合' do
         it '投稿とヒートマップが表示される' do
-          get user_profile_path(profile_owner)
+          get user_profile_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include(post1.contentable.content)
           expect(response.body).to include(post2.contentable.content)
@@ -176,7 +176,7 @@ RSpec.describe "Profiles", type: :request do
 
         context '相互フォロー関係がない場合' do
           it '非公開メッセージが表示される' do
-            get user_profile_path(profile_owner)
+            get user_profile_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include('このユーザーは投稿を非公開にしています')
             expect(response.body).to include('相互フォロー関係を結ぶと、投稿が閲覧できるようになります')
@@ -191,7 +191,7 @@ RSpec.describe "Profiles", type: :request do
           end
 
           it '投稿とヒートマップが表示される' do
-            get user_profile_path(profile_owner)
+            get user_profile_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include(post1.contentable.content)
             expect(response.body).to include(post2.contentable.content)
@@ -203,7 +203,7 @@ RSpec.describe "Profiles", type: :request do
         before { profile_owner.update(post_visibility: :only_me) }
 
         it '非公開メッセージが表示される' do
-          get user_profile_path(profile_owner)
+          get user_profile_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include('このユーザーは投稿を非公開にしています')
           expect(response.body).to include('投稿は本人のみ閲覧可能です')
@@ -218,7 +218,7 @@ RSpec.describe "Profiles", type: :request do
         end
 
         it '投稿とヒートマップが表示される' do
-          get user_profile_path(profile_owner)
+          get user_profile_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include(post1.contentable.content)
           expect(response.body).to include(post2.contentable.content)
@@ -238,7 +238,7 @@ RSpec.describe "Profiles", type: :request do
 
       context '全体公開の場合' do
         it 'フォローリストが表示される' do
-          get following_user_path(profile_owner)
+          get following_user_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include(followed_user.name)
         end
@@ -249,7 +249,7 @@ RSpec.describe "Profiles", type: :request do
 
         context '相互フォロー関係がない場合' do
           it '非公開メッセージが表示される' do
-            get following_user_path(profile_owner)
+            get following_user_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include('このユーザーはフォローリストを非公開にしています')
             expect(response.body).not_to include(followed_user.name)
@@ -263,7 +263,7 @@ RSpec.describe "Profiles", type: :request do
           end
 
           it 'フォローリストが表示される' do
-            get following_user_path(profile_owner)
+            get following_user_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include(followed_user.name)
           end
@@ -274,7 +274,7 @@ RSpec.describe "Profiles", type: :request do
         before { profile_owner.update(post_visibility: :only_me) }
 
         it '非公開メッセージが表示される' do
-          get following_user_path(profile_owner)
+          get following_user_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include('このユーザーはフォローリストを非公開にしています')
           expect(response.body).not_to include(followed_user.name)
@@ -294,7 +294,7 @@ RSpec.describe "Profiles", type: :request do
 
       context '全体公開の場合' do
         it 'フォロワーリストが表示される' do
-          get followers_user_path(profile_owner)
+          get followers_user_path(profile_owner.account_id)
           expect(response).to have_http_status(:success)
           expect(response.body).to include(follower_user.name)
         end
@@ -305,7 +305,7 @@ RSpec.describe "Profiles", type: :request do
 
         context '相互フォロー関係がない場合' do
           it '非公開メッセージが表示される' do
-            get followers_user_path(profile_owner)
+            get followers_user_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include('このユーザーはフォローリストを非公開にしています')
             expect(response.body).not_to include(follower_user.name)
@@ -319,7 +319,7 @@ RSpec.describe "Profiles", type: :request do
           end
 
           it 'フォロワーリストが表示される' do
-            get followers_user_path(profile_owner)
+            get followers_user_path(profile_owner.account_id)
             expect(response).to have_http_status(:success)
             expect(response.body).to include(follower_user.name)
           end

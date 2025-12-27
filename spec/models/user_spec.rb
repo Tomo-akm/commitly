@@ -23,6 +23,64 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    describe 'account_id' do
+      it '有効なaccount_idの場合は有効' do
+        user = build(:user, account_id: 'valid_user123')
+        expect(user).to be_valid
+      end
+
+      it '空欄の場合は無効' do
+        user = build(:user, account_id: nil)
+        expect(user).not_to be_valid
+      end
+
+      it '重複するaccount_idの場合は無効' do
+        create(:user, account_id: 'duplicate_user')
+        user = build(:user, account_id: 'duplicate_user')
+        expect(user).not_to be_valid
+      end
+
+      it '2文字以下の場合は無効' do
+        user = build(:user, account_id: 'ab')
+        expect(user).not_to be_valid
+      end
+
+      it '3文字の場合は有効（最小値）' do
+        user = build(:user, account_id: 'abc')
+        expect(user).to be_valid
+      end
+
+      it '20文字の場合は有効（最大値）' do
+        user = build(:user, account_id: 'a' * 20)
+        expect(user).to be_valid
+      end
+
+      it '21文字以上の場合は無効' do
+        user = build(:user, account_id: 'a' * 21)
+        expect(user).not_to be_valid
+      end
+
+      it '英数字とアンダースコアのみの場合は有効' do
+        user = build(:user, account_id: 'user_123_ABC')
+        expect(user).to be_valid
+      end
+
+      it 'ハイフンを含む場合は無効' do
+        user = build(:user, account_id: 'user-123')
+        expect(user).not_to be_valid
+      end
+
+      it 'スペースを含む場合は無効' do
+        user = build(:user, account_id: 'user 123')
+        expect(user).not_to be_valid
+      end
+
+      it '特殊文字を含む場合は無効' do
+        user = build(:user, account_id: 'user@123')
+        expect(user).not_to be_valid
+      end
+    end
+
     describe 'graduation_year' do
       it '有効な卒業年度（2026年）の場合は有効' do
         user = build(:user, graduation_year: 2026)

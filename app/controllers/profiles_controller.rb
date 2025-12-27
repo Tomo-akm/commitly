@@ -4,14 +4,19 @@ class ProfilesController < ApplicationController
   before_action :set_right_nav_data, only: [ :show, :likes, :following, :followers ]
 
   def show
-    @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc)
+    @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc).page(params[:page]).per(POSTS_PER_PAGE)
     prepare_heatmap_data
     # プロフィールの投稿・ヒートマップの可視性判定
     @posts_visible = posts_visible_to_viewer?
   end
 
   def likes
-    @liked_posts = current_user.liked_posts.includes(:contentable, :user, :tags, :likes).order(created_at: :desc)
+    @liked_posts = @user.liked_posts
+                        .visible_to(current_user)
+                        .preload(:contentable, :user, :tags, :likes)
+                        .order(created_at: :desc)
+                        .page(params[:page])
+                        .per(POSTS_PER_PAGE)
     prepare_heatmap_data
   end
 
@@ -33,7 +38,7 @@ class ProfilesController < ApplicationController
     end
 
     @user.update!(profile_params)
-    redirect_to profile_path, notice: "プロフィールを更新しました。"
+    redirect_to user_profile_path(@user.account_id), notice: "プロフィールを更新しました。"
   rescue ActiveRecord::RecordInvalid
     # バリデーション失敗時、アバターをDBの状態に戻す（古い画像を復元）
     @user.avatar.reload if @user.avatar.attached?
@@ -55,13 +60,7 @@ class ProfilesController < ApplicationController
   private
 
   def set_user
-    if params[:id]
-      @user = User.find(params[:id])
-    elsif current_user
-      @user = current_user
-    else
-      redirect_to new_user_session_path, alert: "ログインが必要です。" and return
-    end
+    @user = User.find_by!(account_id: params[:account_id])
   end
 
   def profile_params

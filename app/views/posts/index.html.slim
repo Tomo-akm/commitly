@@ -21,12 +21,9 @@
       i.fas.fa-search
       |  検索
 
+/ 無限スクロール用の投稿リスト
 .card-list#posts
-  - @posts.each do |post|
-    = render 'shared/post', post: post
-
-.d-flex.justify-content-center.mt-4
-  = paginate @posts
+  = render 'shared/posts_page', posts: @posts, next_page_path: infinite_scroll_next_page_path(:posts)
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

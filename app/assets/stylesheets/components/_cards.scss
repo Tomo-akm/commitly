@@ -153,6 +153,18 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-4;
+
+    // Turbo Frame内のカードにも余白を適用（無限スクロール対応）
+    turbo-frame {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-4;
+    }
+
+    // カード自体にも余白を確保（fallback）
+    .card {
+      margin-bottom: 0; // gapで制御するためmarginはリセット
+    }
   }
 }
 

@@ -363,6 +363,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_142945) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "account_id", limit: 20, null: false
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -378,6 +379,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_23_142945) do
     t.string "reset_password_token"
     t.string "uid"
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_users_on_account_id", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

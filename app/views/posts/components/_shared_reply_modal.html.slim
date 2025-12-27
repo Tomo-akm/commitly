@@ -20,6 +20,12 @@
               span.fw-semibold.text-dark data-reply-target="userName"
             .text-dark.mb-2 data-reply-target="postContent"
 
+        / Replying toの表示
+        .mb-3
+          span.text-muted.small
+            | Replying to
+            span.text-primary.ms-1 data-reply-target="replyingToAccountId"
+
         / リプライフォーム
         = form_with(url: posts_path, method: :post, class: "x-reply-modal-form") do |f|
           input type="hidden" name="post[parent_id]" data-reply-target="parentIdInput"
