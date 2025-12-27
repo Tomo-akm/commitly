@@ -5,70 +5,23 @@ default: &default
   timeout: 5000
 
 development:
-  primary:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_development" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-  queue:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_development" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-    schema_search_path: public
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_development" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-    schema_search_path: public
-    migrations_paths: db/cable_migrate
+  <<: *default
+  host: <%= ENV.fetch("DB_HOST") { "db" } %>
+  database: <%= ENV.fetch("DB_DATABASE") { "commitly_development" } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  primary:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_test" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-  queue:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_test" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-    schema_search_path: public
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    host: <%= ENV.fetch("DB_HOST") { "db" } %>
-    database: <%= ENV.fetch("DB_DATABASE") { "commitly_test" } %>
-    username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
-    password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
-    schema_search_path: public
-    migrations_paths: db/cable_migrate
+  <<: *default
+  host: <%= ENV.fetch("DB_HOST") { "db" } %>
+  database: <%= ENV.fetch("DB_DATABASE") { "commitly_test" } %>
+  username: <%= ENV.fetch("DB_USERNAME") { "commitly" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
 
 # Production uses Render's DATABASE_URL
 production:
-  primary:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-  cache:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
