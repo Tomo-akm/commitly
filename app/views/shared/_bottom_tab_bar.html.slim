@@ -5,28 +5,28 @@
 - settings_active = controller_path.start_with?("settings")
 
 nav.bottom-tab-bar
-  = link_to posts_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if home_active}" do
+  = link_to posts_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if home_active}", aria: { label: "ホームに移動" } do
     span.bottom-tab-bar__icon
       i.fas.fa-home
     span.bottom-tab-bar__label ホーム
 
-  = link_to vault_root_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if vault_active}" do
+  = link_to vault_root_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if vault_active}", aria: { label: "Vaultに移動" } do
     span.bottom-tab-bar__icon
       i.fas.fa-briefcase
     span.bottom-tab-bar__label Vault
 
   .bottom-tab-bar__commit
-    = link_to new_post_path, class: "bottom-tab-bar__commit-btn", data: { turbo_frame: "main" } do
+    = link_to new_post_path, class: "bottom-tab-bar__commit-btn", data: { turbo_frame: "main" }, aria: { label: "新規投稿を作成" } do
       i.fas.fa-plus
 
-  = link_to rooms_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if dm_active}", data: { turbo_frame: "_top" } do
+  = link_to rooms_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if dm_active}", data: { turbo_frame: "_top" }, aria: { label: "DMに移動" } do
     span.bottom-tab-bar__icon
       i.fas.fa-comments
     span.bottom-tab-bar__label DM
     - if user_signed_in? && current_user.total_unread_messages_count > 0
       span.bottom-tab-bar__badge = current_user.total_unread_messages_count
 
-  = link_to Settings::Navigation.default_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if settings_active}" do
+  = link_to Settings::Navigation.default_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if settings_active}", aria: { label: "設定に移動" } do
     span.bottom-tab-bar__icon
       i.fas.fa-cog
     span.bottom-tab-bar__label 設定
