@@ -4,7 +4,7 @@ class ProfilesController < ApplicationController
   before_action :set_right_nav_data, only: [ :show, :likes, :following, :followers ]
 
   def show
-    @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc)
+    @posts = @user.posts.visible_to(current_user).preload(:contentable, :user, :likes, :tags).order(created_at: :desc).page(params[:page]).per(POSTS_PER_PAGE)
     prepare_heatmap_data
     # プロフィールの投稿・ヒートマップの可視性判定
     @posts_visible = posts_visible_to_viewer?
@@ -15,6 +15,8 @@ class ProfilesController < ApplicationController
                         .visible_to(current_user)
                         .preload(:contentable, :user, :tags, :likes)
                         .order(created_at: :desc)
+                        .page(params[:page])
+                        .per(POSTS_PER_PAGE)
     prepare_heatmap_data
   end
 

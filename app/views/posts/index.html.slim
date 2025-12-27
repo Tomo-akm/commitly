@@ -23,7 +23,7 @@
 
 / 無限スクロール用の投稿リスト
 .card-list#posts
-  = render 'posts_page'
+  = render 'shared/posts_page', posts: @posts, next_page_path: infinite_scroll_next_page_path(:posts)
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

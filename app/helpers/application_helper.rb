@@ -20,6 +20,26 @@ module ApplicationHelper
     end
   end
 
+  # 無限スクロール用の次ページパスを生成するLambdaを返す
+  # @param context [Symbol] コンテキスト（:posts, :tag, :user_profile, :likes）
+  # @param options [Hash] コンテキスト固有のオプション（tagやuserなど）
+  # @return [Proc] 次ページのパスを生成するLambda
+  def infinite_scroll_next_page_path(context, options = {})
+    case context
+    when :posts
+      ->(page) { posts_path(q: params[:q], page: page) }
+    when :tag
+      tag = options[:tag]
+      ->(page) { tag_path(tag, q: params[:q], page: page) }
+    when :user_profile
+      user = options[:user]
+      ->(page) { user_profile_path(user.account_id, page: page) }
+    when :likes
+      user = options[:user]
+      ->(page) { likes_user_profile_path(user.account_id, page: page) }
+    end
+  end
+
   private
 
   # 相対時間を日本語で表示

@@ -1,0 +1,13 @@
+/ 無限スクロール: 投稿ページごとのリスト（共通パーシャル）
+/ 使い方: = render 'shared/posts_page', posts: @posts, next_page_path: ->(page) { posts_path(q: params[:q], page: page) }
+= turbo_frame_tag "posts_page_#{posts.current_page}" do
+  - posts.each do |post|
+    = render 'shared/post', post: post
+
+  / 次ページの遅延読み込み（スケルトン表示）
+  - if posts.next_page
+    = turbo_frame_tag "posts_page_#{posts.next_page}",
+        src: next_page_path.call(posts.next_page),
+        loading: :lazy,
+        data: { controller: "infinite-loader", "infinite-loader-min-delay-value": 700 } do
+      = render "posts/components/infinite_loader"
