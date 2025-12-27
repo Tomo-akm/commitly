@@ -9,8 +9,24 @@ export default class extends Controller {
 
   connect() {
     this.startTime = null
-    this.element.addEventListener("turbo:before-fetch-request", this.start.bind(this))
-    this.element.addEventListener("turbo:before-frame-render", this.beforeRender.bind(this))
+    // 保持されたバインド済みハンドラを使うことで、disconnect 時に確実に解除できるようにする
+    if (!this._handleStart) {
+      this._handleStart = this.start.bind(this)
+    }
+    if (!this._handleBeforeRender) {
+      this._handleBeforeRender = this.beforeRender.bind(this)
+    }
+    this.element.addEventListener("turbo:before-fetch-request", this._handleStart)
+    this.element.addEventListener("turbo:before-frame-render", this._handleBeforeRender)
+  }
+
+  disconnect() {
+    if (this._handleStart) {
+      this.element.removeEventListener("turbo:before-fetch-request", this._handleStart)
+    }
+    if (this._handleBeforeRender) {
+      this.element.removeEventListener("turbo:before-frame-render", this._handleBeforeRender)
+    }
   }
 
   start() {
