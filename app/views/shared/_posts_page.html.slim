@@ -9,5 +9,5 @@
     = turbo_frame_tag "posts_page_#{posts.next_page}",
         src: next_page_path.call(posts.next_page),
         loading: :lazy,
-        data: { controller: "infinite-loader", "infinite-loader-min-delay-value": 700 } do
+        data: { controller: "infinite-loader" } do
       = render "posts/components/infinite_loader"

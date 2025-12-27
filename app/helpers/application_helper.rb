@@ -21,9 +21,6 @@ module ApplicationHelper
   end
 
   # 無限スクロール用の次ページパスを生成するLambdaを返す
-  # @param context [Symbol] コンテキスト（:posts, :tag, :user_profile, :likes）
-  # @param options [Hash] コンテキスト固有のオプション（tagやuserなど）
-  # @return [Proc] 次ページのパスを生成するLambda
   def infinite_scroll_next_page_path(context, options = {})
     case context
     when :posts
@@ -37,6 +34,8 @@ module ApplicationHelper
     when :likes
       user = options[:user]
       ->(page) { likes_user_profile_path(user.account_id, page: page) }
+    else
+      raise ArgumentError, "Unknown infinite scroll context: #{context.inspect} (expected :posts, :tag, :user_profile, or :likes)"
     end
   end
 
