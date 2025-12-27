@@ -28,6 +28,9 @@ html
   - body_classes << "app-shell--single" unless content_for?(:right_nav)
   - body_classes << "app-shell--auth" if auth_page
   body class=body_classes.join(" ")
+    / モバイルナビ（992px未満で表示）
+    - unless auth_page
+      = render "shared/mobile_header", context: :community
     .app-shell__frame
       .app-shell__left
         = render "shared/left_nav", context: :community
@@ -40,5 +43,9 @@ html
 
       = render_right_nav do
         = yield :right_nav
+
+    / ボトムタブバー（992px未満で表示）
+    - unless auth_page
+      = render "shared/bottom_tab_bar"
 
     = render "shared/help_modal"

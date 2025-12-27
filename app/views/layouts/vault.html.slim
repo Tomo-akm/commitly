@@ -16,6 +16,8 @@ html
     = javascript_importmap_tags
 
   body class=(content_for?(:right_nav) ? "app-shell" : "app-shell app-shell--single")
+    / モバイルナビ（992px未満で表示）
+    = render "shared/mobile_header", context: :vault
     .app-shell__frame
       .app-shell__left
         = render "shared/left_nav", context: :vault
@@ -43,5 +45,8 @@ html
 
         = render_right_nav do
           = yield :right_nav
+
+    / ボトムタブバー（992px未満で表示）
+    = render "shared/bottom_tab_bar"
 
     = render "shared/help_modal"
