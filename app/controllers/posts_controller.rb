@@ -11,7 +11,7 @@ class PostsController < ApplicationController
             .preload(:contentable, :likes, :user, :tags, :replies)  # N+1対策（preloadを使用してポリモーフィック関連に対応）
             .order(created_at: :desc)
             .page(params[:page])
-            .per(10)
+            .per(POSTS_PER_PAGE)
   end
 
   # GET /posts/1 or /posts/1.json

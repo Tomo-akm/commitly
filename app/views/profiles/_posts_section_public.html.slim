@@ -8,9 +8,8 @@
     hr.my-3
 
     - if @posts.any?
-      .card-list
-        - @posts.each do |post|
-          = render 'shared/post', post: post
+      .card-list#posts
+        = render 'shared/posts_page', posts: @posts, next_page_path: infinite_scroll_next_page_path(:user_profile, user: @user)
     - else
       .text-center.py-5.text-muted
         i.far.fa-sticky-note.display-4.mb-3

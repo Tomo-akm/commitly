@@ -1,0 +1,135 @@
+// 無限スクロール スケルトンローダー
+@mixin skeleton-gradient($start-opacity, $mid-opacity) {
+  background: linear-gradient(
+    110deg,
+    rgba($primary, $start-opacity) 0%,
+    rgba($secondary, $mid-opacity) 50%,
+    rgba($primary, $start-opacity) 100%
+  );
+  background-size: 200% 100%;
+}
+
+.skeleton-loader {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  padding: 0;
+  opacity: 0;
+  animation: skeleton-fade-in 0.4s ease-out 0.2s forwards;
+}
+
+.skeleton-card {
+  background: linear-gradient(135deg, rgba($primary, 0.06), rgba($secondary, 0.08));
+  border-radius: $border-radius-lg;
+  padding: $spacing-5;
+  box-shadow: 0 1px 3px rgba($primary, 0.12);
+  border: 1px solid rgba($primary, 0.18);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba($secondary, 0.25) 50%, transparent);
+    transform: translateX(-100%);
+    animation: skeleton-shimmer 2s infinite;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-4;
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    @include skeleton-gradient(0.2, 0.3);
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  &__user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+  }
+
+  &__username {
+    height: 16px;
+    width: 140px;
+    border-radius: $border-radius-sm;
+    @include skeleton-gradient(0.18, 0.25);
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+  }
+
+  &__timestamp {
+    height: 12px;
+    width: 80px;
+    border-radius: $border-radius-sm;
+    @include skeleton-gradient(0.15, 0.2);
+    animation: skeleton-pulse 1.8s ease-in-out infinite 0.1s;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+    margin-bottom: $spacing-4;
+  }
+
+  &__line {
+    height: 14px;
+    border-radius: $border-radius-sm;
+    @include skeleton-gradient(0.16, 0.22);
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+
+    &--full { width: 100%; animation-delay: 0.2s; }
+    &--long { width: 85%; animation-delay: 0.3s; }
+    &--medium { width: 60%; animation-delay: 0.4s; }
+  }
+
+  &__footer {
+    display: flex;
+    gap: $spacing-6;
+    padding-top: $spacing-3;
+    border-top: 1px solid rgba($primary, 0.15);
+  }
+
+  &__action {
+    height: 20px;
+    width: 60px;
+    border-radius: $border-radius-sm;
+    @include skeleton-gradient(0.14, 0.18);
+    animation: skeleton-pulse 1.8s ease-in-out infinite 0.5s;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { background-position: 0% 0%; opacity: 1; }
+  50% { background-position: 100% 0%; opacity: 0.8; }
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes skeleton-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-loader { animation: none; opacity: 1; }
+  .skeleton-card::before,
+  .skeleton-card__avatar,
+  .skeleton-card__username,
+  .skeleton-card__timestamp,
+  .skeleton-card__line,
+  .skeleton-card__action { animation: none; }
+}
