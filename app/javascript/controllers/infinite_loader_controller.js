@@ -34,14 +34,20 @@ export default class extends Controller {
   }
 
   beforeRender(event) {
-    if (!this.startTime) return
+    if (this.startTime === null) return
 
     const elapsed = performance.now() - this.startTime
     const remaining = this.minDelayValue - elapsed
 
     if (remaining > 0) {
       event.preventDefault()
-      setTimeout(() => event.detail.resume(), remaining)
+      const resume = event.detail.resume
+      setTimeout(() => {
+        this.startTime = null
+        resume()
+      }, remaining)
+    } else {
+      this.startTime = null
     }
   }
 }
