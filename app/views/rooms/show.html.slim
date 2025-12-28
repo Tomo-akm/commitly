@@ -1,22 +1,22 @@
 - content_for :title, "#{@room.other_user(current_user).name}とのDM"
 
 - if turbo_frame_request?
-  = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
+  = turbo_frame_tag "room_detail", class: "dm-detail-frame", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
     / ヘッダー
-    .card-header.bg-primary.text-white.p-3 style="flex-shrink: 0;"
+    .card-header.bg-primary.text-white.p-3.dm-header
       .d-flex.align-items-center
         / モバイルのみ表示される戻るボタン
         button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
           i.fas.fa-arrow-left
         = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "d-flex align-items-center text-white text-decoration-none" do
-          i.fas.fa-user-circle.me-3 style="font-size: 40px;"
+          = image_tag @room.other_user(current_user).avatar_url(size: 40), alt: @room.other_user(current_user).name, class: "rounded-circle me-3", style: "width: 40px; height: 40px; object-fit: cover;"
           h5.mb-0.font-bold = @room.other_user(current_user).name
 
     / リアルタイム受信用ストリーム
     = turbo_stream_from current_user.room_detail_channel(@room.id)
 
     / メッセージ一覧
-    .card-body.p-4#messages style="overflow-y: auto; height: 100%;" data-controller="message"
+    .card-body.p-4.dm-messages-area#messages data-controller="message"
       - if @direct_messages.any?
         - @direct_messages.each do |direct_message|
           = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
@@ -26,18 +26,18 @@
           p.mb-0 まだメッセージがありません
           p.text-sm 最初のメッセージを送信してみましょう！
 
-    .separator-gradient.mx-3 style="flex-shrink: 0;"
+    .separator-gradient.mx-3.dm-separator
 
-    / メッセージ送信フォーム
-    .card-body.p-1.bg-light style="flex-shrink: 0;"
+    / メッセージ送信フォーム（固定フッター）
+    .card-body.p-1.bg-light.dm-form-area
       = render "direct_messages/form", room: @room, direct_message: @direct_message
 
 - else
-  .container#dm-container.show-detail
+  .container.dm-container#dm-container.show-detail
     .row.g-3
       / 左側：DM一覧
       .col-12.col-md-5.col-lg-4#room-list-column
-        .card.card-primary.fade-in.card-decorative style="height: calc(100vh - 150px);"
+        .card.card-primary.fade-in.card-decorative.dm-card
           .card-header.bg-info.text-white
             h5.mb-0.font-semibold
               i.fas.fa-comments.me-2
@@ -56,23 +56,23 @@
 
       / 右側：メッセージ詳細
       .col-12.col-md-7.col-lg-8#room-detail-column
-        .card.card-primary.fade-in style="height: calc(100vh - 150px); display: flex; flex-direction: column;"
-          = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
+        .card.card-primary.fade-in.dm-card
+          = turbo_frame_tag "room_detail", class: "dm-detail-frame", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
             / ヘッダー
-            .card-header.bg-primary.text-white.p-3 style="flex-shrink: 0;"
+            .card-header.bg-primary.text-white.p-3.dm-header
               .d-flex.align-items-center
                 / モバイルのみ表示される戻るボタン
                 button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
                   i.fas.fa-arrow-left
                 = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "d-flex align-items-center text-white text-decoration-none" do
-                  i.fas.fa-user-circle.me-3 style="font-size: 40px;"
+                  = image_tag @room.other_user(current_user).avatar_url(size: 40), alt: @room.other_user(current_user).name, class: "rounded-circle me-3", style: "width: 40px; height: 40px; object-fit: cover;"
                   h5.mb-0.font-bold = @room.other_user(current_user).name
 
             / リアルタイム受信用ストリーム
             = turbo_stream_from current_user.room_detail_channel(@room.id)
 
             / メッセージ一覧
-            .card-body.p-4#messages style="overflow-y: auto; height: 100%;" data-controller="message"
+            .card-body.p-4.dm-messages-area#messages data-controller="message"
               - if @direct_messages.any?
                 - @direct_messages.each do |direct_message|
                   = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
@@ -82,10 +82,10 @@
                   p.mb-0 まだメッセージがありません
                   p.text-sm 最初のメッセージを送信してみましょう！
 
-            .separator-gradient.mx-3 style="flex-shrink: 0;"
+            .separator-gradient.mx-3.dm-separator
 
-            / メッセージ送信フォーム
-            .card-body.p-1.bg-light style="flex-shrink: 0;"
+            / メッセージ送信フォーム（固定フッター）
+            .card-body.p-1.bg-light.dm-form-area
               = render "direct_messages/form", room: @room, direct_message: @direct_message
 
   / モバイル用のスタイル

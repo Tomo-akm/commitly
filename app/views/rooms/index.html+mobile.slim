@@ -1,0 +1,22 @@
+- content_for :title, "メッセージ"
+
+/ スマホ専用メッセージリスト画面
+.dm-mobile-list-container
+
+  / ヘッダー
+  .dm-mobile-list-header
+    .dm-mobile-list-header__inner
+      i.fas.fa-comments.dm-mobile-list-header__icon
+      h1.dm-mobile-list-header__title メッセージ
+
+  / ルームリスト
+  .dm-mobile-list-body
+    - if @rooms.any?
+      .dm-mobile-list-items
+        - @rooms.each do |room|
+          = render "rooms/room_list_item", room: room, current_user: current_user
+    - else
+      .dm-mobile-list-empty
+        i.far.fa-comments.dm-mobile-list-empty__icon
+        p.dm-mobile-list-empty__text まだDMがありません
+        p.dm-mobile-list-empty__hint ユーザーのプロフィールからDMを送信できます

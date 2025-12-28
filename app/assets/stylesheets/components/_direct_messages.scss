@@ -1,0 +1,188 @@
+// Direct Messages (DM) 画面のスタイル（PC用）
+
+.dm-container {
+  .dm-card {
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dm-detail-frame {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .dm-header {
+    flex-shrink: 0;
+  }
+
+  .dm-messages-area {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 1.5rem;
+  }
+
+  .dm-separator {
+    flex-shrink: 0;
+  }
+
+  .dm-form-area {
+    flex-shrink: 0;
+    background: white;
+    padding: 1.25rem 1.25rem 1.25rem 1.25rem; // 下に余白を追加
+  }
+}
+
+// メッセージバブル共通スタイル（PC・モバイル共通）
+.direct-message-card {
+  margin-bottom: 1.25rem;
+  animation: fadeInUp 0.3s ease-out;
+  width: 100%; // 親要素の幅いっぱいに
+
+  .message-wrapper {
+    max-width: none; // インラインスタイルを上書き
+  }
+
+  .message-bubble {
+    padding: 0.875rem 1.125rem;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-sm;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
+    white-space: pre-wrap;
+    line-height: $line-height-relaxed;
+    font-size: $font-size-base;
+    display: inline-block;
+    max-width: 100%; // ラッパーの幅いっぱいまで
+    text-align: left; // 内容を左揃え
+
+    p {
+      margin: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
+      text-align: left; // テキストを左揃え
+    }
+  }
+
+  &.text-end {
+    .message-wrapper {
+      max-width: 85%; // 右寄せメッセージは85%まで
+      margin-left: auto;
+    }
+
+    .message-bubble {
+      background: linear-gradient(135deg, $primary 0%, darken($primary, 5%) 100%);
+      color: white;
+      border-bottom-right-radius: $border-radius-sm;
+    }
+  }
+
+  &.text-start {
+    .message-wrapper {
+      max-width: 85%; // 左寄せメッセージも85%まで
+      margin-right: auto;
+    }
+
+    .message-bubble {
+      background: white;
+      color: $neutral-900;
+      border-bottom-left-radius: $border-radius-sm;
+      border: 1px solid $neutral-300;
+      box-shadow: $shadow-base;
+    }
+  }
+
+  .user-icon {
+    color: $primary;
+  }
+
+  small {
+    font-size: $font-size-xs;
+    color: $neutral-500;
+    margin-top: 0.375rem;
+    display: block;
+  }
+}
+
+// DMフォーム共通スタイル（PC・モバイル共通）
+.dm-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 0.5rem; // 下に余白を追加
+  margin-left: 0.1rem;
+}
+
+.dm-textarea {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid $neutral-300;
+  border-radius: $border-radius-xl !important;
+  padding: 0.875rem 1.125rem !important;
+  font-size: $font-size-base;
+  resize: none;
+  transition: all $transition-speed-fast $transition-timing-ease-in-out;
+  background: white;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  height: 48px;
+  line-height: 1.5;
+
+  &:focus {
+    outline: none;
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1), $shadow-base;
+  }
+
+  &::placeholder {
+    color: $neutral-500;
+  }
+}
+
+.dm-submit-btn {
+  flex-shrink: 0;
+  min-width: 48px;
+  height: 48px;
+  border-radius: $border-radius-full !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba($primary, 0.3);
+  transition: all $transition-speed-base $transition-timing-ease-in-out;
+  font-size: $font-size-lg;
+  color: white;
+
+  &:hover {
+    background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+    box-shadow: 0 6px 16px rgba($primary, 0.4);
+    transform: translateY(-1px);
+    color: white;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba($primary, 0.3);
+  }
+
+  i {
+    font-size: 1.125rem;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
