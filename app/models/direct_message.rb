@@ -23,15 +23,8 @@ class DirectMessage < ApplicationRecord
 
       recipient = entry.user
 
-      # DM一覧の該当ルームを更新（同じルームを開いている場合）
-      broadcast_replace_later_to(
-        recipient.room_detail_channel(room.id),
-        target: "room_#{room.id}",
-        partial: "rooms/room_list_item",
-        locals: { room: room, current_user: recipient }
-      )
-
-      # DM一覧の該当ルームを更新とバッジ更新（別のルームや別画面でも通知）
+      # DM一覧の該当ルームを更新（notification_channelで全画面に通知）
+      # ルームを開いている場合も、別画面にいる場合も、このチャネルでカバーされる
       recipient.broadcast_room_list_item(room)
       recipient.broadcast_unread_badges
     end

@@ -26,8 +26,7 @@ export default class extends Controller {
     })
 
     this.observer.observe(this.element, {
-      childList: true,
-      subtree: true
+      childList: true
     })
   }
 }
