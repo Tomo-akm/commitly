@@ -4,16 +4,13 @@
   = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
     / ヘッダー
     .card-header.bg-primary.text-white.p-3 style="flex-shrink: 0;"
-      .d-flex.align-items-center.justify-content-between
-        .d-flex.align-items-center
-          / モバイルのみ表示される戻るボタン
-          button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
-            i.fas.fa-arrow-left
+      .d-flex.align-items-center
+        / モバイルのみ表示される戻るボタン
+        button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
+          i.fas.fa-arrow-left
+        = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "d-flex align-items-center text-white text-decoration-none" do
           i.fas.fa-user-circle.me-3 style="font-size: 40px;"
           h5.mb-0.font-bold = @room.other_user(current_user).name
-        = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "btn btn-sm btn-light" do
-          i.fas.fa-user.me-1
-          | プロフィール
 
     / リアルタイム受信用ストリーム
     = turbo_stream_from current_user.room_detail_channel(@room.id)
@@ -63,16 +60,13 @@
           = turbo_frame_tag "room_detail", style: "flex: 1; display: flex; flex-direction: column; min-height: 0;", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do
             / ヘッダー
             .card-header.bg-primary.text-white.p-3 style="flex-shrink: 0;"
-              .d-flex.align-items-center.justify-content-between
-                .d-flex.align-items-center
-                  / モバイルのみ表示される戻るボタン
-                  button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
-                    i.fas.fa-arrow-left
+              .d-flex.align-items-center
+                / モバイルのみ表示される戻るボタン
+                button.btn.btn-sm.btn-light.me-2.d-md-none type="button" data={ controller: "back-button", action: "click->back-button#goBack" }
+                  i.fas.fa-arrow-left
+                = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "d-flex align-items-center text-white text-decoration-none" do
                   i.fas.fa-user-circle.me-3 style="font-size: 40px;"
                   h5.mb-0.font-bold = @room.other_user(current_user).name
-                = link_to user_profile_path(@room.other_user(current_user).account_id), target: "_top", class: "btn btn-sm btn-light" do
-                  i.fas.fa-user.me-1
-                  | プロフィール
 
             / リアルタイム受信用ストリーム
             = turbo_stream_from current_user.room_detail_channel(@room.id)
