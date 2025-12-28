@@ -2,8 +2,8 @@ module Notifiable
   extend ActiveSupport::Concern
 
   BADGE_TARGETS = {
-    "left-unread-badge" => "badge bg-danger rounded-pill ms-auto",
-    "bottom-unread-badge" => "bottom-tab-bar__badge"
+    "left_unread_badge" => "badge bg-danger rounded-pill ms-auto",
+    "bottom_unread_badge" => "bottom-tab-bar__badge"
   }.freeze
 
   def broadcast_unread_badges

@@ -9,7 +9,7 @@ class DirectMessage < ApplicationRecord
   private
 
   def broadcast_message
-    room.entries.each do |entry|
+    room.entries.includes(:user).each do |entry|
       # メッセージを追加
       broadcast_append_later_to(
         User.room_detail_channel(room.id, entry.user_id),

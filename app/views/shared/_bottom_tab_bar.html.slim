@@ -23,7 +23,7 @@ nav.bottom-tab-bar
     span.bottom-tab-bar__icon
       i.fas.fa-comments
     span.bottom-tab-bar__label DM
-    span#bottom-unread-badge
+    span#bottom_unread_badge
       - if user_signed_in? && current_user.total_unread_messages_count > 0
         span.bottom-tab-bar__badge = current_user.total_unread_messages_count
 

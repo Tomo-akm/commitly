@@ -95,8 +95,8 @@ export default class extends Controller {
     }, 0)
 
     const badgeTargets = [
-      document.getElementById("total-unread-badge"),
-      document.getElementById("left-unread-badge"),
+      document.getElementById("total_unread_badge"),
+      document.getElementById("left_unread_badge"),
     ].filter(Boolean)
 
     badgeTargets.forEach((container) => {
