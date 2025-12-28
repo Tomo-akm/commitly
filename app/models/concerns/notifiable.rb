@@ -1,11 +1,14 @@
+# ユーザーへのリアルタイム通知機能を提供するConcern
 module Notifiable
   extend ActiveSupport::Concern
 
+  # 未読バッジの表示先とCSSクラスの定義
   BADGE_TARGETS = {
     "left_unread_badge" => "badge bg-danger rounded-pill ms-auto",
     "bottom_unread_badge" => "bottom-tab-bar__badge"
   }.freeze
 
+  # ユーザーの全未読バッジをブロードキャスト更新
   def broadcast_unread_badges
     total_unread = total_unread_messages_count
     channel = self.class.notification_channel(id)
@@ -20,6 +23,7 @@ module Notifiable
     end
   end
 
+  # DM一覧の特定ルームアイテムをブロードキャスト更新
   def broadcast_room_list_item(room)
     Turbo::StreamsChannel.broadcast_replace_later_to(
       self.class.notification_channel(id),
