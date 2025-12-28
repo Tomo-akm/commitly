@@ -1,7 +1,9 @@
 doctype html
 html
   head
-    title = content_for(:title) || "Commitly"
+    - base_title = "Commitly"
+    - page_title = content_for?(:title) ? content_for(:title) : 就活記録SNS
+    title = page_title ? "#{base_title} | #{page_title}" : base_title
     meta name="viewport" content="width=device-width,initial-scale=1"
     meta name="apple-mobile-web-app-capable" content="yes"
     meta name="mobile-web-app-capable" content="yes"

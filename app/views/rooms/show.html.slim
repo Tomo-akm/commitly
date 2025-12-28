@@ -1,4 +1,4 @@
-- content_for :title, "#{@room.other_user(current_user).name}とのDM"
+- content_for :title, "Messages"
 
 - if turbo_frame_request?
   = turbo_frame_tag "room_detail", class: "dm-detail-frame", data: { room_id: @room.id, user_id: @room.other_user(current_user).id, controller: "room-detail", "room-detail-room-id-value": @room.id, "room-detail-other-user-id-value": @room.other_user(current_user).id } do

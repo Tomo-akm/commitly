@@ -1,4 +1,4 @@
-- content_for :title, "#{@room.other_user(current_user).name}とのDM"
+- content_for :title, "Messages"
 
 / スマホ専用DM画面：シンプルな3層構造
 .dm-mobile-container data-controller="room-detail" data-room-detail-room-id-value=@room.id data-room-detail-other-user-id-value=@room.other_user(current_user).id
