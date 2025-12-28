@@ -1,0 +1,36 @@
+- content_for :title, "#{@room.other_user(current_user).name}とのDM"
+
+/ スマホ専用DM画面：シンプルな3層構造
+.dm-mobile-container data-controller="room-detail" data-room-detail-room-id-value=@room.id data-room-detail-other-user-id-value=@room.other_user(current_user).id
+
+  / ヘッダー（固定）
+  .dm-mobile-header
+    .dm-mobile-header__inner
+      / 戻るボタン
+      button.dm-mobile-header__back type="button" data-controller="back-button" data-action="click->back-button#goBack"
+        i.fas.fa-arrow-left
+
+      / 相手のユーザー情報
+      = link_to user_profile_path(@room.other_user(current_user).account_id), class: "dm-mobile-header__user" do
+        .dm-mobile-header__avatar
+          = image_tag @room.other_user(current_user).avatar_url(size: 40), alt: @room.other_user(current_user).name, class: "dm-mobile-header__avatar-img"
+        .dm-mobile-header__info
+          .dm-mobile-header__name = @room.other_user(current_user).name
+
+  / リアルタイム受信用ストリーム
+  = turbo_stream_from current_user.room_detail_channel(@room.id)
+
+  / メッセージエリア（スクロール可能）
+  .dm-mobile-messages#messages data-controller="message"
+    - if @direct_messages.any?
+      - @direct_messages.each do |direct_message|
+        = render "direct_messages/direct_message", direct_message: direct_message, current_user: current_user
+    - else
+      .dm-mobile-messages__empty
+        i.far.fa-comments.dm-mobile-messages__empty-icon
+        p.dm-mobile-messages__empty-text まだメッセージがありません
+        p.dm-mobile-messages__empty-hint 最初のメッセージを送信してみましょう！
+
+  / 入力フォーム（固定・bottom-nav-barの直上）
+  .dm-mobile-form
+    = render "direct_messages/form", room: @room, direct_message: @direct_message

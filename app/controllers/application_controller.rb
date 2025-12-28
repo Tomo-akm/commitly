@@ -6,9 +6,20 @@ class ApplicationController < ActionController::Base
   POSTS_PER_PAGE = 20
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :detect_mobile_variant
   helper Settings::NavigationHelper
 
   private
+
+  def detect_mobile_variant
+    request.variant = :mobile if mobile_device?
+  end
+
+  def mobile_device?
+    agent = request.user_agent.to_s.downcase
+    agent.match?(/mobile|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/)
+  end
+  helper_method :mobile_device?
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :name, :account_id ])
