@@ -21,7 +21,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-gradient-primary
             = link_to rooms_path, class: "nav-link text-white" do
               i.fas.fa-comments.me-2
               | DM
-              span#total-unread-badge
+              span#total_unread_badge
                 - if current_user.total_unread_messages_count > 0
                   span.badge.bg-danger.rounded-pill.ms-1 = current_user.total_unread_messages_count
         li.nav-item

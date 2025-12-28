@@ -234,12 +234,15 @@
     }
   }
 
-  // 未読バッジ
-  &__badge {
+  // 未読バッジのラッパー（Turbo Stream用）
+  #bottom_unread_badge {
     position: absolute;
     top: 4px;
-    right: 50%;
-    transform: translateX(14px);
+    right: 12px;
+  }
+
+  // 未読バッジ
+  &__badge {
     min-width: 18px;
     height: 18px;
     padding: 0 5px;

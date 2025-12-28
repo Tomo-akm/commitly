@@ -23,8 +23,9 @@ nav.bottom-tab-bar
     span.bottom-tab-bar__icon
       i.fas.fa-comments
     span.bottom-tab-bar__label DM
-    - if user_signed_in? && current_user.total_unread_messages_count > 0
-      span.bottom-tab-bar__badge = current_user.total_unread_messages_count
+    span#bottom_unread_badge
+      - if user_signed_in? && current_user.total_unread_messages_count > 0
+        span.bottom-tab-bar__badge = current_user.total_unread_messages_count
 
   = link_to Settings::Navigation.default_path, class: "bottom-tab-bar__item #{'bottom-tab-bar__item--active' if settings_active}", aria: { label: "設定に移動" } do
     span.bottom-tab-bar__icon

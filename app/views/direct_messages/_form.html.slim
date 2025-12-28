@@ -1,0 +1,6 @@
+= turbo_frame_tag "direct_message_form" do
+  - other_user = room.other_user(current_user)
+  = form_with model: direct_message, url: room_direct_messages_path(other_user) do |f|
+    .input-group
+      = f.text_area :content, placeholder: "メッセージを入力...", class: "form-control", rows: 2, required: true, style: "resize: none; border-radius: 20px 0 0 20px;"
+      = f.submit "送信", class: "btn btn-gradient-primary", style: "border-radius: 0 20px 20px 0;"
