@@ -49,6 +49,19 @@ export default class extends Controller {
         'Content-Type': 'application/json'
       }
     })
+      .then((response) => {
+        if (!response.ok) {
+          console.error(
+            `Failed to mark room as read for user ${this.otherUserIdValue}: ${response.status} ${response.statusText}`
+          )
+        }
+      })
+      .catch((error) => {
+        console.error(
+          `Network error while marking room as read for user ${this.otherUserIdValue}:`,
+          error
+        )
+      })
   }
 
   goBack(event) {
