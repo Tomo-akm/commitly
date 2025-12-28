@@ -11,6 +11,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .dm-header {
@@ -29,10 +31,28 @@
   }
 
   .dm-form-area {
-    flex-shrink: 0;
+    flex: 0 0 auto; // Bootstrapの.card-bodyのflex指定を上書き
     background: white;
     padding: 1.25rem 1.25rem 1.25rem 1.25rem; // 下に余白を追加
   }
+
+  .dm-list-body {
+    overflow-y: auto;
+    height: calc(100% - 60px);
+  }
+}
+
+.dm-detail-placeholder {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.dm-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 // メッセージバブル共通スタイル（PC・モバイル共通）

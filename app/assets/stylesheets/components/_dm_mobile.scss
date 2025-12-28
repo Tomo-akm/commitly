@@ -479,3 +479,18 @@ $dm-mobile-header-padding: 1rem 1.25rem;
     }
   }
 }
+
+// DM一覧/詳細の切り替え（モバイル）
+@media (max-width: 767px) {
+  #dm-container:not(.show-detail) #room-detail-column {
+    display: none !important;
+  }
+
+  #dm-container.show-detail #room-list-column {
+    display: none !important;
+  }
+
+  #dm-container.show-detail #room-detail-column {
+    display: block !important;
+  }
+}
