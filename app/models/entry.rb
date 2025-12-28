@@ -17,5 +17,13 @@ class Entry < ApplicationRecord
   # 既読にする
   def mark_as_read!
     update(last_read_at: Time.current)
+    broadcast_unread_badge_update
+  end
+
+  private
+
+  def broadcast_unread_badge_update
+    user.broadcast_unread_badges
+    user.broadcast_room_list_item(room)
   end
 end

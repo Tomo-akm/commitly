@@ -28,6 +28,10 @@ html
   - body_classes << "app-shell--single" unless content_for?(:right_nav)
   - body_classes << "app-shell--auth" if auth_page
   body class=body_classes.join(" ")
+    / ユーザー単位のリアルタイム通知用ストリーム
+    - if user_signed_in?
+      = turbo_stream_from current_user.notification_channel
+
     / モバイルナビ（992px未満で表示）
     - unless auth_page
       = render "shared/mobile_header", context: :community

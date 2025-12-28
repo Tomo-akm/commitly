@@ -4,11 +4,51 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     roomId: Number,
+    otherUserId: Number,
   }
 
   connect() {
     this.clearRoomUnreadBadge()
     this.updateTotalUnreadCount()
+    this.markAsRead()
+    this.observeTurboStreams()
+  }
+
+  disconnect() {
+    if (this.turboStreamHandler) {
+      document.removeEventListener("turbo:before-stream-render", this.turboStreamHandler)
+    }
+  }
+
+  observeTurboStreams() {
+    this.turboStreamHandler = (event) => {
+      const fallbackToTemplate = event.detail?.newStream || event.target
+      const action = fallbackToTemplate?.getAttribute('action')
+      const target = fallbackToTemplate?.getAttribute('target')
+
+      if (action === 'append' && target === 'messages') {
+        this.markAsRead()
+        this.clearRoomUnreadBadge()
+        this.updateTotalUnreadCount()
+      }
+    }
+
+    document.addEventListener("turbo:before-stream-render", this.turboStreamHandler)
+  }
+
+  markAsRead() {
+    if (!this.hasOtherUserIdValue) return
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+    if (!csrfToken) return
+
+    fetch(`/rooms/${this.otherUserIdValue}/mark_as_read`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json'
+      }
+    })
   }
 
   goBack(event) {
