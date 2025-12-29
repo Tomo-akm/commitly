@@ -118,7 +118,7 @@ class User < ApplicationRecord
     InternExperienceContent
       .joins(:post)
       .where(posts: { user_id: id })
-      .select("CONCAT(company_name, '|', event_name)")
+      .select("company_name || '|' || event_name")
       .distinct
       .count
   end
