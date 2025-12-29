@@ -49,7 +49,11 @@ Rails.application.routes.draw do
     end
 
     resources :entry_sheet_items, only: [] do
-      resource :advice, only: [ :create, :destroy ], module: :entry_sheet_items
+      scope module: :entry_sheet_items do
+        resource :advice, only: [ :create, :destroy ] do
+          get :usage_stats, on: :collection
+        end
+      end
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_28_193539) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_29_063236) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -151,6 +151,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_28_193539) do
     t.index ["post_id"], name: "index_likes_on_post_id"
     t.index ["user_id", "post_id"], name: "index_likes_on_user_id_and_post_id", unique: true
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "llm_usages", force: :cascade do |t|
+    t.integer "count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.date "usage_date", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "usage_date"], name: "index_llm_usages_on_user_id_and_usage_date", unique: true
+    t.index ["user_id"], name: "index_llm_usages_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -331,6 +341,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_28_193539) do
 
   create_table "users", force: :cascade do |t|
     t.string "account_id", limit: 20, null: false
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -347,6 +358,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_28_193539) do
     t.string "uid"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_users_on_account_id", unique: true
+    t.index ["admin"], name: "index_users_on_admin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -365,6 +377,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_28_193539) do
   add_foreign_key "entry_sheets", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "llm_usages", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
