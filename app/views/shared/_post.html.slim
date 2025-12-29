@@ -56,7 +56,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
               = post.contentable.event_name
           span.intern-experience-badge.duration
             i.fas.fa-clock.me-1
-            - if post.contentable.duration_days.present?
+            - if post.contentable.duration_type.present?
               = post.contentable.formatted_duration
             - else
               | 期間未設定

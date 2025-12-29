@@ -29,7 +29,7 @@ ja:
       intern_experience_content:
         company_name: "企業名"
         event_name: "イベント名"
-        duration_days: "期間"
+        duration_type: "期間"
         content: "内容"
     models:
       user: "ユーザー"

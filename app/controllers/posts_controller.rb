@@ -136,7 +136,7 @@ class PostsController < ApplicationController
       elsif @post.job_hunting?
         params.expect(job_hunting_content: [ :company_name, :selection_stage, :result, :content ])
       elsif @post.intern_experience?
-        params.expect(intern_experience_content: [ :company_name, :event_name, :duration_days, :content ])
+        params.expect(intern_experience_content: [ :company_name, :event_name, :duration_type, :content ])
       end
     end
 end

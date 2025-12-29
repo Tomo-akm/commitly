@@ -2,8 +2,8 @@ class CreateInternExperienceContents < ActiveRecord::Migration[8.1]
   def change
     create_table :intern_experience_contents do |t|
       t.string :company_name, null: false, limit: 100
-      t.string :event_name, limit: 100
-      t.integer :duration_days
+      t.string :event_name, null: false, limit: 100
+      t.integer :duration_type, null: false
       t.text :content, null: false, limit: 5000
 
       t.timestamps

@@ -48,26 +48,17 @@ RSpec.describe InternExperienceContent, type: :model do
       expect(intern_experience_content.errors[:event_name]).to include("は100文字以内で入力してください")
     end
 
-    it 'duration_daysが空白でも有効であること' do
-      intern_experience_content = build(:intern_experience_content, duration_days: nil)
-      expect(intern_experience_content).to be_valid
-    end
-
-    it 'duration_daysが正の整数の場合、有効であること' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 14)
-      expect(intern_experience_content).to be_valid
-    end
-
-    it 'duration_daysが0以下の場合、無効であること' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 0)
+    it 'duration_typeが必須であること' do
+      intern_experience_content = build(:intern_experience_content, duration_type: nil)
       expect(intern_experience_content).not_to be_valid
-      expect(intern_experience_content.errors[:duration_days]).to be_present
+      expect(intern_experience_content.errors[:duration_type]).to include("を入力してください")
     end
 
-    it 'duration_daysが整数でない場合、無効であること' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 1.5)
-      expect(intern_experience_content).not_to be_valid
-      expect(intern_experience_content.errors[:duration_days]).to be_present
+    it 'duration_typeが有効な値の場合、有効であること' do
+      %i[short_term medium_term long_term].each do |type|
+        intern_experience_content = build(:intern_experience_content, duration_type: type)
+        expect(intern_experience_content).to be_valid
+      end
     end
   end
 
@@ -198,59 +189,48 @@ RSpec.describe InternExperienceContent, type: :model do
   end
 
   describe 'formatted_duration' do
-    it 'duration_daysがnilの場合、nilを返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: nil)
+    it 'duration_typeがnilの場合、nilを返すこと' do
+      intern_experience_content = build(:intern_experience_content, duration_type: nil)
       expect(intern_experience_content.formatted_duration).to be_nil
     end
 
-    it '1日の場合、"1日"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 1)
-      expect(intern_experience_content.formatted_duration).to eq("1日")
+    it 'short_termの場合、"短期"を返すこと' do
+      intern_experience_content = build(:intern_experience_content, duration_type: :short_term)
+      expect(intern_experience_content.formatted_duration).to eq("短期")
     end
 
-    it '3日間の場合、"3日間"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 3)
-      expect(intern_experience_content.formatted_duration).to eq("3日間")
+    it 'medium_termの場合、"中期"を返すこと' do
+      intern_experience_content = build(:intern_experience_content, duration_type: :medium_term)
+      expect(intern_experience_content.formatted_duration).to eq("中期")
     end
 
-    it '1週間（7日）の場合、"1週間"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 7)
-      expect(intern_experience_content.formatted_duration).to eq("1週間")
-    end
-
-    it '2週間（14日）の場合、"2週間"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 14)
-      expect(intern_experience_content.formatted_duration).to eq("2週間")
-    end
-
-    it '1ヶ月（30日）の場合、"1ヶ月"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 30)
-      expect(intern_experience_content.formatted_duration).to eq("1ヶ月")
-    end
-
-    it '3ヶ月（90日）の場合、"3ヶ月"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 90)
-      expect(intern_experience_content.formatted_duration).to eq("3ヶ月")
-    end
-
-    it '6ヶ月（180日）の場合、"6ヶ月以上"を返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 180)
-      expect(intern_experience_content.formatted_duration).to eq("6ヶ月以上")
-    end
-
-    it 'プリセット以外の日数の場合、nilを返すこと' do
-      intern_experience_content = build(:intern_experience_content, duration_days: 21)
-      expect(intern_experience_content.formatted_duration).to be_nil
+    it 'long_termの場合、"長期"を返すこと' do
+      intern_experience_content = build(:intern_experience_content, duration_type: :long_term)
+      expect(intern_experience_content.formatted_duration).to eq("長期")
     end
   end
 
-  describe 'duration_presets_for_select' do
+  describe 'duration_types_for_select' do
     it 'セレクトボックス用の選択肢配列を返すこと' do
-      options = InternExperienceContent.duration_presets_for_select
+      options = InternExperienceContent.duration_types_for_select
       expect(options).to be_a(Array)
-      expect(options.size).to eq(7)
-      expect(options.first).to eq([ "1日", 1 ])
-      expect(options.last).to eq([ "6ヶ月", 180 ])
+      expect(options.size).to eq(3)
+      expect(options[0]).to eq([ "短期（1日〜1週間）", "short_term" ])
+      expect(options[1]).to eq([ "中期（1週間〜1ヶ月）", "medium_term" ])
+      expect(options[2]).to eq([ "長期（1ヶ月以上）", "long_term" ])
+    end
+  end
+
+  describe 'duration_type enum' do
+    it '短期、中期、長期の3つの値を持つこと' do
+      expect(InternExperienceContent.duration_types.keys).to contain_exactly("short_term", "medium_term", "long_term")
+    end
+
+    it 'enumメソッドが正しく機能すること' do
+      short = build(:intern_experience_content, duration_type: :short_term)
+      expect(short.duration_type_short_term?).to be true
+      expect(short.duration_type_medium_term?).to be false
+      expect(short.duration_type_long_term?).to be false
     end
   end
 end
