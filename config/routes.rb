@@ -50,9 +50,7 @@ Rails.application.routes.draw do
 
     resources :entry_sheet_items, only: [] do
       scope module: :entry_sheet_items do
-        resource :advice, only: [ :create, :destroy ] do
-          get :usage_stats, on: :collection
-        end
+        resource :advice, only: [ :create, :destroy ]
       end
     end
   end

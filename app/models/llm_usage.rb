@@ -33,14 +33,4 @@ class LlmUsage < ApplicationRecord
     current = find_or_create_today(user).count
     [ DAILY_LIMIT - current, 0 ].max
   end
-
-  # 使用統計
-  def self.stats(user)
-    {
-      is_admin: user.admin?,
-      daily_limit: user.admin? ? nil : DAILY_LIMIT,
-      today_count: user.admin? ? nil : find_or_create_today(user).count,
-      remaining: remaining_count(user)
-    }
-  end
 end

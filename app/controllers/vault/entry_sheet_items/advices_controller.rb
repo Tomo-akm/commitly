@@ -31,10 +31,6 @@ module Vault
         respond_to(&:turbo_stream)
       end
 
-      def usage_stats
-        render json: LlmUsage.stats(current_user)
-      end
-
       private
 
       def set_entry_sheet_item

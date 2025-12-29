@@ -200,40 +200,6 @@ RSpec.describe LlmUsage, type: :model do
     end
   end
 
-  describe '.stats' do
-    context '一般ユーザー' do
-      it '正しい統計情報を返す' do
-        create(:llm_usage, user: user, usage_date: Date.current, count: 5)
-        stats = LlmUsage.stats(user)
-
-        expect(stats[:is_admin]).to eq(false)
-        expect(stats[:daily_limit]).to eq(20)
-        expect(stats[:today_count]).to eq(5)
-        expect(stats[:remaining]).to eq(15)
-      end
-
-      it 'レコードが存在しない場合でも正しい統計情報を返す' do
-        stats = LlmUsage.stats(user)
-
-        expect(stats[:is_admin]).to eq(false)
-        expect(stats[:daily_limit]).to eq(20)
-        expect(stats[:today_count]).to eq(0)
-        expect(stats[:remaining]).to eq(20)
-      end
-    end
-
-    context '管理者ユーザー' do
-      it '管理者用の統計情報を返す' do
-        stats = LlmUsage.stats(admin_user)
-
-        expect(stats[:is_admin]).to eq(true)
-        expect(stats[:daily_limit]).to be_nil
-        expect(stats[:today_count]).to be_nil
-        expect(stats[:remaining]).to eq(Float::INFINITY)
-      end
-    end
-  end
-
   describe '日付遷移のテスト' do
     it '日付が変わると新しいレコードが作成される' do
       travel_to Time.zone.parse('2025-01-01 23:59:00') do
