@@ -21,20 +21,15 @@ class LlmUsage < ApplicationRecord
     end
   end
 
-  # 制限チェック
-  def self.check_limit!(user)
-    return if user.admin?
-
-    current = find_or_create_today(user).count
-    raise LimitExceededError if current >= DAILY_LIMIT
-  end
-
-  # 使用回数増加
-  def self.increment_for!(user)
+  # 制限チェックと使用回数予約（原子的に実行）
+  def self.check_and_reserve!(user)
     return if user.admin?
 
     usage = find_or_create_today(user)
-    usage.increment_count!
+    usage.with_lock do
+      raise LimitExceededError if usage.count >= DAILY_LIMIT
+      usage.increment!(:count)
+    end
   end
 
   # 残り回数

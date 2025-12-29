@@ -9,7 +9,6 @@ class EntrySheetAdviceJob < ApplicationJob
     @user = User.find(user_id)
 
     execute_advice(title, content, char_limit)
-    LlmUsage.increment_for!(@user)
 
     Rails.logger.info "[EntrySheetAdviceJob] 完了: 残り#{LlmUsage.remaining_count(@user)}回"
   rescue StandardError => e

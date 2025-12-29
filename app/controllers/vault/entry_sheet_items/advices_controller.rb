@@ -84,7 +84,7 @@ module Vault
       end
 
       def check_usage_limit
-        LlmUsage.check_limit!(current_user)
+        LlmUsage.check_and_reserve!(current_user)
       rescue LlmUsage::LimitExceededError
         redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet),
                     alert: "本日の利用上限に達しました。翌日0時にリセットされます。" and return
