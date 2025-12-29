@@ -15,12 +15,6 @@ class LlmUsage < ApplicationRecord
     end
   end
 
-  def increment_count!
-    with_lock do
-      increment!(:count)
-    end
-  end
-
   # 制限チェックと使用回数予約（原子的に実行）
   def self.check_and_reserve!(user)
     return if user.admin?
