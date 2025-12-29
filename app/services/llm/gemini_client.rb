@@ -2,6 +2,26 @@ require "net/http"
 
 module Llm
   class GeminiClient
+    # API設定
+    BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
+
+    # タイムアウト設定
+    OPEN_TIMEOUT = 10
+    READ_TIMEOUT = 300
+
+    # 生成設定
+    THINKING_BUDGET = 0
+    MAX_OUTPUT_TOKENS = 1024
+
+    # ログ設定
+    LOG_TEXT_PREVIEW_LENGTH = 50
+
+    # ロールマッピング
+    ROLE_MAPPING = {
+      "assistant" => "model",
+      "system" => "user"
+    }.freeze
+
     def initialize(api_key:)
       @api_key = api_key
     end
@@ -35,7 +55,7 @@ module Llm
     private
 
     def gemini_uri(model)
-      uri = URI("https://generativelanguage.googleapis.com/v1beta/models/#{model}:streamGenerateContent")
+      uri = URI("#{BASE_URL}/models/#{model}:streamGenerateContent")
       uri.query = URI.encode_www_form(alt: "sse")
       uri
     end
@@ -43,8 +63,8 @@ module Llm
     def gemini_http_client(uri)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      http.open_timeout = 10
-      http.read_timeout = 300
+      http.open_timeout = OPEN_TIMEOUT
+      http.read_timeout = READ_TIMEOUT
       http
     end
 
@@ -61,29 +81,24 @@ module Llm
       {
         contents: messages.map { |message| format_gemini_message(message) },
         generationConfig: {
-          thinkingConfig: { thinkingBudget: 0 },
-          maxOutputTokens: 1024
+          thinkingConfig: { thinkingBudget: THINKING_BUDGET },
+          maxOutputTokens: MAX_OUTPUT_TOKENS
         }
       }
     end
 
     def format_gemini_message(message)
-      role = message[:role] || message["role"]
-      content = message[:content] || message["content"]
-      role = normalize_gemini_role(role)
+      message = message.symbolize_keys
+      role = normalize_gemini_role(message[:role])
 
       {
         role: role,
-        parts: [ { text: content.to_s } ]
+        parts: [ { text: message[:content].to_s } ]
       }
     end
 
     def normalize_gemini_role(role)
-      role = role.to_s
-      return "model" if role == "assistant"
-      return "user" if role == "system"
-
-      role
+      ROLE_MAPPING[role.to_s] || role.to_s
     end
 
     def gemini_stream_state
@@ -117,69 +132,118 @@ module Llm
       raise "Gemini API error (#{res.code}): #{error_body}"
     end
 
+    def log_text_extraction(text, context: "")
+      preview = text[0..LOG_TEXT_PREVIEW_LENGTH]
+      Rails.logger.debug "[Gemini] テキスト抽出#{context}: #{preview}..."
+    end
+
+    def log_payload_keys_once(payload, logged)
+      return logged if logged || !payload.is_a?(Hash)
+
+      Rails.logger.info "[Gemini] ペイロードキー: #{payload.keys}"
+      true
+    end
+
     def process_gemini_chunk(chunk, state)
-      if state[:chunk_count].zero?
-        first_chunk_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        delta = (first_chunk_at - state[:request_started_at])
-        Rails.logger.info "[Gemini] 初回チャンクまでの時間=#{delta.round(3)}s t=#{first_chunk_at}"
-      end
+      log_first_chunk_timing(state)
+      log_chunk_received(chunk, state)
 
-      state[:chunk_count] += 1
-      Rails.logger.info "[Gemini] チャンク##{state[:chunk_count]} (#{chunk.bytesize}バイト) t=#{Process.clock_gettime(Process::CLOCK_MONOTONIC)}"
-
-      state[:raw_body] << chunk
-      state[:line_buffer] << chunk
-      lines = state[:line_buffer].split("\n", -1)
-      state[:line_buffer] = lines.pop || ""
+      update_buffers(chunk, state)
+      lines = extract_lines_from_buffer(state)
 
       lines.each do |line|
-        line = line.chomp("\r")
-        if line.strip.empty?
-          state[:logged_payload_keys] = emit_sse_payload!(state[:sse_data], state[:logged_payload_keys]) do |text|
-            state[:emitted] = true
-            Rails.logger.debug "[Gemini] テキスト抽出: #{text[0..50]}..."
-            yield text
-          end
-          next
-        end
-
-        line = line.strip
-        next if line.start_with?(":")
-        next unless line.start_with?("data:")
-
-        data = line.sub(/\Adata:\s*/, "")
-        next if data == "[DONE]"
-
-        state[:sse_data] << "\n" unless state[:sse_data].empty?
-        state[:sse_data] << data
+        process_line(line, state) { |text| yield text }
       end
     end
 
-    def finalize_gemini_stream(state)
-      unless state[:line_buffer].strip.empty?
-        state[:sse_data] << "\n" unless state[:sse_data].empty?
-        state[:sse_data] << state[:line_buffer].strip
+    def log_first_chunk_timing(state)
+      return unless state[:chunk_count].zero?
+
+      first_chunk_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      delta = (first_chunk_at - state[:request_started_at]).round(3)
+      Rails.logger.info "[Gemini] 初回チャンクまでの時間=#{delta}s t=#{first_chunk_at}"
+    end
+
+    def log_chunk_received(chunk, state)
+      state[:chunk_count] += 1
+      timestamp = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      Rails.logger.info "[Gemini] チャンク##{state[:chunk_count]} (#{chunk.bytesize}バイト) t=#{timestamp}"
+    end
+
+    def update_buffers(chunk, state)
+      state[:raw_body] << chunk
+      state[:line_buffer] << chunk
+    end
+
+    def extract_lines_from_buffer(state)
+      lines = state[:line_buffer].split("\n", -1)
+      state[:line_buffer] = lines.pop || ""
+      lines.map { |line| line.chomp("\r") }
+    end
+
+    def process_line(line, state)
+      if line.strip.empty?
+        emit_accumulated_sse_data(state) { |text| yield text }
+        return
       end
 
+      accumulate_sse_data(line, state)
+    end
+
+    def emit_accumulated_sse_data(state)
       state[:logged_payload_keys] = emit_sse_payload!(state[:sse_data], state[:logged_payload_keys]) do |text|
         state[:emitted] = true
-        Rails.logger.debug "[Gemini] テキスト抽出: #{text[0..50]}..."
+        log_text_extraction(text)
         yield text
       end
+    end
+
+    def accumulate_sse_data(line, state)
+      line = line.strip
+      return if line.start_with?(":")
+      return unless line.start_with?("data:")
+
+      data = line.sub(/\Adata:\s*/, "")
+      return if data == "[DONE]"
+
+      state[:sse_data] << "\n" unless state[:sse_data].empty?
+      state[:sse_data] << data
+    end
+
+    def finalize_gemini_stream(state)
+      append_remaining_buffer_to_sse(state)
+      emit_final_sse_data(state) { |text| yield text }
 
       return if state[:emitted]
 
+      emit_fallback_payloads(state) { |text| yield text }
+    end
+
+    def append_remaining_buffer_to_sse(state)
+      return if state[:line_buffer].strip.empty?
+
+      state[:sse_data] << "\n" unless state[:sse_data].empty?
+      state[:sse_data] << state[:line_buffer].strip
+    end
+
+    def emit_final_sse_data(state)
+      state[:logged_payload_keys] = emit_sse_payload!(state[:sse_data], state[:logged_payload_keys]) do |text|
+        state[:emitted] = true
+        log_text_extraction(text)
+        yield text
+      end
+    end
+
+    def emit_fallback_payloads(state)
       parse_gemini_payloads(state[:raw_body]).each do |payload|
         text = extract_gemini_text(payload)
+
         if text.blank?
-          if !state[:logged_payload_keys] && payload.is_a?(Hash)
-            Rails.logger.info "[Gemini] ペイロードキー: #{payload.keys}"
-            state[:logged_payload_keys] = true
-          end
+          state[:logged_payload_keys] = log_payload_keys_once(payload, state[:logged_payload_keys])
           next
         end
 
-        Rails.logger.debug "[Gemini] テキスト抽出(後処理): #{text[0..50]}..."
+        log_text_extraction(text, context: "(後処理)")
         yield text
       end
     end
@@ -193,11 +257,9 @@ module Llm
 
       each_gemini_payload(payload) do |item|
         text = extract_gemini_text(item)
+
         if text.blank?
-          if !logged_payload_keys && item.is_a?(Hash)
-            Rails.logger.info "[Gemini] ペイロードキー: #{item.keys}"
-            logged_payload_keys = true
-          end
+          logged_payload_keys = log_payload_keys_once(item, logged_payload_keys)
           next
         end
 
@@ -210,6 +272,7 @@ module Llm
     def parse_gemini_payloads(raw_body)
       payloads = []
       sse_events = extract_sse_events(raw_body)
+
       if sse_events.any?
         sse_events.each do |event_data|
           payload = parse_json_payload(event_data)
@@ -274,20 +337,20 @@ module Llm
     def extract_gemini_text(payload)
       return nil unless payload.is_a?(Hash)
 
-      candidates = payload["candidates"]
-      candidates ||= payload.dig("response", "candidates")
+      candidates = payload["candidates"] || payload.dig("response", "candidates")
       return nil unless candidates.is_a?(Array)
 
-      texts = candidates.flat_map do |candidate|
+      texts = extract_texts_from_candidates(candidates)
+      texts.empty? ? nil : texts.join
+    end
+
+    def extract_texts_from_candidates(candidates)
+      candidates.flat_map do |candidate|
         parts = candidate.dig("content", "parts")
         next [] unless parts.is_a?(Array)
 
         parts.filter_map { |part| part["text"] }
       end
-
-      return nil if texts.empty?
-
-      texts.join
     end
   end
 end

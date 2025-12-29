@@ -5,31 +5,16 @@ div[id="advice_form_#{item.id}"]
       div[id="advice_form_error_#{item.id}" data-entry-sheet-advice-target="errorContainer"]
 
       h6.fw-bold.mb-3
-        i.fas.fa-sliders-h.me-2
-        | AIモデルを選択
+        i.fas.fa-robot.me-2
+        | Gemini AI添削
 
-      - available_models = Model.available_for_user(current_user)
-      - if available_models.any?
-        = form_with url: vault_entry_sheet_item_advice_path(item), method: :post, data: { controller: "entry-sheet-advice", entry_sheet_advice_item_id_value: item.id } do |f|
-          .mb-3
-            = f.label :model_id, "モデル", class: "form-label"
-            = f.select :model_id, options_from_collection_for_select(available_models, :id, :name, available_models.first&.id), {}, class: "form-select"
+      = form_with url: vault_entry_sheet_item_advice_path(item), method: :post, data: { controller: "entry-sheet-advice", entry_sheet_advice_item_id_value: item.id } do |f|
+        = f.hidden_field :current_title, value: "", data: { entry_sheet_advice_target: "titleField" }
+        = f.hidden_field :current_content, value: "", data: { entry_sheet_advice_target: "contentField" }
+        = f.hidden_field :current_char_limit, value: "", data: { entry_sheet_advice_target: "charLimitField" }
 
-          = f.hidden_field :current_title, value: "", data: { entry_sheet_advice_target: "titleField" }
-          = f.hidden_field :current_content, value: "", data: { entry_sheet_advice_target: "contentField" }
-          = f.hidden_field :current_char_limit, value: "", data: { entry_sheet_advice_target: "charLimitField" }
-
-          .alert.alert-info.small
-            i.fas.fa-info-circle.me-2
-            | 現在入力中の内容でAI添削を行います
-
-          = f.submit "AI添削を開始", class: "btn btn-primary w-100", data: { action: "click->entry-sheet-advice#prepareSubmit" }
-      - else
-        .alert.alert-warning
-          i.fas.fa-exclamation-triangle.me-2
-          | 利用可能なAIモデルがありません。
-          = link_to "APIキーを設定", settings_api_keys_path, class: "alert-link"
-          | してください。
-        .alert.alert-info.mt-3
+        .alert.alert-info.small
           i.fas.fa-info-circle.me-2
-          | Gemini（Google AI Studio）には無料枠（無料プラン・利用上限あり）があり、APIキーを発行してAI添削に利用できます。
+          | 現在入力中の内容でAI添削を行います（Gemini 3 Flash使用）
+
+        = f.submit "AI添削を開始", class: "btn btn-primary w-100", data: { action: "click->entry-sheet-advice#prepareSubmit" }

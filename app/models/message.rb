@@ -1,6 +1,5 @@
 class Message < ApplicationRecord
   belongs_to :chat
-  belongs_to :model, optional: true
 
   def broadcast_append_chunk(chunk_content, save_to_db: false)
     self.content ||= ""
