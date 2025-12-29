@@ -55,5 +55,9 @@
           span = "インターン #{@user.internship_count}回"
 
       .profile-header__meta-item
+        i.fas.fa-briefcase
+        span = "インターン・説明会参加 #{@user.intern_participations_count}回"
+
+      .profile-header__meta-item
         i.fas.fa-calendar-check
         span = "#{@user.created_at.strftime('%Y年%m月')}から利用"

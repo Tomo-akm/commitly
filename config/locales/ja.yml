@@ -26,6 +26,11 @@ ja:
           passed: "通過"
           failed: "不通過"
           pending: "選考中"
+      intern_experience_content:
+        company_name: "企業名"
+        event_name: "イベント名"
+        duration_type: "期間"
+        content: "内容"
     models:
       user: "ユーザー"
       post: "commit"

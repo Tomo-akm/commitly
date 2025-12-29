@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_29_063236) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -131,6 +131,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_063236) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "intern_experience_contents", force: :cascade do |t|
+    t.string "company_name", limit: 100, null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.integer "duration_type", null: false
+    t.string "event_name", limit: 100, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_name"], name: "index_intern_experience_contents_on_company_name"
+  end
+
   create_table "job_hunting_contents", force: :cascade do |t|
     t.string "company_name", null: false
     t.text "content", null: false
@@ -197,7 +207,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_063236) do
 
   create_table "rooms", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "room_type", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["room_type"], name: "index_rooms_on_room_type"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|

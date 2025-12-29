@@ -276,6 +276,73 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#intern_participations_count' do
+    let(:user) { create(:user) }
+
+    it 'インターン体験記がない場合は0を返すこと' do
+      expect(user.intern_participations_count).to eq(0)
+    end
+
+    it '同じ企業・同じイベント名の投稿は1回としてカウントされること' do
+      intern_content1 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content1)
+
+      intern_content2 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content2)
+
+      expect(user.intern_participations_count).to eq(1)
+    end
+
+    it '異なる企業名の投稿は別々にカウントされること' do
+      intern_content1 = build(:intern_experience_content, company_name: "株式会社A", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content1)
+
+      intern_content2 = build(:intern_experience_content, company_name: "株式会社B", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content2)
+
+      expect(user.intern_participations_count).to eq(2)
+    end
+
+    it '同じ企業でも異なるイベント名の投稿は別々にカウントされること' do
+      intern_content1 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content1)
+
+      intern_content2 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "ウィンターインターン")
+      create(:post, user: user, contentable: intern_content2)
+
+      expect(user.intern_participations_count).to eq(2)
+    end
+
+    it '他のユーザーの投稿はカウントしないこと' do
+      other_user = create(:user)
+
+      intern_content1 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content1)
+
+      intern_content2 = build(:intern_experience_content, company_name: "株式会社テスト", event_name: "サマーインターン")
+      create(:post, user: other_user, contentable: intern_content2)
+
+      expect(user.intern_participations_count).to eq(1)
+    end
+
+    it '複数の異なる企業・イベントの組み合わせを正しくカウントすること' do
+      intern_content1 = build(:intern_experience_content, company_name: "株式会社A", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content1)
+
+      intern_content2 = build(:intern_experience_content, company_name: "株式会社A", event_name: "ウィンターインターン")
+      create(:post, user: user, contentable: intern_content2)
+
+      intern_content3 = build(:intern_experience_content, company_name: "株式会社B", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content3)
+
+      # 同じ組み合わせの重複
+      intern_content4 = build(:intern_experience_content, company_name: "株式会社A", event_name: "サマーインターン")
+      create(:post, user: user, contentable: intern_content4)
+
+      expect(user.intern_participations_count).to eq(3)
+    end
+  end
+
   describe 'post_visibility enum' do
     it 'デフォルトで everyone が設定される' do
       user = create(:user)
