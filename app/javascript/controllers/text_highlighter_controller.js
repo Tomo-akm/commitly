@@ -69,7 +69,7 @@ export default class extends Controller {
   }
 
   get urlPattern() {
-    // PostDecoratorと同じパターンを使用（末尾の句読点のみlookaheadで除外）
+    // TextHighlighterHelperと同じパターンを使用（末尾の句読点のみlookaheadで除外）
     return /(https?:\/\/[^\s<>"]+?)(?=[<>".,;!?)]*(?:\s|$))/g
   }
 }

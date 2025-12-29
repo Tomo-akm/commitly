@@ -42,16 +42,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "api_keys", force: :cascade do |t|
-    t.text "api_key", null: false
-    t.datetime "created_at", null: false
-    t.string "provider", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id", "provider"], name: "index_api_keys_on_user_id_and_provider", unique: true
-    t.index ["user_id"], name: "index_api_keys_on_user_id"
-  end
-
   create_table "chats", force: :cascade do |t|
     t.bigint "chattable_id"
     t.string "chattable_type"
@@ -173,25 +163,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "llm_usages", force: :cascade do |t|
+    t.integer "count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.date "usage_date", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "usage_date"], name: "index_llm_usages_on_user_id_and_usage_date", unique: true
+    t.index ["user_id"], name: "index_llm_usages_on_user_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
-    t.bigint "model_id"
     t.string "role", null: false
     t.datetime "updated_at", null: false
     t.index ["chat_id"], name: "index_messages_on_chat_id"
-    t.index ["model_id"], name: "index_messages_on_model_id"
     t.index ["role"], name: "index_messages_on_role"
-  end
-
-  create_table "models", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "model_id", null: false
-    t.string "name", null: false
-    t.string "provider", null: false
-    t.datetime "updated_at", null: false
-    t.index ["provider", "model_id"], name: "index_models_on_provider_and_model_id", unique: true
   end
 
   create_table "post_tags", force: :cascade do |t|
@@ -364,6 +353,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
 
   create_table "users", force: :cascade do |t|
     t.string "account_id", limit: 20, null: false
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -380,6 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
     t.string "uid"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_users_on_account_id", unique: true
+    t.index ["admin"], name: "index_users_on_admin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -387,7 +378,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "api_keys", "users"
   add_foreign_key "chats", "users"
   add_foreign_key "direct_messages", "rooms"
   add_foreign_key "direct_messages", "users"
@@ -399,8 +389,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
   add_foreign_key "entry_sheets", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "llm_usages", "users"
   add_foreign_key "messages", "chats"
-  add_foreign_key "messages", "models"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
   add_foreign_key "posts", "posts", column: "parent_id"

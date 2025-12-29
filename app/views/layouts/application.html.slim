@@ -1,7 +1,9 @@
 doctype html
 html
   head
-    title = content_for(:title) || "Commitly"
+    - base_title = "Commitly"
+    - page_title = content_for?(:title) ? content_for(:title) : 就活記録SNS
+    title = page_title ? "#{base_title} | #{page_title}" : base_title
     meta name="viewport" content="width=device-width,initial-scale=1"
     meta name="apple-mobile-web-app-capable" content="yes"
     meta name="mobile-web-app-capable" content="yes"
@@ -28,6 +30,13 @@ html
   - body_classes << "app-shell--single" unless content_for?(:right_nav)
   - body_classes << "app-shell--auth" if auth_page
   body class=body_classes.join(" ")
+    / ユーザー単位のリアルタイム通知用ストリーム
+    - if user_signed_in?
+      = turbo_stream_from current_user.notification_channel
+
+    / モバイルナビ（992px未満で表示）
+    - unless auth_page
+      = render "shared/mobile_header", context: :community
     .app-shell__frame
       .app-shell__left
         = render "shared/left_nav", context: :community
@@ -40,5 +49,9 @@ html
 
       = render_right_nav do
         = yield :right_nav
+
+    / ボトムタブバー（992px未満で表示）
+    - unless auth_page
+      = render "shared/bottom_tab_bar"
 
     = render "shared/help_modal"

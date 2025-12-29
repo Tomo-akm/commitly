@@ -1,14 +1,14 @@
 - is_own_message = direct_message.user == current_user
-.mb-3 class="#{is_own_message ? 'text-end' : 'text-start'}"
-  .d-inline-block style="max-width: 70%;"
+.mb-3.direct-message-card class="#{is_own_message ? 'text-end' : 'text-start'}"
+  .d-inline-block.message-wrapper
     - unless is_own_message
       .d-flex.align-items-center.mb-1
-        i.fas.fa-user-circle.text-primary.me-2 style="font-size: 24px;"
+        = image_tag direct_message.user.avatar_url(size: 24), alt: direct_message.user.name, class: "rounded-circle me-2", style: "width: 24px; height: 24px; object-fit: cover;"
         small.text-muted.font-semibold
           = direct_message.user.name
 
-    .p-3.rounded-3.transition-all class="#{is_own_message ? 'bg-primary text-white' : 'bg-light'}"
-      = simple_format(h(direct_message.content), class: 'mb-0')
+    .p-3.rounded-3.transition-all.message-bubble class="#{is_own_message ? 'bg-primary text-white' : 'bg-light'}"
+      = linkify_urls(direct_message.content, class: "mb-0")
 
     small.text-muted.d-block.mt-1.text-sm
       = direct_message.created_at.strftime('%Y/%m/%d %H:%M')

@@ -16,6 +16,18 @@ class Entry < ApplicationRecord
 
   # 既読にする
   def mark_as_read!
+    latest_message_at = room.direct_messages.maximum(:created_at)
+    return if latest_message_at.nil?
+    return if last_read_at && last_read_at >= latest_message_at
+
     update(last_read_at: Time.current)
+    broadcast_unread_badge_update
+  end
+
+  private
+
+  def broadcast_unread_badge_update
+    user.broadcast_unread_badges
+    user.broadcast_room_list_item(room)
   end
 end

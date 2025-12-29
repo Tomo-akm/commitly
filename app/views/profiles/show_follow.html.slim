@@ -1,3 +1,4 @@
+- content_for :title, (request.path.include?("following") ? "Following" : "Followers")
 - content_for :right_nav do
   = render "shared/right_nav"
 

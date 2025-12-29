@@ -1,0 +1,7 @@
+= turbo_frame_tag "direct_message_form" do
+  - other_user = room.other_user(current_user)
+  = form_with model: direct_message, url: room_direct_messages_path(other_user) do |f|
+    .input-group.dm-input-group
+      = f.text_area :content, placeholder: "メッセージを入力...", class: "form-control dm-textarea", required: true
+      button.btn.btn-gradient-primary.dm-submit-btn.mr-1 type="submit" aria-label="送信"
+        i.fas.fa-paper-plane

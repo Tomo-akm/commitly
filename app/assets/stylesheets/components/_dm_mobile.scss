@@ -1,0 +1,496 @@
+// スマホ専用DM画面スタイル - モダンデザイン
+
+// 変数定義
+$dm-mobile-header-gradient-start: $primary;
+$dm-mobile-header-gradient-end: $primary-dark;
+$dm-mobile-header-padding: 1rem 1.25rem;
+
+// ============================================
+// DM詳細画面（チャット画面）
+// ============================================
+
+.dm-mobile-container {
+  position: fixed;
+  top: 56px; // mobile-headerの高さ
+  left: 0;
+  right: 0;
+  bottom: 64px; // bottom-tab-barの高さ
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba($bg-primary, 0.5) 0%, rgba($bg-primary, 0.8) 100%);
+  z-index: 100;
+  overflow-x: hidden; // 横スクロールを無効化
+  width: 100%;
+}
+
+// ヘッダー
+.dm-mobile-header {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, $dm-mobile-header-gradient-start 0%, $dm-mobile-header-gradient-end 100%);
+  border-bottom: none;
+  box-shadow: $shadow-md;
+  position: relative;
+  overflow: hidden;
+
+  // 装飾用のグラデーションオーバーレイ
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    pointer-events: none;
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    padding: $dm-mobile-header-padding;
+    gap: 0.875rem;
+    position: relative;
+    z-index: 1;
+    min-height: 72px; // ヘッダーの最小高さを統一
+  }
+
+  &__back {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.125rem;
+    width: 36px;
+    height: 36px;
+    border-radius: $border-radius-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all $transition-speed-fast $transition-timing-ease-in-out;
+    backdrop-filter: blur(10px);
+
+    &:hover,
+    &:active {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0.95);
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    color: white;
+    text-decoration: none;
+    flex: 1;
+    border-radius: $border-radius-base;
+    transition: background $transition-speed-fast $transition-timing-ease-in-out;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+  }
+
+  &__avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__icon {
+    font-size: 1.5rem;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 1rem;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.01em;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__status {
+    font-size: $font-size-xs;
+    opacity: 0.9;
+    margin-top: 0.125rem;
+  }
+}
+
+// メッセージエリア
+.dm-mobile-messages {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden; // 横スクロールを無効化
+  padding: 1.25rem 0.75rem;
+  padding-bottom: 90px; // フォーム分の余白
+  background: transparent;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  box-sizing: border-box;
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($primary, 0.1) 0%, rgba($secondary, 0.15) 100%);
+    color: $primary;
+    box-shadow: 0 4px 20px rgba($primary, 0.15);
+  }
+
+  &__empty-text {
+    font-size: 1.125rem;
+    font-weight: $font-weight-semibold;
+    color: $neutral-900;
+    margin-bottom: 0.625rem;
+  }
+
+  &__empty-hint {
+    font-size: $font-size-sm;
+    color: $neutral-500;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// 入力フォーム（bottom-nav-barの直上に固定）
+.dm-mobile-form {
+  position: fixed;
+  bottom: 64px; // bottom-nav-barの高さ
+  left: 0;
+  right: 0;
+  padding: 1rem 1.25rem;
+  background: white;
+  border-top: 1px solid $neutral-300;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 110;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.98);
+  overflow: hidden; // スクロールを無効化
+
+  // フォーム内のスタイル
+  .dm-input-group {
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  .dm-textarea {
+    flex: 1;
+    min-width: 0; // flexアイテムの幅制限を解除
+    border: 1px solid $neutral-300;
+    border-radius: $border-radius-xl !important;
+    padding: 0.875rem 1rem !important;
+    font-size: $font-size-base;
+    resize: none;
+    transition: all $transition-speed-fast $transition-timing-ease-in-out;
+    background: white;
+    box-shadow: $shadow-sm;
+    overflow: hidden; // スクロールを完全に無効化
+    height: 44px; // 固定の高さ（1行分）
+    line-height: 1.5;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1), $shadow-base;
+    }
+
+    &::placeholder {
+      color: $neutral-500;
+    }
+  }
+
+  .dm-submit-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
+    transition: all $transition-speed-base $transition-timing-ease-in-out;
+    font-size: $font-size-lg;
+
+    &:hover {
+      background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+      box-shadow: 0 6px 16px rgba($primary, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba($primary, 0.3);
+    }
+  }
+}
+
+// ============================================
+// メッセージリスト画面
+// ============================================
+
+.dm-mobile-list-container {
+  position: fixed;
+  top: 56px; // mobile-headerの高さ
+  left: 0;
+  right: 0;
+  bottom: 64px; // bottom-tab-barの高さ
+  display: flex;
+  flex-direction: column;
+  background: $bg-primary;
+  z-index: 100;
+  overflow-x: hidden; // 横スクロールを無効化
+  width: 100%;
+}
+
+// ヘッダー
+.dm-mobile-list-header {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, $dm-mobile-header-gradient-start 0%, $dm-mobile-header-gradient-end 100%);
+  border-bottom: none;
+  box-shadow: $shadow-md;
+  position: relative;
+  overflow: hidden;
+
+  // 装飾用のグラデーションオーバーレイ
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    pointer-events: none;
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    padding: $dm-mobile-header-padding;
+    gap: 0.875rem;
+    position: relative;
+    z-index: 1;
+    min-height: 72px; // ヘッダーの最小高さを統一
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: $border-radius-base;
+    backdrop-filter: blur(10px);
+  }
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: $font-weight-bold;
+    color: white;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+}
+
+// リストbody
+.dm-mobile-list-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden; // 横スクロールを無効化
+  background: $bg-primary;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 0;
+  width: 100%;
+}
+
+.dm-mobile-list-items {
+  background: transparent;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; // 横スクロールを無効化
+}
+
+// リストアイテム（既存のroom_list_itemを上書き）
+.dm-mobile-list-container .room-list-item,
+.dm-mobile-list-container .list-group-item {
+  background: white !important;
+  border: none !important;
+  padding: 1rem 1.25rem !important;
+  margin-left: 0.75rem !important;
+  margin-right: 0.75rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+  border-radius: $border-radius-lg !important;
+  transition: all $transition-speed-fast $transition-timing-ease-in-out;
+  box-shadow: $shadow-sm;
+  position: relative;
+  overflow: hidden;
+  width: auto; // 自動幅設定
+  max-width: calc(100% - 1.5rem); // 左右のmargin分を引いた幅
+
+  // 左側のアクセントバー（未読時に表示）
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, $primary 0%, $secondary 100%);
+    opacity: 0;
+    transition: opacity $transition-speed-fast $transition-timing-ease-in-out;
+  }
+
+  &:hover {
+    background: white !important;
+    box-shadow: $shadow-base;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+
+  &.active {
+    background: white !important;
+    box-shadow: $shadow-base;
+  }
+
+  .user-icon {
+    font-size: 48px !important;
+    color: $primary !important;
+  }
+
+  h6 {
+    font-size: $font-size-base;
+    color: $neutral-900;
+  }
+
+  .text-muted {
+    color: $neutral-500 !important;
+  }
+
+  .badge {
+    background: linear-gradient(135deg, $error 0%, darken($error, 8%) 100%) !important;
+    box-shadow: 0 2px 8px rgba($error, 0.3);
+    font-weight: $font-weight-bold;
+  }
+}
+
+// 未読メッセージがある場合のスタイル
+.dm-mobile-list-container .room-list-item.has-unread,
+.dm-mobile-list-container .list-group-item.has-unread {
+  &::before {
+    opacity: 1;
+  }
+}
+
+// 空状態
+.dm-mobile-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem 1.5rem;
+  text-align: center;
+
+  &__icon {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($primary, 0.1) 0%, rgba($secondary, 0.15) 100%);
+    color: $primary;
+    box-shadow: 0 4px 20px rgba($primary, 0.15);
+  }
+
+  &__text {
+    font-size: 1.125rem;
+    font-weight: $font-weight-semibold;
+    color: $neutral-900;
+    margin-bottom: 0.625rem;
+  }
+
+  &__hint {
+    font-size: $font-size-sm;
+    color: $neutral-500;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// メッセージバブルのモバイル専用調整
+.dm-mobile-container {
+  .direct-message-card {
+    &.text-end .message-wrapper,
+    &.text-start .message-wrapper {
+      max-width: 90%; // モバイルでは90%まで
+    }
+  }
+}
+
+// DM一覧/詳細の切り替え（モバイル）
+@media (max-width: 767px) {
+  #dm-container:not(.show-detail) #room-detail-column {
+    display: none !important;
+  }
+
+  #dm-container.show-detail #room-list-column {
+    display: none !important;
+  }
+
+  #dm-container.show-detail #room-detail-column {
+    display: block !important;
+  }
+}

@@ -1,8 +1,6 @@
 class PostDecorator
   include ERB::Util
 
-  URL_PATTERN = /(https?:\/\/[^\s<>\"]+?)(?=[<>\".,;!?)]*(?:\s|$))/
-
   attr_reader :post
 
   # 明示的に委譲するメソッドのみを許可
@@ -42,9 +40,7 @@ class PostDecorator
   end
 
   def highlight_urls(text)
-    text.gsub(URL_PATTERN) do |url|
-      "<a href=\"#{url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"url-highlight\">#{url}</a>"
-    end
+    TextHighlighterHelper.linkify_urls_text(text, escape: false)
   end
 
   def format_text(text)

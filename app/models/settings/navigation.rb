@@ -6,8 +6,7 @@ module Settings
 
     TAB_DEFINITIONS = [
       { label: "アカウント", path: :settings_account_path, icon: "fas fa-user-cog", key: :account },
-      { label: "プライバシー", path: :settings_privacy_path, icon: "fas fa-lock", key: :privacy },
-      { label: "APIキー", path: :settings_api_keys_path, icon: "fas fa-key", key: :api_keys }
+      { label: "プライバシー", path: :settings_privacy_path, icon: "fas fa-lock", key: :privacy }
     ].freeze
 
     def self.tabs(view_context)

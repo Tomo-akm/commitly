@@ -1,20 +1,12 @@
-# solid_cable adapter works across multiple processes (web + worker)
-# Required for background jobs (solid_queue) to broadcast Turbo Streams
+# Use async adapter in development (solid_cable is for production only)
 development:
-  adapter: solid_cable
-  connects_to:
-    database:
-      writing: cable
-  polling_interval: 0.1.seconds
-  message_retention: 1.day
+  adapter: async
 
 test:
   adapter: test
 
 production:
   adapter: solid_cable
-  connects_to:
-    database:
-      writing: cable
+  # Solid Cable uses the primary database (no separate cable database needed)
   polling_interval: 0.1.seconds
   message_retention: 1.day

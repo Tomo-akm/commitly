@@ -1,10 +1,13 @@
 module Vault
   module EntrySheetItems
     class AdvicesController < ApplicationController
+      MAX_TITLE_LENGTH = 100
+      MAX_CONTENT_LENGTH = 2000
+
       before_action :authenticate_user!
       before_action :set_entry_sheet_item
       before_action :validate_advice_params, only: :create
-      before_action :find_model, only: :create
+      before_action :check_usage_limit, only: :create
 
       def create
         create_chat_with_model
@@ -12,7 +15,6 @@ module Vault
         EntrySheetAdviceJob.perform_later(
           @entry_sheet_item.id,
           current_user.id,
-          @model.id,
           @advice_params[:title],
           @advice_params[:content],
           @advice_params[:char_limit]
@@ -45,30 +47,24 @@ module Vault
           char_limit: params[:current_char_limit]
         }
 
-        return if @advice_params[:title].present? &&
-                  @advice_params[:content].present? &&
-                  @advice_params[:title].length <= 100 &&
-                  @advice_params[:content].length <= 2000
+        return if valid_advice_params?
 
-        error_message = if @advice_params[:title].blank? || @advice_params[:content].blank?
-                          "入力内容が不足しています"
-        elsif @advice_params[:title].length > 100
-                          "タイトルが長すぎます。100文字以内で入力してください。"
-        else
-                          "内容が長すぎます。2000文字以内で入力してください。"
-        end
-
-        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: error_message and return
+        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet),
+                    alert: advice_validation_error_message and return
       end
 
-      def find_model
-        return if params[:model_id].blank? &&
-                  redirect_to(edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください")
+      def valid_advice_params?
+        @advice_params[:title].present? &&
+          @advice_params[:content].present? &&
+          @advice_params[:title].length <= MAX_TITLE_LENGTH &&
+          @advice_params[:content].length <= MAX_CONTENT_LENGTH
+      end
 
-        @model = Model.available_for_user(current_user).find_by(id: params[:model_id])
-        return if @model
+      def advice_validation_error_message
+        return "入力内容が不足しています" if @advice_params[:title].blank? || @advice_params[:content].blank?
+        return "タイトルが長すぎます。#{MAX_TITLE_LENGTH}文字以内で入力してください。" if @advice_params[:title].length > MAX_TITLE_LENGTH
 
-        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください" and return
+        "内容が長すぎます。#{MAX_CONTENT_LENGTH}文字以内で入力してください。"
       end
 
       # Helper methods
@@ -81,6 +77,13 @@ module Vault
           )
         end
         @entry_sheet_item.reload
+      end
+
+      def check_usage_limit
+        LlmUsage.check_and_reserve!(current_user)
+      rescue LlmUsage::LimitExceededError
+        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet),
+                    alert: "本日の利用上限に達しました。翌日0時にリセットされます。" and return
       end
 
       def render_error(message)

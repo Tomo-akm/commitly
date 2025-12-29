@@ -1,79 +1,63 @@
-/ User Profile Information
-.card.card-primary.mb-4.fade-in.card-decorative
-  .card-header.bg-primary.text-white.p-4
-    .d-flex.justify-content-between.align-items-center
-      h2.h3.mb-0.font-bold.d-flex.align-items-center
-        span.cursor-pointer(data-controller="avatar-modal" data-avatar-modal-avatar-url-value=@user.avatar_url(size: 400) data-action="click->avatar-modal#openModal")
-          = render "shared/avatar", user: @user, size: 48, class_name: "me-2"
-        .d-flex.flex-column
-          span = @user.name
-          span.text-white-50.text-sm = "@#{@user.account_id}"
-        = render "shared/visibility_icon", user: @user, icon_class: "ms-2 text-white-50"
-      .d-flex.gap-2
+/ プロフィールヘッダー（モダンUI）
+.profile-header
+  .profile-header__banner
+
+  .profile-header__content
+    .profile-header__avatar
+      span.cursor-pointer(data-controller="avatar-modal" data-avatar-modal-avatar-url-value=@user.avatar_url(size: 400) data-action="click->avatar-modal#openModal")
+        = render "shared/avatar", user: @user, size: 100, class_name: "avatar"
+
+    .profile-header__main
+      .profile-header__info
+        .profile-header__name
+          = @user.name
+          = render "shared/visibility_icon", user: @user, icon_class: "text-muted"
+        .profile-header__account = "@#{@user.account_id}"
+        .profile-header__stats
+          = link_to following_user_path(@user.account_id) do
+            strong id=dom_id(@user, "following_count")
+              = @user.following.count
+            |  フォロー
+          = link_to followers_user_path(@user.account_id) do
+            strong id=dom_id(@user, "followers_count")
+              = @user.followers.count
+            |  フォロワー
+
+      .profile-header__actions
         - if user_signed_in?
           - if @user == current_user
-            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-light"
+            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-outline-primary"
           - else
             = turbo_frame_tag dom_id(@user, "follow_button") do
               = render "profiles/follow_button", user: @user
-            = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-light" do
+            = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-outline-secondary" do
               i.fas.fa-comment.me-1
-              | DMを送る
-  .card-body.p-4
-    .profile-info-item
-      .profile-icon
-        i.fas.fa-id-card
-      .profile-label 名前
-      .profile-value = @user.name
+              | DM
 
-    .separator-gradient
+    - if @user.personal_message.present?
+      .profile-header__bio
+        = simple_format(h(@user.personal_message), {}, wrapper_tag: "span")
 
-    .profile-info-item
-      .profile-icon
-        i.fas.fa-graduation-cap
-      .profile-label 卒業年度
-      .profile-value = @user.graduation_year.present? ? "#{@user.graduation_year}年卒" : "ー"
+    .profile-header__meta
+      - if @user.graduation_year.present?
+        .profile-header__meta-item
+          i.fas.fa-graduation-cap
+          span = "#{@user.graduation_year}年卒"
 
-    .separator-gradient
+      - if @user.favorite_language.present?
+        .profile-header__meta-item
+          i.fas.fa-code
+          span = @user.favorite_language
 
-    .profile-info-item
-      .profile-icon
-        i.fas.fa-code
-      .profile-label 好きな言語
-      .profile-value = @user.favorite_language.present? ? @user.favorite_language : "ー"
+      - if @user.internship_count.present? && @user.internship_count > 0
+        .profile-header__meta-item
+          i.fas.fa-briefcase
+          span = "インターン #{@user.internship_count}回"
 
-    .separator-gradient
-
-    .profile-info-item
-      .profile-icon
+      .profile-header__meta-item
         i.fas.fa-briefcase
-      .profile-label インターン・説明会参加回数
-      .profile-value = @user.intern_participations_count > 0 ? "#{@user.intern_participations_count}回" : "ー"
+        span = "インターン・説明会参加 #{@user.intern_participations_count}回"
 
-    .separator-gradient
-
-    .profile-info-item
-      .profile-icon
-        i.fas.fa-comment-dots
-      .profile-label 一言
-      .profile-value
-        - if @user.personal_message.present?
-          = simple_format(h(@user.personal_message), {}, wrapper_tag: "span")
-        - else
-          | ー
-
-    .separator-gradient
-
-    .profile-info-item
-      .profile-icon
+      .profile-header__meta-item
         i.fas.fa-calendar-check
-      .profile-label 登録日
-      .profile-value = @user.created_at.strftime("%Y年%m月%d日")
-
-    .separator-gradient
-
-    = render "profiles/follow_stats_item", icon: "fa-users", label: "フォロー中", value_id: dom_id(@user, "following_count"), count: @user.following.count, path: following_user_path(@user.account_id), linkable: true
-
-    .separator-gradient
-
-    = render "profiles/follow_stats_item", icon: "fa-user-friends", label: "フォロワー", value_id: dom_id(@user, "followers_count"), count: @user.followers.count, path: followers_user_path(@user.account_id), linkable: true
+        span = "#{@user.created_at.strftime('%Y年%m月')}から利用"

@@ -25,6 +25,10 @@
 @import "components/settings";       // 設定ページ（APIキー管理等）
 @import "components/markdown";       // Markdownレンダリング
 @import "components/resizable_layout"; // リサイズ可能な2カラムレイアウト
+@import "components/mobile_nav";       // モバイルナビ（ヘッダー + ボトムタブバー）
+@import "components/profile";          // プロフィールページ
+@import "components/direct_messages";  // DM画面（PC用）
+@import "components/dm_mobile";        // DM画面（スマホ専用）
 
 // 4. Utilities - ユーティリティクラス
 @import "utilities/utilities";
