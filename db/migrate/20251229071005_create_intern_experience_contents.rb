@@ -4,7 +4,7 @@ class CreateInternExperienceContents < ActiveRecord::Migration[8.1]
       t.string :company_name, null: false, limit: 100
       t.string :event_name, null: false, limit: 100
       t.integer :duration_type, null: false
-      t.text :content, null: false, limit: 5000
+      t.text :content, null: false
 
       t.timestamps
     end
