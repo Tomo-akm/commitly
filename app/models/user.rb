@@ -56,7 +56,6 @@ class User < ApplicationRecord
   has_many :entry_sheets, dependent: :destroy
   has_many :entry_sheet_item_templates, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
-  has_many :api_keys, dependent: :destroy
   has_many :chats, dependent: :destroy
   has_many :llm_usages, dependent: :destroy
 
