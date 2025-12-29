@@ -35,7 +35,6 @@ Rails.application.routes.draw do
     root "settings#index"
     resource :account, only: [ :show, :update ]
     resource :privacy, only: [ :show, :update ], controller: "privacy"
-    resources :api_keys, only: [ :index, :create, :destroy ]
   end
 
   # Vault（就活記録エリア）

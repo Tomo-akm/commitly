@@ -4,7 +4,6 @@ module Vault
       before_action :authenticate_user!
       before_action :set_entry_sheet_item
       before_action :validate_advice_params, only: :create
-      before_action :find_model, only: :create
 
       def create
         create_chat_with_model
@@ -12,7 +11,6 @@ module Vault
         EntrySheetAdviceJob.perform_later(
           @entry_sheet_item.id,
           current_user.id,
-          @model.id,
           @advice_params[:title],
           @advice_params[:content],
           @advice_params[:char_limit]
@@ -59,16 +57,6 @@ module Vault
         end
 
         redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: error_message and return
-      end
-
-      def find_model
-        return if params[:model_id].blank? &&
-                  redirect_to(edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください")
-
-        @model = Model.available_for_user(current_user).find_by(id: params[:model_id])
-        return if @model
-
-        redirect_to edit_vault_entry_sheet_path(@entry_sheet_item.entry_sheet), alert: "AIモデルを選択してください" and return
       end
 
       # Helper methods

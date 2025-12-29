@@ -83,8 +83,6 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    anthropic (1.16.2)
-      connection_pool
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.20)
@@ -278,9 +276,6 @@ GEM
     omniauth-rails_csrf_protection (1.0.2)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
-    openai (0.42.0)
-      base64
-      connection_pool
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (1.27.0)
@@ -510,7 +505,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_storage_validations
-  anthropic
   bootsnap
   bootstrap (~> 5.3)
   brakeman
@@ -529,7 +523,6 @@ DEPENDENCIES
   kaminari
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
-  openai
   pg (~> 1.5)
   propshaft
   puma (>= 5.0)

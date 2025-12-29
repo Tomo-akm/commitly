@@ -3,9 +3,7 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
 # 追加したい seed ファイルの一覧
-seed_files = %w[
-  models.rb
-]
+seed_files = []
 
 seed_files.each do |file|
   seed_path = Rails.root.join("db", "seeds", file)
