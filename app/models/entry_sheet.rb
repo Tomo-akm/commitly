@@ -21,6 +21,7 @@ class EntrySheet < ApplicationRecord
   # バリデーション
   validates :company_name, presence: true
   validates :status, presence: true
+  validates :visibility, presence: true
 
   # スコープ
   scope :upcoming_deadline, lambda {

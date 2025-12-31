@@ -23,6 +23,12 @@ RSpec.describe EntrySheet, type: :model do
       expect(entry_sheet).not_to be_valid
       expect(entry_sheet.errors[:status]).to be_present
     end
+
+    it 'visibilityが必須' do
+      entry_sheet = build(:entry_sheet, visibility: nil)
+      expect(entry_sheet).not_to be_valid
+      expect(entry_sheet.errors[:visibility]).to be_present
+    end
   end
 
   describe 'enum' do
