@@ -58,7 +58,14 @@ class Vault::EntrySheetsController < ApplicationController
   private
 
   def set_entry_sheet
-    @entry_sheet = current_user.entry_sheets.includes(entry_sheet_items: :chat).find(params[:id])
+    @entry_sheet = EntrySheet.includes(entry_sheet_items: :chat).find(params[:id])
+
+    # 自分のESではない場合、公開設定チェック
+    unless @entry_sheet.user_id == current_user.id
+      unless @entry_sheet.visibility_public?
+        redirect_to vault_root_path, alert: "このESは公開されていません"
+      end
+    end
   end
 
   def entry_sheet_params
@@ -67,6 +74,7 @@ class Vault::EntrySheetsController < ApplicationController
       :deadline,
       :status,
       :submitted_at,
+      :visibility,
       entry_sheet_items_attributes: [
         :id,
         :title,

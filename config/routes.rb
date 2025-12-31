@@ -53,6 +53,9 @@ Rails.application.routes.draw do
         resource :advice, only: [ :create, :destroy ]
       end
     end
+
+    # 他ユーザーのVault閲覧
+    resources :users, only: [ :show ]
   end
 
   # DM機能

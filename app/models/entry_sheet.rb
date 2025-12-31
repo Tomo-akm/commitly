@@ -12,6 +12,12 @@ class EntrySheet < ApplicationRecord
     failed: 5          # 不合格
   }, prefix: true
 
+  # 公開範囲のenum定義
+  enum :visibility, {
+    visibility_private: 0,  # 非公開（自分のみ）
+    visibility_public: 1    # 公開（全ユーザー）
+  }, prefix: true
+
   # バリデーション
   validates :company_name, presence: true
   validates :status, presence: true
@@ -23,6 +29,7 @@ class EntrySheet < ApplicationRecord
          .order(deadline: :asc)
   }
   scope :recent, -> { order(created_at: :desc) }
+  scope :publicly_visible, -> { where(visibility: :visibility_public) }
 
   # ネストフォーム用
   accepts_nested_attributes_for :entry_sheet_items,
