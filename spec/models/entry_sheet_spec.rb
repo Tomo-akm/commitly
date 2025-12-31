@@ -117,5 +117,17 @@ RSpec.describe EntrySheet, type: :model do
         expect(entry_sheet.viewable_by?(other_user)).to be false
       end
     end
+
+    context 'ログアウトユーザー（userがnil）の場合' do
+      it 'falseを返す（公開ESでも閲覧不可）' do
+        entry_sheet.update(visibility: :shared)
+        expect(entry_sheet.viewable_by?(nil)).to be false
+      end
+
+      it '非公開ESもfalseを返す' do
+        entry_sheet.update(visibility: :personal)
+        expect(entry_sheet.viewable_by?(nil)).to be false
+      end
+    end
   end
 end

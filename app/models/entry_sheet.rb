@@ -33,7 +33,11 @@ class EntrySheet < ApplicationRecord
 
   # 指定したユーザーが閲覧可能か判定
   def viewable_by?(user)
-    self.user_id == user.id || visibility_shared?
+    return false if user.nil?
+    return true if self.user_id == user.id
+    return false unless visibility_shared?
+
+    self.user.content_visible_to?(user)
   end
 
   # ネストフォーム用
