@@ -7,6 +7,10 @@
   = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-outline-primary" do
     i.fas.fa-file-alt.me-2
     | テンプレート作成
+  - if current_user.post_visibility != "only_me"
+    = link_to new_post_path(share: "vault"), class: "btn btn-outline-secondary" do
+      i.fas.fa-share-alt.me-2
+      | Vaultを共有
 
 / 企業別選考進捗
 = render "vault/partials/company_progress", company_progress: @company_progress do

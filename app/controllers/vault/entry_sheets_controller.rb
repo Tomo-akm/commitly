@@ -29,7 +29,7 @@ class Vault::EntrySheetsController < Vault::BaseController
     @entry_sheet = current_user.entry_sheets.build(entry_sheet_params)
 
     if @entry_sheet.save
-      redirect_to vault_entry_sheet_path(@entry_sheet), notice: "ESを作成しました"
+      redirect_to vault_entry_sheet_path(@entry_sheet), notice: "ESを作成しました。つぶやきで共有してレビューをもらおう！"
     else
       flash.now[:alert] = "ESの作成に失敗しました: #{@entry_sheet.errors.full_messages.join(', ')}"
       @templates = current_user.entry_sheet_item_templates.order(:tag, :created_at)
