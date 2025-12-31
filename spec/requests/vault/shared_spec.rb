@@ -23,8 +23,8 @@ RSpec.describe "Vault::Shared", type: :request do
 
     context '他ユーザーの公開Vaultを閲覧する場合' do
       it '公開ESのみ表示される' do
-        public_es = create(:entry_sheet, user: other_user, visibility: :shared, company_name: '公開株式会社')
-        private_es = create(:entry_sheet, user: other_user, visibility: :personal, company_name: '非公開株式会社')
+        create(:entry_sheet, user: other_user, visibility: :shared, company_name: '公開株式会社')
+        create(:entry_sheet, user: other_user, visibility: :personal, company_name: '非公開株式会社')
 
         get vault_path(other_user.account_id)
 
