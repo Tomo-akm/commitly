@@ -47,6 +47,63 @@ RSpec.describe "Vault::Shared", type: :request do
       end
     end
 
+    context 'post_visibilityがonly_meの場合' do
+      before do
+        other_user.update!(post_visibility: :only_me)
+        create(:entry_sheet, user: other_user, visibility: :shared, company_name: '公開株式会社')
+      end
+
+      it 'Vaultにアクセスできずリダイレクトされる' do
+        get vault_path(other_user.account_id)
+
+        expect(response).to redirect_to(vault_root_path)
+        expect(flash[:alert]).to eq('このVaultは公開されていません')
+      end
+    end
+
+    context 'post_visibilityがmutual_followersの場合' do
+      before do
+        other_user.update!(post_visibility: :mutual_followers)
+        create(:entry_sheet, user: other_user, visibility: :shared, company_name: '公開株式会社')
+      end
+
+      context 'フォロー関係がない場合' do
+        it 'Vaultにアクセスできずリダイレクトされる' do
+          get vault_path(other_user.account_id)
+
+          expect(response).to redirect_to(vault_root_path)
+          expect(flash[:alert]).to eq('このVaultは公開されていません')
+        end
+      end
+
+      context '片方向フォローの場合' do
+        before do
+          current_user.follow(other_user)
+        end
+
+        it 'Vaultにアクセスできずリダイレクトされる' do
+          get vault_path(other_user.account_id)
+
+          expect(response).to redirect_to(vault_root_path)
+          expect(flash[:alert]).to eq('このVaultは公開されていません')
+        end
+      end
+
+      context '相互フォローの場合' do
+        before do
+          current_user.follow(other_user)
+          other_user.follow(current_user)
+        end
+
+        it 'Vaultにアクセスできる' do
+          get vault_path(other_user.account_id)
+
+          expect(response).to have_http_status(:success)
+          expect(response.body).to include('公開株式会社')
+        end
+      end
+    end
+
     context 'ログインしていない場合' do
       before do
         sign_out current_user
