@@ -26,14 +26,16 @@
       .row
         .col-md-12.mb-3.visibility-field
           = f.label :visibility, "公開範囲", class: "form-label fw-bold text-primary-dark"
-          .d-flex.gap-3
+          .d-flex.gap-3.mb-2
             .form-check
-              = f.radio_button :visibility, :visibility_private, class: "form-check-input", id: "visibility_private"
+              = f.radio_button :visibility, :visibility_private, checked: f.object.visibility_private? || f.object.new_record?, class: "form-check-input", id: "visibility_private"
               = f.label :visibility, "非公開（自分のみ）", class: "form-check-label", for: "visibility_private"
             .form-check
               = f.radio_button :visibility, :visibility_public, class: "form-check-input", id: "visibility_public"
               = f.label :visibility, "公開（全ユーザー）", class: "form-check-label", for: "visibility_public"
-          small.text-muted 公開設定にすると、他のユーザーがあなたのESを閲覧できます
+          small.text-muted
+            i.fas.fa-info-circle.me-1
+            | 公開に設定すると、ログイン中の他のユーザーがあなたのESと企業別進捗を閲覧できるようになります。個人情報が含まれる内容は非公開にすることをおすすめします。
 
   / ES項目
   .card.mb-4

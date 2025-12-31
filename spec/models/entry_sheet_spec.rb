@@ -75,4 +75,32 @@ RSpec.describe EntrySheet, type: :model do
       expect(entry_sheet.visibility_private?).to be true
     end
   end
+
+  describe '#viewable_by?' do
+    let(:owner) { create(:user) }
+    let(:other_user) { create(:user) }
+    let(:entry_sheet) { create(:entry_sheet, user: owner) }
+
+    context 'ESの所有者の場合' do
+      it 'trueを返す（公開範囲に関わらず）' do
+        entry_sheet.update(visibility: :visibility_private)
+        expect(entry_sheet.viewable_by?(owner)).to be true
+
+        entry_sheet.update(visibility: :visibility_public)
+        expect(entry_sheet.viewable_by?(owner)).to be true
+      end
+    end
+
+    context '他のユーザーの場合' do
+      it '公開ESならtrueを返す' do
+        entry_sheet.update(visibility: :visibility_public)
+        expect(entry_sheet.viewable_by?(other_user)).to be true
+      end
+
+      it '非公開ESならfalseを返す' do
+        entry_sheet.update(visibility: :visibility_private)
+        expect(entry_sheet.viewable_by?(other_user)).to be false
+      end
+    end
+  end
 end

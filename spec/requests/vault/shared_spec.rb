@@ -63,5 +63,14 @@ RSpec.describe "Vault::Shared", type: :request do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    context 'ユーザーが存在しない場合' do
+      it 'Vaultルートにリダイレクトされる' do
+        get vault_shared_path(user_id: 999999)
+
+        expect(response).to redirect_to(vault_root_path)
+        expect(flash[:alert]).to eq('ユーザーが見つかりません')
+      end
+    end
   end
 end

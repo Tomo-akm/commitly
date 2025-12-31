@@ -59,6 +59,11 @@ class User < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :llm_usages, dependent: :destroy
 
+  # 公開ES数を取得
+  def public_entry_sheets_count
+    entry_sheets.publicly_visible.count
+  end
+
   ACCOUNT_ID_MIN_LENGTH = 3
   ACCOUNT_ID_MAX_LENGTH = 20
   ACCOUNT_ID_DEFAULT_LENGTH = 12

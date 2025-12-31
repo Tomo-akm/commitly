@@ -31,6 +31,11 @@ class EntrySheet < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :publicly_visible, -> { where(visibility: :visibility_public) }
 
+  # 指定したユーザーが閲覧可能か判定
+  def viewable_by?(user)
+    self.user_id == user.id || visibility_public?
+  end
+
   # ネストフォーム用
   accepts_nested_attributes_for :entry_sheet_items,
                                 allow_destroy: true,

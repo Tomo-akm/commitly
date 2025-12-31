@@ -27,7 +27,15 @@
         - if user_signed_in?
           - if @user == current_user
             = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-outline-primary"
+            = link_to vault_root_path, class: "btn btn-sm btn-outline-secondary" do
+              i.fas.fa-briefcase.me-1
+              | マイVault
           - else
+            - if @user.public_entry_sheets_count > 0
+              = link_to vault_shared_path(user_id: @user.id), class: "btn btn-sm btn-outline-secondary" do
+                i.fas.fa-briefcase.me-1
+                | Vault
+                span.badge.bg-secondary.ms-1 = @user.public_entry_sheets_count
             = turbo_frame_tag dom_id(@user, "follow_button") do
               = render "profiles/follow_button", user: @user
             = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-outline-secondary" do

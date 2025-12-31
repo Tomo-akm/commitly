@@ -58,8 +58,8 @@ class Vault::EntrySheetsController < Vault::BaseController
   def set_entry_sheet
     @entry_sheet = EntrySheet.includes(entry_sheet_items: :chat).find(params[:id])
 
-    # 他人の非公開ESにアクセスしようとした場合
-    if @entry_sheet.user_id != current_user.id && @entry_sheet.visibility_private?
+    # アクセス権限チェック
+    unless @entry_sheet.viewable_by?(current_user)
       redirect_to vault_root_path, alert: "このESは公開されていません"
     end
   end
