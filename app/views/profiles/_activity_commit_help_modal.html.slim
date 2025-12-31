@@ -1,0 +1,57 @@
+.modal.fade#activityCommitHelpModal tabindex="-1" aria-labelledby="activityCommitHelpLabel" aria-hidden="true"
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content.activity-commit-modal
+      .modal-header
+        h5.modal-title#activityCommitHelpLabel
+          i.fas.fa-seedling.me-2
+          | 活動コミットとは？
+        button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+      .modal-body
+        p.activity-commit-modal__lead
+          | 活動コミットは、あなたの就活アクションを「1日単位」で可視化します。日々の行動が積み重なるほど濃くなります。
+        .activity-commit-modal__grid
+          .activity-commit-modal__card
+            .activity-commit-modal__icon
+              i.fas.fa-pen-nib
+            .activity-commit-modal__content
+              h6 投稿
+              p つぶやきや就活記録を投稿するとカウントされます。
+          .activity-commit-modal__card
+            .activity-commit-modal__icon
+              i.fas.fa-file-alt
+            .activity-commit-modal__content
+              h6 ES作成
+              p ESを作成するとカウントされます。
+          .activity-commit-modal__card
+            .activity-commit-modal__icon
+              i.fas.fa-layer-group
+            .activity-commit-modal__content
+              h6 ESテンプレ
+              p ESテンプレートを作成するとカウントされます。
+        .activity-commit-modal__actions
+          = link_to new_post_path, class: "activity-commit-modal__action" do
+            span.activity-commit-modal__action-icon
+              i.fas.fa-pen
+            span.activity-commit-modal__action-content
+              span.activity-commit-modal__action-title 投稿する
+              span.activity-commit-modal__action-subtext つぶやきや就活記録を残す
+            span.activity-commit-modal__action-arrow
+              i.fas.fa-arrow-right
+          = link_to new_vault_entry_sheet_path, class: "activity-commit-modal__action" do
+            span.activity-commit-modal__action-icon
+              i.fas.fa-file-alt
+            span.activity-commit-modal__action-content
+              span.activity-commit-modal__action-title ESを書く
+              span.activity-commit-modal__action-subtext ESを作成する
+            span.activity-commit-modal__action-arrow
+              i.fas.fa-arrow-right
+          = link_to new_vault_entry_sheet_item_template_path, class: "activity-commit-modal__action" do
+            span.activity-commit-modal__action-icon
+              i.fas.fa-layer-group
+            span.activity-commit-modal__action-content
+              span.activity-commit-modal__action-title ESテンプレ作成
+              span.activity-commit-modal__action-subtext ES項目のひな形を作る
+            span.activity-commit-modal__action-arrow
+              i.fas.fa-arrow-right
+      .modal-footer
+        button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" 閉じる

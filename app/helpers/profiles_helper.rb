@@ -1,6 +1,30 @@
 # frozen_string_literal: true
 
 module ProfilesHelper
+  ActivitySummary = Struct.new(
+    :current_streak,
+    :weekly_active_days,
+    :weekly_goal,
+    :weekly_progress,
+    :monthly_active_days,
+    :monthly_goal,
+    :monthly_progress,
+    keyword_init: true
+  )
+
+  def activity_summary(summary)
+    data = summary || {}
+    ActivitySummary.new(
+      current_streak: data[:current_streak].to_i,
+      weekly_active_days: data[:weekly_active_days].to_i,
+      weekly_goal: data[:weekly_goal].to_i,
+      weekly_progress: data[:weekly_progress].to_i,
+      monthly_active_days: data[:monthly_active_days].to_i,
+      monthly_goal: data[:monthly_goal].to_i,
+      monthly_progress: data[:monthly_progress].to_i
+    )
+  end
+
   # プロフィールタブのリンクを生成
   def profile_tab_link(path, icon, label, is_active:)
     link_to path, class: "nav-link profile-tab-link #{'active' if is_active}", data: { turbo_frame: "profile_content", turbo_action: "advance" } do
