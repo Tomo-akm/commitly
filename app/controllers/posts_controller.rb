@@ -170,11 +170,11 @@ class PostsController < ApplicationController
 
     def vault_share_message
       url = vault_url(current_user.account_id)
-      "Vaultを公開しました。\n#{url}"
+      "Vaultを公開しました。\n#{url}\n#就活 #ESレビュー"
     end
 
     def entry_sheet_share_message(entry_sheet)
       url = vault_entry_sheet_url(entry_sheet)
-      "ES「#{entry_sheet.company_name}」を公開しました。\n#{url}"
+      "ES「#{entry_sheet.company_name}」を公開しました。\n#{url}\n#就活 #ESレビュー"
     end
 end
