@@ -2,8 +2,9 @@
 
 # アクティビティトラッキング機能を提供するConcern
 #
-# ユーザーのアクティビティ（投稿・ES更新）を集計し、
+# ユーザーのアクティビティ（投稿・ES更新・テンプレ更新）を集計し、
 # 連続記録、週間/月間進捗、実績フラグを計算します。
+#
 module ActivityTrackable
   extend ActiveSupport::Concern
 
@@ -13,11 +14,15 @@ module ActivityTrackable
   WEEKLY_DAYS = 7
   MONTHLY_DAYS = 30
 
-  # アクティビティサマリーを準備
-  def prepare_activity_summary(counts_by_day)
+  # アクティビティサマリーを作成
+  #
+  # @param counts_by_day [Hash] 日付文字列をキー、活動回数を値とするハッシュ
+  #   例: { "2024-01-01" => 2, "2024-01-02" => 1 }
+  # @return [Hash] 集計済みアクティビティ情報
+  def activity_summary_from_counts(counts_by_day)
     active_dates = extract_active_dates(counts_by_day)
 
-    @activity_summary = {
+    {
       current_streak: calculate_current_streak(active_dates),
       weekly_active_days: count_active_days_in_range(active_dates, WEEKLY_DAYS),
       monthly_active_days: count_active_days_in_range(active_dates, MONTHLY_DAYS),
@@ -32,9 +37,30 @@ module ActivityTrackable
         MONTHLY_GOAL
       )
     }
+  end
 
-    @achievement_flags = calculate_achievement_flags
-    @achievement_history = calculate_achievement_history
+  # 実績フラグを計算
+  #
+  # @return [Hash] 実績キーをキー、達成状況（true/false）を値とするハッシュ
+  def achievement_flags
+    {
+      first_post: posts.exists?,
+      first_follow: active_follows.exists?,
+      first_es_public: entry_sheets.publicly_visible.exists?,
+      first_review_request: posts.joins(:tags).where(tags: { name: "ESレビュー" }).exists?
+    }
+  end
+
+  # 実績の達成履歴（初回達成日時）を取得
+  #
+  # @return [Hash] 実績キーをキー、達成日時を値とするハッシュ
+  def achievement_history
+    {
+      first_post: posts.minimum(:created_at),
+      first_follow: active_follows.minimum(:created_at),
+      first_es_public: entry_sheets.publicly_visible.minimum(:updated_at),
+      first_review_request: posts.joins(:tags).where(tags: { name: "ESレビュー" }).minimum(:created_at)
+    }
   end
 
   private
@@ -75,25 +101,5 @@ module ActivityTrackable
 
     percentage = ((active_days.to_f / goal) * 100).round
     [percentage, 100].min
-  end
-
-  # 実績フラグを計算
-  def calculate_achievement_flags
-    {
-      first_post: @user.posts.exists?,
-      first_follow: @user.active_follows.exists?,
-      first_es_public: @user.entry_sheets.publicly_visible.exists?,
-      first_review_request: @user.posts.joins(:tags).where(tags: { name: "ESレビュー" }).exists?
-    }
-  end
-
-  # 実績の達成履歴（初回達成日時）を取得
-  def calculate_achievement_history
-    {
-      first_post: @user.posts.minimum(:created_at),
-      first_follow: @user.active_follows.minimum(:created_at),
-      first_es_public: @user.entry_sheets.publicly_visible.minimum(:updated_at),
-      first_review_request: @user.posts.joins(:tags).where(tags: { name: "ESレビュー" }).minimum(:created_at)
-    }
   end
 end

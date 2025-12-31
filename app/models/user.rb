@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   include StreamChannels
   include Notifiable
+  include ActivityTrackable
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

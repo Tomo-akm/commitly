@@ -1,6 +1,4 @@
 class ProfilesController < ApplicationController
-  include ActivityTrackable
-
   before_action :authenticate_user!, except: [ :show, :following, :followers ]
   before_action :set_user, only: [ :show, :likes, :following, :followers ]
   before_action :set_right_nav_data, only: [ :show, :likes, :following, :followers ]
@@ -104,7 +102,9 @@ class ProfilesController < ApplicationController
     templates_by_day.each { |date, count| combined_counts[date] += count }
 
     @active_user_counts_6_months = combined_counts.map { |date, count| [ date, count ] }
-    prepare_activity_summary(combined_counts)
+    @activity_summary = @user.activity_summary_from_counts(combined_counts)
+    @achievement_flags = @user.achievement_flags
+    @achievement_history = @user.achievement_history
   end
 
   def heatmap_date_range
