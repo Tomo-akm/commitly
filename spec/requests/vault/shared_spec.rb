@@ -9,6 +9,18 @@ RSpec.describe "Vault::Shared", type: :request do
   end
 
   describe "GET /vault/:account_id" do
+    context '自分のVaultを閲覧する場合' do
+      it '正常に表示される（ダッシュボードとは別ルート）' do
+        create(:entry_sheet, user: current_user, visibility: :shared, company_name: '公開株式会社')
+
+        get vault_path(current_user.account_id)
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include('公開株式会社')
+        expect(response.body).to include("#{current_user.name}のVault")
+      end
+    end
+
     context '他ユーザーの公開Vaultを閲覧する場合' do
       it '公開ESのみ表示される' do
         public_es = create(:entry_sheet, user: other_user, visibility: :shared, company_name: '公開株式会社')
