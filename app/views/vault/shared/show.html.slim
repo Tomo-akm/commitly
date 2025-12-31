@@ -81,7 +81,7 @@
       / ページネーション
       - if @public_entry_sheets.total_pages > 1
         .mt-4
-          = paginate @public_entry_sheets, theme: 'bootstrap-5'
+          = paginate @public_entry_sheets
     - else
       .text-center.py-5
         .mb-4
