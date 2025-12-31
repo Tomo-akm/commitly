@@ -29,10 +29,10 @@
           .d-flex.gap-3.mb-2
             .form-check
               = f.radio_button :visibility, :personal, checked: f.object.visibility_personal? || f.object.new_record?, class: "form-check-input", id: "visibility_personal"
-              = f.label :visibility, "非公開（自分のみ）", class: "form-check-label", for: "visibility_personal"
+              label.form-check-label(for="visibility_personal") 非公開（自分のみ）
             .form-check
               = f.radio_button :visibility, :shared, class: "form-check-input", id: "visibility_shared"
-              = f.label :visibility, "公開（全ユーザー）", class: "form-check-label", for: "visibility_shared"
+              label.form-check-label(for="visibility_shared") 公開（全ユーザー）
           small.text-muted
             i.fas.fa-info-circle.me-1
             | 公開に設定すると、ログイン中の他のユーザーがあなたのESと企業別進捗を閲覧できるようになります。個人情報が含まれる内容は非公開にすることをおすすめします。
