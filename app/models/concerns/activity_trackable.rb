@@ -100,6 +100,6 @@ module ActivityTrackable
     return 0 if goal.zero?
 
     percentage = ((active_days.to_f / goal) * 100).round
-    [percentage, 100].min
+    [ percentage, 100 ].min
   end
 end
