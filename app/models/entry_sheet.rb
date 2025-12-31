@@ -2,6 +2,9 @@ class EntrySheet < ApplicationRecord
   belongs_to :user
   has_many :entry_sheet_items, dependent: :destroy
 
+  # 属性の型を明示的に宣言（Rails 8のenum要件）
+  attribute :visibility, :integer
+
   # ステータスのenum定義
   enum :status, {
     draft: 0,          # 下書き
@@ -14,8 +17,8 @@ class EntrySheet < ApplicationRecord
 
   # 公開範囲のenum定義
   enum :visibility, {
-    visibility_private: 0,  # 非公開（自分のみ）
-    visibility_public: 1    # 公開（全ユーザー）
+    personal: 0,  # 非公開（自分のみ）
+    shared: 1     # 公開（全ユーザー）
   }, prefix: true
 
   # バリデーション
@@ -29,11 +32,11 @@ class EntrySheet < ApplicationRecord
          .order(deadline: :asc)
   }
   scope :recent, -> { order(created_at: :desc) }
-  scope :publicly_visible, -> { where(visibility: :visibility_public) }
+  scope :publicly_visible, -> { where(visibility: :shared) }
 
   # 指定したユーザーが閲覧可能か判定
   def viewable_by?(user)
-    self.user_id == user.id || visibility_public?
+    self.user_id == user.id || visibility_shared?
   end
 
   # ネストフォーム用
