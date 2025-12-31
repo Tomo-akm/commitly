@@ -124,5 +124,20 @@ RSpec.describe "Vault::Shared", type: :request do
         expect(flash[:alert]).to eq('ユーザーが見つかりません')
       end
     end
+
+    context 'account_idが予約語の場合' do
+      it 'entry_sheetsは名前空間ルートにルーティングされる（ユーザーVaultではない）' do
+        # このテストはルーティングの競合を確認する
+        # vault/entry_sheetsは vault_entry_sheets_path にマッチし、
+        # vault_path("entry_sheets") にはマッチしない
+        get '/vault/entry_sheets'
+
+        # EntrySheets#indexにルーティングされる
+        expect(response).to have_http_status(:success)
+        # Shared#showではなくEntrySheets#indexであることを確認
+        # （Shared#showの場合は「のVault」というテキストが含まれる）
+        expect(response.body).not_to include('のVault')
+      end
+    end
   end
 end

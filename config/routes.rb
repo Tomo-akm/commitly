@@ -56,7 +56,13 @@ Rails.application.routes.draw do
   end
 
   # 他ユーザーの公開Vault閲覧
-  get "vault/:account_id", to: "vault/shared#show", as: :vault
+  # account_idが予約語（entry_sheets、templates等）と競合しないようにconstraintsを設定
+  get "vault/:account_id",
+      to: "vault/shared#show",
+      as: :vault,
+      constraints: {
+        account_id: /(?!entry_sheets$)(?!templates$)(?!entry_sheet_items$)[^\/]+/
+      }
 
   # DM機能
   resources :rooms, only: [ :index, :show, :create ] do
