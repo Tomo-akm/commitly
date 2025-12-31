@@ -61,7 +61,7 @@ RSpec.describe "Vault::EntrySheets", type: :request do
       }.to change(EntrySheet, :count).by(1)
 
       expect(response).to redirect_to(vault_entry_sheet_path(EntrySheet.last))
-      expect(flash[:notice]).to eq('ESを作成しました')
+      expect(flash[:notice]).to eq('ESを作成しました。つぶやきで共有してレビューをもらおう！')
     end
 
     it 'visibilityを設定できる' do
