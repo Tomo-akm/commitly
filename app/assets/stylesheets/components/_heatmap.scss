@@ -6,6 +6,10 @@
   margin-top: $spacing-6;
 }
 
+.heatmap-scroll {
+  width: 100%;
+}
+
 .heatmap-chart {
   height: 200px;
   width: 100%;
@@ -59,6 +63,16 @@
 
 // Responsive adjustments
 @include respond-below(md) {
+  .heatmap-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .heatmap-chart {
+    min-width: 640px;
+  }
+
   .heatmap-chart {
     height: 180px;
   }
