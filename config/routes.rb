@@ -53,10 +53,10 @@ Rails.application.routes.draw do
         resource :advice, only: [ :create, :destroy ]
       end
     end
-
-    # 他ユーザーの公開Vault閲覧
-    get 'shared/:user_id', to: 'shared#show', as: :shared
   end
+
+  # 他ユーザーの公開Vault閲覧
+  get "vault/:account_id", to: "vault/shared#show", as: :vault
 
   # DM機能
   resources :rooms, only: [ :index, :show, :create ] do

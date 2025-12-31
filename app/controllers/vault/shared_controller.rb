@@ -16,7 +16,7 @@ class Vault::SharedController < Vault::BaseController
   private
 
   def set_user
-    @user = User.find(params[:user_id])
+    @user = User.find_by!(account_id: params[:account_id])
   rescue ActiveRecord::RecordNotFound
     redirect_to vault_root_path, alert: "ユーザーが見つかりません"
   end

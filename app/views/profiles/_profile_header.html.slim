@@ -32,7 +32,7 @@
               | マイVault
           - else
             - if @user.public_entry_sheets_count > 0
-              = link_to vault_shared_path(user_id: @user.id), class: "btn btn-sm btn-outline-secondary" do
+              = link_to vault_path(@user.account_id), class: "btn btn-sm btn-outline-secondary" do
                 i.fas.fa-briefcase.me-1
                 | Vault
                 span.badge.bg-secondary.ms-1 = @user.public_entry_sheets_count
