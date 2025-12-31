@@ -9,12 +9,40 @@
         = vault_datetime_with_icon @entry_sheet.deadline, icon: "clock", label: "締切"
   - if @entry_sheet.user_id == current_user.id
     .d-flex.gap-2
+      - if @entry_sheet.visibility_shared? && current_user.post_visibility != "only_me"
+        = link_to new_post_path(share: "entry_sheet", entry_sheet_id: @entry_sheet.id), class: "btn btn-outline-secondary" do
+          i.fas.fa-share-alt.me-2
+          | つぶやきで共有
       = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-primary" do
         i.fas.fa-edit.me-2
         | 編集
       = link_to vault_entry_sheet_path(@entry_sheet), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-outline-danger shadow-sm" do
         i.fas.fa-trash.me-2
         | 削除
+
+- if @entry_sheet.user_id == current_user.id && @entry_sheet.visibility_personal?
+  .vault-share-hint.vault-share-hint--info
+    .vault-share-hint__content
+      .vault-share-hint__icon
+        i.fas.fa-lock
+      .vault-share-hint__text
+        span.vault-share-hint__title このESは非公開です
+        span.vault-share-hint__message 共有するにはESの公開設定を変更してください。
+    = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-sm btn-outline-primary vault-share-hint__action" do
+      i.fas.fa-globe.me-1
+      | 公開設定を変更
+
+- if @entry_sheet.user_id == current_user.id && current_user.post_visibility == "only_me"
+  .vault-share-hint.vault-share-hint--warning
+    .vault-share-hint__content
+      .vault-share-hint__icon
+        i.fas.fa-exclamation-triangle
+      .vault-share-hint__text
+        span.vault-share-hint__title 投稿の公開範囲が「自分のみ」です
+        span.vault-share-hint__message 共有するには投稿の公開範囲を変更してください。
+    = link_to settings_privacy_path, class: "btn btn-sm btn-outline-secondary vault-share-hint__action" do
+      i.fas.fa-unlock-alt.me-1
+      | 公開範囲を変更
 
 / メタ情報
 .card.mb-4
