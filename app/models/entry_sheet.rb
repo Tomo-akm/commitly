@@ -2,9 +2,6 @@ class EntrySheet < ApplicationRecord
   belongs_to :user
   has_many :entry_sheet_items, dependent: :destroy
 
-  # 属性の型を明示的に宣言（Rails 8のenum要件）
-  attribute :visibility, :integer
-
   # ステータスのenum定義
   enum :status, {
     draft: 0,          # 下書き
