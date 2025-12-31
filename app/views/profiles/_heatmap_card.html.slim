@@ -1,16 +1,17 @@
 / Activity Heatmap
-.card.card-primary.mb-4.fade-in.profile-heatmap-card
-  .card-header.bg-info.text-white.p-3
-    .d-flex.justify-content-between.align-items-center.gap-2
-      h3.h5.mb-0.font-semibold
-        i.far.fa-calendar-alt.me-2
-        | 活動コミット
-      button.profile-heatmap__help type="button" aria-label="活動コミットの説明を見る" data-bs-toggle="modal" data-bs-target="#activityCommitHelpModal"
-        i.far.fa-question-circle
-  .card-body.p-4
-    = render "heatmap", user: @user, date: @date, date_6_months_ago: @date_6_months_ago, active_user_counts: @active_user_counts_6_months
-    - if @activity_summary.present?
-      = render "activity_summary"
+.profile-heatmap-wrap
+  .card.card-primary.mb-4.fade-in.profile-heatmap-card
+    .card-header.bg-info.text-white.p-3
+      .d-flex.justify-content-between.align-items-center.gap-2
+        h3.h5.mb-0.font-semibold
+          i.far.fa-calendar-alt.me-2
+          | 活動コミット
+        button.profile-heatmap__help type="button" aria-label="活動コミットの説明を見る" data-bs-toggle="modal" data-bs-target="#activityCommitHelpModal"
+          i.far.fa-question-circle
+    .card-body.p-4
+      = render "heatmap", user: @user, date: @date, date_6_months_ago: @date_6_months_ago, active_user_counts: @active_user_counts_6_months
+      - if @activity_summary.present?
+        = render "activity_summary"
 
-= render "achievement_modal"
-= render "activity_commit_help_modal"
+  = render "achievement_modal"
+  = render "activity_commit_help_modal"

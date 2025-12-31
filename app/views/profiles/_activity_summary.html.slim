@@ -41,6 +41,20 @@
         - achieved = achievements[achievement.key]
         - achieved_at = achievement_history[achievement.key]
         - achieved_at_text = achieved_at ? achieved_at.strftime("%Y/%m/%d") : "未達成"
-        button.activity-summary__achievement.has-tooltip type="button" class="#{'is-locked' unless achieved} #{'is-earned' if achieved}" data-tooltip=achievement.hint aria-label=achievement.hint aria-haspopup="dialog" aria-controls="achievementModal" data-controller="achievement-modal" data-action="click->achievement-modal#open" data-achievement-modal-label-value=achievement.label data-achievement-modal-hint-value=achievement.hint data-achievement-modal-badge-value=asset_path("badges/#{achievement.badge}.svg") data-achievement-modal-achieved-value=achieved data-achievement-modal-achieved-at-value=achieved_at_text
+        button.activity-summary__achievement.has-tooltip(
+          type="button"
+          class="#{'is-locked' unless achieved} #{'is-earned' if achieved}"
+          data-tooltip=achievement.hint
+          aria-label=achievement.hint
+          aria-haspopup="dialog"
+          aria-controls="achievementModal"
+          data-controller="achievement-modal"
+          data-action="click->achievement-modal#open"
+          data-achievement-modal-label-value=achievement.label
+          data-achievement-modal-hint-value=achievement.hint
+          data-achievement-modal-badge-value=asset_path("badges/#{achievement.badge}.svg")
+          data-achievement-modal-achieved-value=achieved
+          data-achievement-modal-achieved-at-value=achieved_at_text
+        )
           = image_tag "badges/#{achievement.badge}.svg", class: "activity-summary__achievement-badge", alt: "#{achievement.label}バッジ", loading: "lazy"
           span.activity-summary__achievement-label = achievement.label

@@ -78,12 +78,12 @@ class ProfilesController < ApplicationController
                          .count
 
     entry_sheet_scope = @user.entry_sheets
-    if @user == current_user
-      entry_sheet_scope = entry_sheet_scope
-    elsif @user.content_visible_to?(current_user)
-      entry_sheet_scope = entry_sheet_scope.publicly_visible
-    else
-      entry_sheet_scope = entry_sheet_scope.none
+    if @user != current_user
+      if @user.content_visible_to?(current_user)
+        entry_sheet_scope = entry_sheet_scope.publicly_visible
+      else
+        entry_sheet_scope = entry_sheet_scope.none
+      end
     end
 
     entry_sheets_by_day = entry_sheet_scope
@@ -91,10 +91,13 @@ class ProfilesController < ApplicationController
                            .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
                            .count
 
-    templates_by_day = @user.entry_sheet_item_templates
-                            .where(created_at: heatmap_date_range)
-                            .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
-                            .count
+    templates_scope = @user.entry_sheet_item_templates
+    templates_scope = templates_scope.none unless @user == current_user || @user.content_visible_to?(current_user)
+
+    templates_by_day = templates_scope
+                        .where(updated_at: heatmap_date_range)
+                        .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
+                        .count
 
     combined_counts = Hash.new(0)
     posts_by_day.each { |date, count| combined_counts[date] += count }

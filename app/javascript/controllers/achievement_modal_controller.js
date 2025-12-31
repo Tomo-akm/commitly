@@ -26,8 +26,8 @@ export default class extends Controller {
     const dateEl = modalElement.querySelector('[data-achievement-modal-target="date"]');
 
     if (badgeEl) {
-      badgeEl.src = this.badgeValue;
-      badgeEl.alt = `${this.labelValue}バッジ`;
+      if (this.badgeValue) badgeEl.src = this.badgeValue;
+      badgeEl.alt = this.labelValue ? `${this.labelValue}バッジ` : '実績バッジ';
     }
     if (titleEl) titleEl.textContent = this.labelValue;
     if (hintEl) hintEl.textContent = this.hintValue;
