@@ -1,5 +1,6 @@
 class Vault::EntrySheetsController < Vault::BaseController
   before_action :set_entry_sheet, only: [ :show, :edit, :update, :destroy ]
+  before_action :authorize_owner!, only: [ :edit, :update, :destroy ]
 
   def index
     @entry_sheets = current_user.entry_sheets
@@ -58,9 +59,16 @@ class Vault::EntrySheetsController < Vault::BaseController
   def set_entry_sheet
     @entry_sheet = EntrySheet.includes(entry_sheet_items: :chat).find(params[:id])
 
-    # アクセス権限チェック
+    # 閲覧権限チェック（showアクション用）
     unless @entry_sheet.viewable_by?(current_user)
       redirect_to vault_root_path, alert: "このESは公開されていません"
+    end
+  end
+
+  # 所有者チェック（edit/update/destroyアクション用）
+  def authorize_owner!
+    unless @entry_sheet.user_id == current_user.id
+      redirect_to vault_root_path, alert: "他のユーザーのESは編集できません"
     end
   end
 
