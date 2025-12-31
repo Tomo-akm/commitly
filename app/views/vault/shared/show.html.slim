@@ -6,9 +6,11 @@
   icon: "user"
 
 / 企業別選考進捗
-= render "vault/partials/company_progress",
-  company_progress: @company_progress,
-  empty_message: "まだ公開されている就活記録がありません"
+= render "vault/partials/company_progress", company_progress: @company_progress do
+  .text-center.py-5
+    .mb-4
+      i.fas.fa-info-circle.fa-3x.text-muted.mb-3
+      p.text-muted.mb-1 このユーザーはまだ就活記録を投稿していません
 
 / 公開ES一覧
 = render "vault/partials/entry_sheet_section",
