@@ -45,29 +45,27 @@
       | 公開範囲を変更
 
 / メタ情報
-.card.mb-4
-  .card-body
-    .row
-      .col-md-4
-        p.mb-0
-          small.text-muted 作成日
-          br
-          strong.text-primary-dark = @entry_sheet.created_at.strftime('%Y/%m/%d %H:%M')
-      .col-md-4
-        p.mb-0
-          small.text-muted 最終更新
-          br
-          strong.text-primary-dark = @entry_sheet.updated_at.strftime('%Y/%m/%d %H:%M')
-      - if @entry_sheet.submitted_at
-        .col-md-4
-          p.mb-0
-            small.text-muted 提出日
-            br
-            strong.text-primary-dark = @entry_sheet.submitted_at.strftime('%Y/%m/%d %H:%M')
+.vault-entry-sheet-meta
+  .vault-entry-sheet-meta__item
+    .vault-entry-sheet-meta__label
+      i.fas.fa-calendar-plus
+      | 作成日
+    .vault-entry-sheet-meta__value = @entry_sheet.created_at.strftime('%Y/%m/%d %H:%M')
+  .vault-entry-sheet-meta__item
+    .vault-entry-sheet-meta__label
+      i.fas.fa-sync-alt
+      | 最終更新
+    .vault-entry-sheet-meta__value = @entry_sheet.updated_at.strftime('%Y/%m/%d %H:%M')
+  - if @entry_sheet.submitted_at
+    .vault-entry-sheet-meta__item
+      .vault-entry-sheet-meta__label
+        i.fas.fa-paper-plane
+        | 提出日
+      .vault-entry-sheet-meta__value = @entry_sheet.submitted_at.strftime('%Y/%m/%d %H:%M')
 
-/ ES項目
+/ ES回答
 .card.mb-4
-  = vault_card_header "ES項目", icon: "list"
+  = vault_card_header "ES回答", icon: "list"
 
   .card-body
     - if @entry_sheet_items.any?

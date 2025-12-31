@@ -193,6 +193,50 @@
 }
 
 // ============================================
+// Entry Sheet Meta
+// ============================================
+
+.vault-entry-sheet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-4;
+  border-radius: $border-radius-lg;
+  background: linear-gradient(135deg, rgba($primary, 0.06) 0%, rgba($secondary, 0.1) 100%);
+  border: 1px solid rgba($primary, 0.12);
+  box-shadow: $shadow-xs;
+}
+
+.vault-entry-sheet-meta__item {
+  flex: 1 1 200px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.vault-entry-sheet-meta__label {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-xs;
+  color: $neutral-500;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: uppercase;
+
+  i {
+    color: $primary;
+  }
+}
+
+.vault-entry-sheet-meta__value {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $primary-dark;
+}
+
+// ============================================
 // テンプレートインポート・フォーム
 // ============================================
 
