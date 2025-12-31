@@ -1,0 +1,22 @@
+- content_for :title, "#{@user.name}のVault"
+/ ヘッダー
+= render "vault/partials/header",
+  title: "#{@user.name}のVault",
+  subtitle: "公開されている就活記録とES",
+  icon: "user"
+
+/ 企業別選考進捗
+= render "vault/partials/company_progress",
+  company_progress: @company_progress,
+  empty_message: "まだ公開されている就活記録がありません"
+
+/ 公開ES一覧
+= render "vault/partials/entry_sheet_section",
+  title: "公開ES",
+  icon: "file-alt",
+  entries: @public_entry_sheets,
+  header_style: :light,
+  layout: :grid,
+  item_partial: "vault/partials/entry_sheet_grid_item",
+  pagination: true,
+  empty_state: { icon: "folder-open", title: "まだ公開されているESがありません", message: "", size: :sm }

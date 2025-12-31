@@ -7,38 +7,65 @@
       = entry_sheet_status_badge(@entry_sheet)
       - if @entry_sheet.deadline
         = vault_datetime_with_icon @entry_sheet.deadline, icon: "clock", label: "締切"
-  .d-flex.gap-2
-    = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-primary" do
-      i.fas.fa-edit.me-2
-      | 編集
-    = link_to vault_entry_sheet_path(@entry_sheet), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-outline-danger shadow-sm" do
-      i.fas.fa-trash.me-2
-      | 削除
+  - if @entry_sheet.user_id == current_user.id
+    .d-flex.gap-2
+      - if @entry_sheet.visibility_shared? && current_user.post_visibility != "only_me"
+        = link_to new_post_path(share: "entry_sheet", entry_sheet_id: @entry_sheet.id), class: "btn btn-outline-secondary" do
+          i.fas.fa-share-alt.me-2
+          | つぶやきで共有
+      = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-primary" do
+        i.fas.fa-edit.me-2
+        | 編集
+      = link_to vault_entry_sheet_path(@entry_sheet), data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, class: "btn btn-outline-danger shadow-sm" do
+        i.fas.fa-trash.me-2
+        | 削除
+
+- if @entry_sheet.user_id == current_user.id && @entry_sheet.visibility_personal?
+  .vault-share-hint.vault-share-hint--info
+    .vault-share-hint__content
+      .vault-share-hint__icon
+        i.fas.fa-lock
+      .vault-share-hint__text
+        span.vault-share-hint__title このESは非公開です
+        span.vault-share-hint__message 共有するにはESの公開設定を変更してください。
+    = link_to edit_vault_entry_sheet_path(@entry_sheet), class: "btn btn-sm btn-outline-primary vault-share-hint__action" do
+      i.fas.fa-globe.me-1
+      | 公開設定を変更
+
+- if @entry_sheet.user_id == current_user.id && current_user.post_visibility == "only_me"
+  .vault-share-hint.vault-share-hint--warning
+    .vault-share-hint__content
+      .vault-share-hint__icon
+        i.fas.fa-exclamation-triangle
+      .vault-share-hint__text
+        span.vault-share-hint__title 投稿の公開範囲が「自分のみ」です
+        span.vault-share-hint__message 共有するには投稿の公開範囲を変更してください。
+    = link_to settings_privacy_path, class: "btn btn-sm btn-outline-secondary vault-share-hint__action" do
+      i.fas.fa-unlock-alt.me-1
+      | 公開範囲を変更
 
 / メタ情報
-.card.mb-4
-  .card-body
-    .row
-      .col-md-4
-        p.mb-0
-          small.text-muted 作成日
-          br
-          strong.text-primary-dark = @entry_sheet.created_at.strftime('%Y/%m/%d %H:%M')
-      .col-md-4
-        p.mb-0
-          small.text-muted 最終更新
-          br
-          strong.text-primary-dark = @entry_sheet.updated_at.strftime('%Y/%m/%d %H:%M')
-      - if @entry_sheet.submitted_at
-        .col-md-4
-          p.mb-0
-            small.text-muted 提出日
-            br
-            strong.text-primary-dark = @entry_sheet.submitted_at.strftime('%Y/%m/%d %H:%M')
+.vault-entry-sheet-meta
+  .vault-entry-sheet-meta__item
+    .vault-entry-sheet-meta__label
+      i.fas.fa-calendar-plus
+      | 作成日
+    .vault-entry-sheet-meta__value = @entry_sheet.created_at.strftime('%Y/%m/%d %H:%M')
+  .vault-entry-sheet-meta__item
+    .vault-entry-sheet-meta__label
+      i.fas.fa-sync-alt
+      | 最終更新
+    .vault-entry-sheet-meta__value = @entry_sheet.updated_at.strftime('%Y/%m/%d %H:%M')
+  - if @entry_sheet.submitted_at
+    .vault-entry-sheet-meta__item
+      .vault-entry-sheet-meta__label
+        i.fas.fa-paper-plane
+        | 提出日
+      .vault-entry-sheet-meta__value = @entry_sheet.submitted_at.strftime('%Y/%m/%d %H:%M')
 
-/ ES項目
+/ ES回答
 .card.mb-4
-  = vault_card_header "ES項目", icon: "list"
+  = vault_card_header "ES回答", icon: "list"
 
   .card-body
     - if @entry_sheet_items.any?
@@ -61,9 +88,17 @@
     - else
       .alert.alert-info.mb-0
         i.fas.fa-info-circle.me-2
-        | ES項目がまだ追加されていません。編集から項目を追加してください。
+        - if @entry_sheet.user_id == current_user.id
+          | ES項目がまだ追加されていません。編集から項目を追加してください。
+        - else
+          | ES項目はまだ追加されていません。
 
 .mt-4
-  = link_to vault_entry_sheets_path, class: "btn btn-outline-primary" do
-    i.fas.fa-arrow-left.me-2
-    | 一覧に戻る
+  - if @entry_sheet.user_id == current_user.id
+    = link_to vault_entry_sheets_path, class: "btn btn-outline-primary" do
+      i.fas.fa-arrow-left.me-2
+      | 一覧に戻る
+  - else
+    = link_to vault_path(@entry_sheet.user.account_id), class: "btn btn-outline-primary" do
+      i.fas.fa-arrow-left.me-2
+      | Vaultに戻る

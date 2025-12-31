@@ -49,6 +49,89 @@
 }
 
 // ============================================
+// Vault Share Hints
+// ============================================
+
+.vault-share-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-3;
+  border-radius: $border-radius-lg;
+  border: 1px solid rgba($primary, 0.15);
+  background: rgba($primary, 0.06);
+}
+
+.vault-share-hint__content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.vault-share-hint__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $panel-bg;
+  color: $primary;
+  box-shadow: $shadow-xs;
+
+  i {
+    font-size: $font-size-sm;
+  }
+}
+
+.vault-share-hint__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vault-share-hint__title {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $primary-dark;
+}
+
+.vault-share-hint__message {
+  font-size: $font-size-xs;
+  color: $neutral-500;
+}
+
+.vault-share-hint__action {
+  flex-shrink: 0;
+}
+
+.vault-share-hint--warning {
+  border-color: rgba($warning, 0.25);
+  background: rgba($warning, 0.08);
+
+  .vault-share-hint__icon {
+    color: $warning-dark;
+  }
+
+  .vault-share-hint__title {
+    color: $neutral-900;
+  }
+}
+
+@include respond-below(md) {
+  .vault-share-hint {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vault-share-hint__action {
+    width: 100%;
+  }
+}
+
+// ============================================
 // ES項目表示（詳細ページ）
 // ============================================
 
@@ -107,6 +190,50 @@
     margin-bottom: 0;
     line-height: $line-height-relaxed;
   }
+}
+
+// ============================================
+// Entry Sheet Meta
+// ============================================
+
+.vault-entry-sheet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-4;
+  border-radius: $border-radius-lg;
+  background: linear-gradient(135deg, rgba($primary, 0.06) 0%, rgba($secondary, 0.1) 100%);
+  border: 1px solid rgba($primary, 0.12);
+  box-shadow: $shadow-xs;
+}
+
+.vault-entry-sheet-meta__item {
+  flex: 1 1 200px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.vault-entry-sheet-meta__label {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-xs;
+  color: $neutral-500;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: uppercase;
+
+  i {
+    color: $primary;
+  }
+}
+
+.vault-entry-sheet-meta__value {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $primary-dark;
 }
 
 // ============================================
