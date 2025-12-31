@@ -1,7 +1,5 @@
-class Vault::EntrySheetsController < ApplicationController
-  before_action :authenticate_user!
+class Vault::EntrySheetsController < Vault::BaseController
   before_action :set_entry_sheet, only: [ :show, :edit, :update, :destroy ]
-  layout "vault"
 
   def index
     @entry_sheets = current_user.entry_sheets
