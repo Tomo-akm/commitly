@@ -1,4 +1,4 @@
-class Vault::UsersController < ApplicationController
+class Vault::SharedController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user
   layout "vault"
@@ -18,7 +18,7 @@ class Vault::UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find(params[:user_id])
   end
 
   def fetch_company_progress

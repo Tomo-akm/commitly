@@ -54,8 +54,8 @@ Rails.application.routes.draw do
       end
     end
 
-    # 他ユーザーのVault閲覧
-    resources :users, only: [ :show ]
+    # 他ユーザーの公開Vault閲覧
+    get 'shared/:user_id', to: 'shared#show', as: :shared
   end
 
   # DM機能
