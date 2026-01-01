@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_31_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_02_013252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -105,12 +105,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_000001) do
     t.string "company_name", null: false
     t.datetime "created_at", null: false
     t.datetime "deadline"
+    t.datetime "shared_at"
     t.integer "status", default: 0, null: false
     t.datetime "submitted_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.integer "visibility", default: 0, null: false
     t.index ["deadline"], name: "index_entry_sheets_on_deadline"
+    t.index ["shared_at"], name: "index_entry_sheets_on_shared_at"
     t.index ["user_id", "company_name"], name: "index_entry_sheets_on_user_id_and_company_name"
     t.index ["user_id", "status"], name: "index_entry_sheets_on_user_id_and_status"
     t.index ["user_id"], name: "index_entry_sheets_on_user_id"
@@ -341,6 +343,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_000001) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "user_achievements", force: :cascade do |t|
+    t.datetime "achieved_at", null: false
+    t.string "achievement_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "achievement_key"], name: "index_user_achievements_on_user_id_and_achievement_key", unique: true
+    t.index ["user_id"], name: "index_user_achievements_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "account_id", limit: 20, null: false
     t.boolean "admin", default: false, null: false
@@ -391,4 +403,5 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_000001) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "user_achievements", "users"
 end

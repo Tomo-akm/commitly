@@ -74,7 +74,7 @@ class ProfilesController < ApplicationController
     posts_by_day = @user.posts
                          .visible_to(current_user)
                          .where(created_at: heatmap_date_range)
-                         .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
+                         .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
                          .count
 
     entry_sheet_scope = @user.entry_sheets
@@ -88,7 +88,7 @@ class ProfilesController < ApplicationController
 
     entry_sheets_by_day = entry_sheet_scope
                            .where(updated_at: heatmap_date_range)
-                           .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
+                           .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
                            .count
 
     templates_scope = @user.entry_sheet_item_templates
@@ -96,7 +96,7 @@ class ProfilesController < ApplicationController
 
     templates_by_day = templates_scope
                         .where(updated_at: heatmap_date_range)
-                        .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
+                        .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
                         .count
 
     combined_counts = Hash.new(0)
