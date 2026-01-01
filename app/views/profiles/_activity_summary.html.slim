@@ -15,24 +15,16 @@
       .activity-summary__stat.has-tooltip tabindex="0" data-tooltip="直近7日間で活動コミットした日数です" aria-label="直近7日間で活動コミットした日数です"
         .activity-summary__stat-header
           span.activity-summary__label 今週コミット
-          span.activity-summary__stat-value = "#{summary.weekly_active_days} / #{summary.weekly_goal}日"
+          span.activity-summary__stat-value = "#{summary.weekly_active_days}日 / 目標#{summary.weekly_goal}日"
         .activity-summary__progress
           .activity-summary__progress-bar style="width: #{summary.weekly_progress}%"
       .activity-summary__stat.has-tooltip tabindex="0" data-tooltip="直近30日間で活動コミットした日数です" aria-label="直近30日間で活動コミットした日数です"
         .activity-summary__stat-header
           span.activity-summary__label 今月コミット
-          span.activity-summary__stat-value = "#{summary.monthly_active_days} / #{summary.monthly_goal}日"
+          span.activity-summary__stat-value = "#{summary.monthly_active_days}日 / 目標#{summary.monthly_goal}日"
         .activity-summary__progress
           .activity-summary__progress-bar style="width: #{summary.monthly_progress}%"
-    .activity-summary__badges
-      - if summary.weekly_active_days >= summary.weekly_goal
-        span.activity-summary__badge.has-tooltip tabindex="0" data-tooltip="今週#{summary.weekly_goal}日以上の活動コミットで達成" aria-label="今週#{summary.weekly_goal}日以上の活動コミットで達成"
-          i.fas.fa-bolt.me-1
-          | 週間達成
-      - if summary.monthly_active_days >= summary.monthly_goal
-        span.activity-summary__badge.has-tooltip tabindex="0" data-tooltip="今月#{summary.monthly_goal}日以上の活動コミットで達成" aria-label="今月#{summary.monthly_goal}日以上の活動コミットで達成"
-          i.fas.fa-medal.me-1
-          | 月間達成
+    / 週間・月間達成バッジは非表示にしています
 
   .activity-summary__achievements
     span.activity-summary__section-title 実績

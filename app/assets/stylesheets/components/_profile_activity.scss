@@ -12,8 +12,8 @@
 
   &__overview {
     display: flex;
-    flex-wrap: wrap;
-    gap: $spacing-3;
+    flex-wrap: nowrap;
+    gap: $spacing-2;
     align-items: center;
     justify-content: space-between;
     padding-inline: $spacing-2;
@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     gap: $spacing-3;
-    padding: $spacing-3 $spacing-4;
+    padding: $spacing-2 $spacing-3;
     border-radius: $border-radius-lg;
     background: linear-gradient(135deg, rgba($primary, 0.12) 0%, rgba($secondary, 0.2) 100%);
     border: 1px solid rgba($primary, 0.18);
@@ -67,7 +67,7 @@
 
   &__stats {
     display: flex;
-    gap: $spacing-3;
+    gap: $spacing-2;
     flex-wrap: wrap;
   }
 
@@ -86,12 +86,14 @@
     align-items: baseline;
     justify-content: space-between;
     gap: $spacing-2;
+    flex-wrap: nowrap;
   }
 
   &__stat-value {
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
     color: $primary-dark;
+    white-space: nowrap;
   }
 
   &__progress {
@@ -108,23 +110,6 @@
     background: linear-gradient(90deg, $secondary 0%, $primary 100%);
   }
 
-  &__badges {
-    display: flex;
-    gap: $spacing-2;
-    flex-wrap: wrap;
-  }
-
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-1;
-    padding: $spacing-1 $spacing-3;
-    border-radius: $border-radius-full;
-    background: rgba($primary, 0.12);
-    color: $primary-dark;
-    font-size: $font-size-xs;
-    font-weight: $font-weight-semibold;
-  }
 
   &__achievements {
     display: flex;
@@ -578,6 +563,7 @@
 @include respond-below(md) {
   .activity-summary__overview {
     align-items: stretch;
+    flex-wrap: wrap;
   }
 
   .activity-summary__streak,
