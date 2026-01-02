@@ -1,5 +1,5 @@
 .modal.fade#achievementModal tabindex="-1" aria-labelledby="achievementModalLabel" aria-hidden="true" data-achievement-modal-target="modal"
-  .modal-dialog.modal-dialog-centered.modal-md
+  .modal-dialog.modal-dialog-centered.modal-lg
     .modal-content.achievement-modal
       .modal-header.achievement-modal__header
         h5.modal-title#achievementModalLabel
@@ -9,10 +9,11 @@
       .modal-body
         .achievement-modal__hero
           .achievement-modal__badge-wrap
-            = image_tag "badges/first_post.svg", class: "achievement-modal__badge", alt: "実績バッジ", data: { achievement_modal_target: "badge" }
+            = image_tag "badges/first_post.png", class: "achievement-modal__badge", alt: "実績バッジ", data: { achievement_modal_target: "badge" }
           .achievement-modal__heading
             span.achievement-modal__kicker 達成条件
             p.achievement-modal__hint data-achievement-modal-target="hint"
+            span.achievement-modal__series data-achievement-modal-target="series"
             span.achievement-modal__status-pill data-achievement-modal-target="statusPill" 未達成
         .achievement-modal__meta
           .achievement-modal__meta-item

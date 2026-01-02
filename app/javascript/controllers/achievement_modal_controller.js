@@ -9,44 +9,95 @@ export default class extends Controller {
     badge: String,
     achieved: Boolean,
     achievedAt: String,
+    series: String,
+    seriesLabel: String,
   };
 
   open(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    const modalElement = document.getElementById('achievementModal');
+    const modalElement = this.getModalElement();
     if (!modalElement) return;
 
-    const badgeEl = modalElement.querySelector('[data-achievement-modal-target="badge"]');
-    const titleEl = modalElement.querySelector('[data-achievement-modal-target="title"]');
-    const hintEl = modalElement.querySelector('[data-achievement-modal-target="hint"]');
-    const statusPillEl = modalElement.querySelector('[data-achievement-modal-target="statusPill"]');
-    const statusEl = modalElement.querySelector('[data-achievement-modal-target="status"]');
-    const dateEl = modalElement.querySelector('[data-achievement-modal-target="date"]');
+    this.updateBadge(modalElement);
+    this.updateTitle(modalElement);
+    this.updateHint(modalElement);
+    this.updateSeries(modalElement);
+    this.updateStatus(modalElement);
+    this.updateDate(modalElement);
 
-    if (badgeEl) {
-      if (this.badgeValue) badgeEl.src = this.badgeValue;
-      badgeEl.alt = this.labelValue ? `${this.labelValue}バッジ` : '実績バッジ';
+    this.showModal(modalElement);
+  }
+
+  getModalElement() {
+    return document.getElementById('achievementModal');
+  }
+
+  getTarget(modalElement, targetName) {
+    return modalElement.querySelector(`[data-achievement-modal-target="${targetName}"]`);
+  }
+
+  updateBadge(modalElement) {
+    const badgeEl = this.getTarget(modalElement, 'badge');
+    if (!badgeEl) return;
+
+    if (this.badgeValue) badgeEl.src = this.badgeValue;
+    badgeEl.alt = this.labelValue ? `${this.labelValue}バッジ` : '実績バッジ';
+  }
+
+  updateTitle(modalElement) {
+    const titleEl = this.getTarget(modalElement, 'title');
+    if (titleEl) {
+      titleEl.textContent = this.labelValue;
     }
-    if (titleEl) titleEl.textContent = this.labelValue;
-    if (hintEl) hintEl.textContent = this.hintValue;
+  }
 
+  updateHint(modalElement) {
+    const hintEl = this.getTarget(modalElement, 'hint');
+    if (hintEl) {
+      hintEl.textContent = this.hintValue;
+    }
+  }
+
+  updateSeries(modalElement) {
+    const seriesEl = this.getTarget(modalElement, 'series');
+    if (!seriesEl) return;
+
+    const seriesLabel = this.seriesLabelValue || '';
+    seriesEl.textContent = seriesLabel;
+    seriesEl.classList.toggle('is-hidden', !seriesLabel);
+  }
+
+  updateStatus(modalElement) {
     const achievedText = this.achievedValue ? '達成済み' : '未達成';
+
+    const statusPillEl = this.getTarget(modalElement, 'statusPill');
     if (statusPillEl) {
       statusPillEl.textContent = achievedText;
-      statusPillEl.classList.toggle('is-achieved', this.achievedValue);
-      statusPillEl.classList.toggle('is-locked', !this.achievedValue);
-    }
-    if (statusEl) {
-      statusEl.textContent = achievedText;
-      statusEl.classList.toggle('is-achieved', this.achievedValue);
-      statusEl.classList.toggle('is-locked', !this.achievedValue);
-    }
-    if (dateEl) {
-      dateEl.textContent = this.achievedValue ? this.achievedAtValue : '未達成';
+      this.toggleStatusClasses(statusPillEl);
     }
 
+    const statusEl = this.getTarget(modalElement, 'status');
+    if (statusEl) {
+      statusEl.textContent = achievedText;
+      this.toggleStatusClasses(statusEl);
+    }
+  }
+
+  updateDate(modalElement) {
+    const dateEl = this.getTarget(modalElement, 'date');
+    if (!dateEl) return;
+
+    dateEl.textContent = this.achievedValue ? this.achievedAtValue : '未達成';
+  }
+
+  toggleStatusClasses(element) {
+    element.classList.toggle('is-achieved', this.achievedValue);
+    element.classList.toggle('is-locked', !this.achievedValue);
+  }
+
+  showModal(modalElement) {
     const modal = Modal.getOrCreateInstance(modalElement);
     modal.show();
   }

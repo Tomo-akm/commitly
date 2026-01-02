@@ -452,15 +452,15 @@
   display: flex;
   align-items: center;
   gap: $spacing-4;
-  padding: $spacing-3;
+  padding: $spacing-4;
   border-radius: $border-radius-lg;
   background: rgba($panel-bg, 0.9);
   border: 1px solid rgba($neutral-300, 0.6);
 }
 
 .achievement-modal__badge-wrap {
-  width: 88px;
-  height: 88px;
+  width: 140px;
+  height: 140px;
   border-radius: $border-radius-lg;
   background: rgba($primary, 0.1);
   border: 1px solid rgba($primary, 0.18);
@@ -470,8 +470,8 @@
 }
 
 .achievement-modal__badge {
-  width: 72px;
-  height: 72px;
+  width: 110px;
+  height: 110px;
   flex-shrink: 0;
 }
 
@@ -492,6 +492,23 @@
   font-size: $font-size-sm;
   color: $neutral-700;
   margin: 0;
+}
+
+.achievement-modal__series {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $primary-dark;
+  background: linear-gradient(135deg, rgba($primary, 0.16), rgba($secondary, 0.2));
+  border: 1px solid rgba($primary, 0.3);
+
+  &.is-hidden {
+    display: none;
+  }
 }
 
 .achievement-modal__status-pill {

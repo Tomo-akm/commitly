@@ -1,6 +1,6 @@
 - summary = activity_summary(@activity_summary)
-- achievements = @achievement_flags || {}
-- achievement_history = @achievement_history || {}
+- achievements = @achievement_flags
+- achievement_history = @achievement_history
 
 .activity-summary
   .activity-summary__overview
@@ -28,25 +28,27 @@
 
   .activity-summary__achievements
     span.activity-summary__section-title 実績
-    .activity-summary__achievement-list
-      - Achievement.all.each do |achievement|
-        - achieved = achievements[achievement.key]
-        - achieved_at = achievement_history[achievement.key]
-        - achieved_at_text = achieved_at ? achieved_at.strftime("%Y/%m/%d") : "未達成"
-        button.activity-summary__achievement.has-tooltip(
-          type="button"
-          class="#{'is-locked' unless achieved} #{'is-earned' if achieved}"
-          data-tooltip=achievement.hint
-          aria-label=achievement.hint
-          aria-haspopup="dialog"
-          aria-controls="achievementModal"
-          data-controller="achievement-modal"
-          data-action="click->achievement-modal#open"
-          data-achievement-modal-label-value=achievement.label
-          data-achievement-modal-hint-value=achievement.hint
-          data-achievement-modal-badge-value=asset_path("badges/#{achievement.badge}.svg")
-          data-achievement-modal-achieved-value=achieved
-          data-achievement-modal-achieved-at-value=achieved_at_text
-        )
-          = image_tag "badges/#{achievement.badge}.svg", class: "activity-summary__achievement-badge", alt: "#{achievement.label}バッジ", loading: "lazy"
-          span.activity-summary__achievement-label = achievement.label
+    - display_achievements = Achievement.for_display(achievements)
+    - if display_achievements.empty?
+      p.text-muted.small.mb-0 まだ実績はありません
+    - else
+      .activity-summary__achievement-list
+        - display_achievements.each do |achievement|
+          - achieved_at = achievement_history[achievement.key]
+          button.activity-summary__achievement.is-earned(
+            type="button"
+            aria-label=achievement.label
+            aria-haspopup="dialog"
+            aria-controls="achievementModal"
+            data-controller="achievement-modal"
+            data-action="click->achievement-modal#open"
+            data-achievement-modal-label-value=achievement.label
+            data-achievement-modal-hint-value=achievement.hint
+            data-achievement-modal-badge-value=asset_path("badges/#{achievement.badge}.png")
+            data-achievement-modal-achieved-value=true
+            data-achievement-modal-achieved-at-value=format_achievement_date(achieved_at)
+            data-achievement-modal-series-value=achievement.series
+            data-achievement-modal-series-label-value=achievement.series_label
+          )
+            = image_tag "badges/#{achievement.badge}.png", class: "activity-summary__achievement-badge", alt: "#{achievement.label}バッジ", loading: "lazy"
+            span.activity-summary__achievement-label = achievement.label

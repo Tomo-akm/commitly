@@ -62,4 +62,9 @@ module ProfilesHelper
     path = stars_tab_path
     current_page?(path)
   end
+
+  # 実績の達成日をフォーマット
+  def format_achievement_date(date)
+    date ? date.strftime("%Y/%m/%d") : "未達成"
+  end
 end
