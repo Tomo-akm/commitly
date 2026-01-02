@@ -197,3 +197,19 @@
     cursor: not-allowed;
   }
 }
+
+// 5. 階層リプライ用スタイル
+// ============================================
+
+// 展開ボタン: 展開時は非表示（Bootstrapのd-flexが!importantのため上書き）
+.expand-replies-btn:not(.collapsed) {
+  display: none !important;
+}
+
+// 返信トグルボタン・リンク共通: ホバー時にスタイル変更
+.reply-toggle-btn:hover,
+.show-reply-link:hover {
+  color: $neutral-900 !important;
+  background-color: $neutral-300 !important;
+  border-radius: $border-radius-base;
+}

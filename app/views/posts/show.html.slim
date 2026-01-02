@@ -29,11 +29,11 @@
               data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
             = f.submit 'Reply', class: 'btn btn-reply'
 
-/ リプライ一覧
+/ リプライ一覧（階層表示）
 - if @visible_replies.present?
   .replies-container.mt-4
     - @visible_replies.each do |reply|
-      = render 'posts/components/reply_item', reply: reply
+      = render 'posts/components/reply_tree', reply: reply, depth: 1, viewer: current_user
 
 / 共通リプライモーダル（ページに1つだけ）
 = render 'posts/components/shared_reply_modal'

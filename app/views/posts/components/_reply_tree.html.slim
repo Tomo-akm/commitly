@@ -1,0 +1,36 @@
+/ reply_tree パーシャル（階層対応）
+/ locals: reply, depth, viewer (current_user)
+
+- case depth
+- when 1
+  / 子リプライ: 通常表示
+  = render 'posts/components/reply_item', reply: reply
+
+  / 孫リプライがあれば折りたたみで表示
+  - grandchildren = reply.replies.visible_to(viewer)
+  - if grandchildren.present?
+    .ms-5.ps-3.border-start.border-2.border-primary.mt-2
+      / 展開ボタン（折りたたみ時のみ表示）
+      button.reply-toggle-btn.expand-replies-btn.d-flex.align-items-center.bg-transparent.border-0.p-2.text-muted.small.collapsed type="button" data-bs-toggle="collapse" data-bs-target="#replies-#{reply.id}" aria-expanded="false" aria-controls="replies-#{reply.id}"
+        i.fa-solid.fa-chevron-down.me-1
+        span #{grandchildren.size}件の返信
+
+      .collapse id="replies-#{reply.id}"
+        - grandchildren.each do |grandchild|
+          = render 'posts/components/reply_tree', reply: grandchild, depth: 2, viewer: viewer
+
+        / 閉じるボタン（展開時のみ表示）
+        button.reply-toggle-btn.d-flex.align-items-center.bg-transparent.border-0.p-2.text-muted.small.mt-2 type="button" data-bs-toggle="collapse" data-bs-target="#replies-#{reply.id}"
+          i.fa-solid.fa-chevron-up.me-1
+          | 返信を非表示
+
+- when 2
+  / 孫リプライ: 折りたたみ内に表示
+  = render 'posts/components/reply_item', reply: reply
+
+  / ひ孫以降があれば「この返信を表示」リンク
+  - if reply.replies.exists?
+    .mt-2.ms-4
+      = link_to post_path(reply), class: "show-reply-link d-inline-flex align-items-center p-2 text-muted small text-decoration-none" do
+        i.fa-solid.fa-comments.me-1
+        | この返信を表示
