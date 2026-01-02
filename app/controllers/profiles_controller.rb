@@ -71,12 +71,43 @@ class ProfilesController < ApplicationController
     @date = Date.current
     @date_6_months_ago = 6.months.ago.to_date
 
-    @active_user_counts_6_months = @user.posts
-                                         .visible_to(current_user)
-                                         .where(created_at: heatmap_date_range)
-                                         .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d")
-                                         .count
-                                         .map { |date, count| [ date, count ] }
+    posts_by_day = @user.posts
+                         .visible_to(current_user)
+                         .where(created_at: heatmap_date_range)
+                         .group_by_day(:created_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
+                         .count
+
+    entry_sheet_scope = @user.entry_sheets
+    if @user != current_user
+      if @user.content_visible_to?(current_user)
+        entry_sheet_scope = entry_sheet_scope.publicly_visible
+      else
+        entry_sheet_scope = entry_sheet_scope.none
+      end
+    end
+
+    entry_sheets_by_day = entry_sheet_scope
+                           .where(updated_at: heatmap_date_range)
+                           .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
+                           .count
+
+    templates_scope = @user.entry_sheet_item_templates
+    templates_scope = templates_scope.none unless @user == current_user || @user.content_visible_to?(current_user)
+
+    templates_by_day = templates_scope
+                        .where(updated_at: heatmap_date_range)
+                        .group_by_day(:updated_at, range: @date_6_months_ago..@date, format: "%Y-%m-%d", time_zone: Time.zone)
+                        .count
+
+    combined_counts = Hash.new(0)
+    posts_by_day.each { |date, count| combined_counts[date] += count }
+    entry_sheets_by_day.each { |date, count| combined_counts[date] += count }
+    templates_by_day.each { |date, count| combined_counts[date] += count }
+
+    @active_user_counts_6_months = combined_counts.map { |date, count| [ date, count ] }
+    @activity_summary = @user.activity_summary_from_counts(combined_counts)
+    @achievement_flags = @user.achievement_flags
+    @achievement_history = @user.achievement_history
   end
 
   def heatmap_date_range

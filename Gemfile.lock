@@ -47,6 +47,8 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    active_hash (4.0.0)
+      activesupport (>= 6.1.0)
     active_storage_validations (3.0.2)
       activejob (>= 6.1.4)
       activemodel (>= 6.1.4)
@@ -504,6 +506,7 @@ PLATFORMS
   x86_64-linux-gnu
 
 DEPENDENCIES
+  active_hash
   active_storage_validations
   bootsnap
   bootstrap (~> 5.3)

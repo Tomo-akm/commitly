@@ -39,7 +39,7 @@ export default class extends Controller {
 
     const option = {
       title: {
-        text: '投稿活動ヒートマップ',
+        text: 'ヒートマップ',
         left: 'center',
         textStyle: {
           fontSize: 16,
@@ -48,7 +48,7 @@ export default class extends Controller {
       },
       tooltip: {
         formatter: (params) => {
-          return `${params.data[0]}<br/>投稿数: ${params.data[1]}`
+          return `${params.data[0]}<br/>コミット数: ${params.data[1]}`
         }
       },
       visualMap: {
