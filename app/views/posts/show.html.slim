@@ -29,7 +29,7 @@
               data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }
             = f.submit 'Reply', class: 'btn btn-reply'
 
-/ リプライ一覧（階層表示）
+/ リプライ一覧
 - if @visible_replies.present?
   .replies-container.mt-4
     - @visible_replies.each do |reply|

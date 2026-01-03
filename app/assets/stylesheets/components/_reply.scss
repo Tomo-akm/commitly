@@ -206,10 +206,44 @@
   display: none !important;
 }
 
-// 返信トグルボタン・リンク共通: ホバー時にスタイル変更
-.reply-toggle-btn:hover,
-.show-reply-link:hover {
-  color: white !important;
-  background-color: $primary !important;
+// 返信トグルボタン・リンク共通: インタラクション時にスタイル変更
+.reply-toggle-btn,
+.show-reply-link {
   border-radius: $border-radius-base;
+
+  // PC: ホバー時
+  @media (hover: hover) {
+    &:hover {
+      color: white !important;
+      background-color: $primary !important;
+    }
+  }
+
+  // スマホ: 押した時
+  &:active {
+    color: white !important;
+    background-color: $primary !important;
+  }
+}
+
+// 6. PC/スマホ切り替え（メディアクエリ）
+// ============================================
+
+// スマホ用リンク: スマホで表示、PCで非表示
+.reply-link-mobile {
+  display: flex;
+
+
+  @media (max-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
+// PC用階層表示: スマホで非表示、PCで表示
+.reply-tree-desktop {
+  display: none;
+
+  @media (min-width: $breakpoint-lg) {
+    display: block;
+  }
 }
