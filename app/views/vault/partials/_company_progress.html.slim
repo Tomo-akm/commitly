@@ -1,0 +1,51 @@
+- company_progress = local_assigns[:company_progress] || []
+- empty_message = local_assigns[:empty_message] || "まだ公開されている就活記録がありません"
+- empty_icon = local_assigns[:empty_icon] || "info-circle"
+- empty_icon_size = local_assigns[:empty_icon_size] || "fa-3x"
+
+.card.mb-5
+  = vault_card_header "企業別選考進捗", icon: "chart-line"
+  .card-body.p-4
+    - if company_progress.any?
+      .table-responsive
+        table.table.align-middle
+          thead.table-light
+            tr
+              th.fw-bold 企業名
+              th.fw-bold 選考段階
+              th.fw-bold 結果
+              th.fw-bold 最終更新
+          tbody
+            - company_progress.each do |company|
+              tr
+                td
+                  .fw-bold = company[:company_name]
+                td
+                  span.badge.rounded-pill.bg-light.text-dark = company[:selection_stage_ja]
+                td
+                  - case company[:result]
+                  - when 'passed'
+                    span.badge.rounded-pill.bg-success.text-white
+                      i.fas.fa-check.me-1
+                      |
+                      = company[:result_ja]
+                  - when 'failed'
+                    span.badge.rounded-pill.bg-danger.text-white
+                      i.fas.fa-times.me-1
+                      |
+                      = company[:result_ja]
+                  - when 'pending'
+                    span.badge.rounded-pill.bg-warning.text-dark
+                      i.fas.fa-clock.me-1
+                      |
+                      = company[:result_ja]
+                td
+                  small.text-muted = company[:updated_at].strftime('%Y/%m/%d')
+    - else
+      - if block_given?
+        = yield
+      - else
+        .text-center.py-5
+          .mb-4
+            i class="fas fa-#{empty_icon} #{empty_icon_size} text-muted mb-3"
+            p.text-muted = empty_message

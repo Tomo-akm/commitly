@@ -1,0 +1,39 @@
+- title = local_assigns[:title]
+- icon = local_assigns[:icon]
+- entries = local_assigns[:entries] || []
+- layout = (local_assigns[:layout] || :list).to_sym
+- header_style = (local_assigns[:header_style] || :default).to_sym
+- item_partial = local_assigns[:item_partial]
+- empty_state = local_assigns[:empty_state]
+- pagination = local_assigns[:pagination]
+- card_class = local_assigns[:card_class] || ""
+- body_class = local_assigns[:body_class] || (layout == :list ? "p-0" : "p-4")
+
+.card class=card_class
+  - case header_style
+  - when :light
+    = vault_card_header_light title, icon: icon
+  - when :warning
+    = vault_card_header_warning title, icon: icon
+  - when :success
+    = vault_card_header_success title, icon: icon
+  - else
+    = vault_card_header title, icon: icon
+
+  .card-body class=body_class
+    - if entries.any?
+      - if layout == :grid
+        .row.g-4
+          - entries.each do |entry|
+            .col-md-6.col-lg-4
+              = render item_partial, entry_sheet: entry
+      - else
+        .list-group.list-group-flush
+          - entries.each do |entry|
+            = render item_partial, entry_sheet: entry
+
+      - if pagination && entries.respond_to?(:total_pages) && entries.total_pages > 1
+        .mt-4
+          = paginate entries
+    - elsif empty_state
+      = vault_empty_state(**empty_state)

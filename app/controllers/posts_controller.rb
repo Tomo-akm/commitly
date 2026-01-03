@@ -29,8 +29,11 @@ class PostsController < ApplicationController
   def new
     # リプライの場合は強制的にGeneralContentに
     type = params[:parent_id].present? ? "general" : params[:type]
+    type = "general" if params[:share].present? && params[:parent_id].blank?
     @post = current_user.posts.build_with_type(type)
     @post.parent_id = params[:parent_id]
+
+    prefill_share_content if params[:share].present? && params[:parent_id].blank?
   end
 
   # GET /posts/1/edit
@@ -140,5 +143,42 @@ class PostsController < ApplicationController
       elsif @post.job_hunting?
         params.expect(job_hunting_content: [ :company_name, :selection_stage, :result, :content ])
       end
+    end
+
+    def prefill_share_content
+      case params[:share]
+      when "vault"
+        return unless shareable_vault?
+        @post.contentable.content = vault_share_message
+      when "entry_sheet"
+        entry_sheet = current_user.entry_sheets.find_by(id: params[:entry_sheet_id])
+        unless entry_sheet
+          flash.now[:alert] = "共有するESが見つかりません。"
+          return
+        end
+        unless entry_sheet.visibility_shared?
+          flash.now[:alert] = "このESは非公開のため共有できません。"
+          return
+        end
+        return unless shareable_vault?
+        @post.contentable.content = entry_sheet_share_message(entry_sheet)
+      end
+    end
+
+    def shareable_vault?
+      return true unless current_user.post_visibility == "only_me"
+
+      flash.now[:alert] = "公開範囲が「自分のみ」のため共有できません。"
+      false
+    end
+
+    def vault_share_message
+      url = vault_url(current_user.account_id)
+      "Vaultを公開しました。\n#{url}\n#就活 #ESレビュー"
+    end
+
+    def entry_sheet_share_message(entry_sheet)
+      url = vault_entry_sheet_url(entry_sheet)
+      "ES「#{entry_sheet.company_name}」を公開しました。\n#{url}\n#就活 #ESレビュー"
     end
 end

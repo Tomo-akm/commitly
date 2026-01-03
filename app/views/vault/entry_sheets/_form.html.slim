@@ -23,6 +23,23 @@
             {},
             class: "form-select"
 
+      .row
+        .col-md-12.mb-3.visibility-field
+          = f.label :visibility, "公開範囲", class: "form-label fw-bold text-primary-dark"
+          .d-flex.gap-3.mb-2
+            .form-check
+              = f.radio_button :visibility, :personal, checked: f.object.visibility_personal? || f.object.new_record?, class: "form-check-input", id: "visibility_personal"
+              label.form-check-label(for="visibility_personal") 非公開（自分のみ）
+            .form-check
+              = f.radio_button :visibility, :shared, class: "form-check-input", id: "visibility_shared"
+              label.form-check-label(for="visibility_shared") 公開（全ユーザー）
+          small.text-muted
+            i.fas.fa-info-circle.me-1
+            | 公開に設定すると、ログイン中の他のユーザーがあなたのESと企業別進捗を閲覧できるようになります。個人情報が含まれる内容は非公開にすることをおすすめします。
+          small.text-muted.d-block.mt-1
+            i.fas.fa-lock.me-1
+            | 投稿の公開範囲が「自分のみ」の場合、ESを公開にしても他のユーザーには表示されません。
+
   / ES項目
   .card.mb-4
     .card-header.vault
