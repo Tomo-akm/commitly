@@ -397,4 +397,22 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#public_entry_sheets_count' do
+    let(:user) { create(:user) }
+
+    it '公開ESの数を返す' do
+      create(:entry_sheet, user: user, visibility: :shared)
+      create(:entry_sheet, user: user, visibility: :shared)
+      create(:entry_sheet, user: user, visibility: :personal)
+
+      expect(user.public_entry_sheets_count).to eq(2)
+    end
+
+    it '公開ESがない場合は0を返す' do
+      create(:entry_sheet, user: user, visibility: :personal)
+
+      expect(user.public_entry_sheets_count).to eq(0)
+    end
+  end
 end

@@ -1,0 +1,12 @@
+.card.h-100.border.shadow-sm
+  .card-body
+    h5.card-title.fw-bold.mb-2 = entry_sheet.company_name
+    .mb-3
+      = entry_sheet_status_badge(entry_sheet)
+    - if entry_sheet.deadline
+      .mb-2
+        = vault_datetime_with_icon entry_sheet.deadline, icon: "calendar-alt"
+    .text-muted.small
+      = vault_datetime_with_icon entry_sheet.created_at.to_date, icon: "calendar-plus"
+  .card-footer.bg-transparent.border-top-0
+    = link_to "詳細を見る", vault_entry_sheet_path(entry_sheet), class: "btn btn-sm btn-outline-primary w-100"

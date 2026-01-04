@@ -1,7 +1,5 @@
-class Vault::EntrySheetItemTemplatesController < ApplicationController
-  before_action :authenticate_user!
+class Vault::EntrySheetItemTemplatesController < Vault::BaseController
   before_action :set_template, only: [ :show, :edit, :update, :destroy, :use ]
-  layout "vault"
 
   def index
     @templates = current_user.entry_sheet_item_templates

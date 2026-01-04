@@ -129,18 +129,117 @@
   // アクションボタン
   &__actions {
     display: flex;
-    gap: $spacing-2;
+    align-items: center;
+    gap: $spacing-3;
+    flex-wrap: wrap;
 
     @media (max-width: $breakpoint-md) {
       width: 100%;
       justify-content: center;
     }
+  }
 
+  &__action-group {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    flex-wrap: wrap;
+
+    @media (max-width: $breakpoint-md) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  &__action-primary {
+    display: flex;
+    align-items: center;
+
+    .button_to {
+      display: inline-flex;
+      margin: 0;
+    }
+
+    &.btn,
     .btn {
-      @media (max-width: $breakpoint-md) {
-        flex: 1;
-        max-width: 140px;
-      }
+      border-radius: $border-radius-full;
+      padding: $spacing-2 $spacing-5;
+    }
+  }
+
+  &__action-icons {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-1;
+    border-radius: $border-radius-full;
+    background: rgba($primary, 0.06);
+    border: 1px solid rgba($primary, 0.15);
+  }
+
+  &__action-icons--solo {
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  &__vault-button {
+    display: inline-flex;
+    align-items: center;
+    border-radius: $border-radius-full;
+    padding: $spacing-2 $spacing-5;
+    background: rgba($primary, 0.08);
+    border: 1px solid rgba($primary, 0.2);
+    color: $primary-dark;
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba($primary, 0.16) 0%, rgba($secondary, 0.2) 100%);
+      border-color: rgba($primary, 0.35);
+      color: $primary-dark;
+      transform: translateY(-1px);
+      box-shadow: $shadow-xs;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+  }
+
+  &__icon-button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: $border-radius-full;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: $panel-bg;
+    border: 1px solid rgba($primary, 0.2);
+    color: $primary-dark;
+    box-shadow: $shadow-xs;
+    text-decoration: none;
+    transition: transform $transition-speed-base $transition-timing-ease,
+      box-shadow $transition-speed-base $transition-timing-ease,
+      background $transition-speed-base $transition-timing-ease,
+      border-color $transition-speed-base $transition-timing-ease,
+      color $transition-speed-base $transition-timing-ease;
+
+    i {
+      font-size: $font-size-base;
+    }
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, $primary-light 0%, $secondary-light 100%);
+      border-color: rgba($primary, 0.35);
+      box-shadow: $shadow-sm;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-xs;
     }
   }
 

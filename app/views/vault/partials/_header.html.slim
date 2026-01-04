@@ -1,0 +1,15 @@
+- title = local_assigns[:title]
+- subtitle = local_assigns[:subtitle]
+- icon = local_assigns[:icon]
+
+.d-flex.flex-column.flex-md-row.justify-content-md-between.align-items-start.gap-3.mb-5
+  div
+    h1.fw-bold.mb-1
+      - if icon.present?
+        i class="fas fa-#{icon} me-2 text-primary"
+      = title
+    - if subtitle.present?
+      p.text-muted.mb-0 = subtitle
+  - if block_given?
+    .d-flex.flex-wrap.gap-2
+      = yield

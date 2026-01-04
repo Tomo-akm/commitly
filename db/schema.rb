@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -109,10 +109,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_071005) do
     t.datetime "submitted_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.integer "visibility", default: 0, null: false
     t.index ["deadline"], name: "index_entry_sheets_on_deadline"
     t.index ["user_id", "company_name"], name: "index_entry_sheets_on_user_id_and_company_name"
     t.index ["user_id", "status"], name: "index_entry_sheets_on_user_id_and_status"
     t.index ["user_id"], name: "index_entry_sheets_on_user_id"
+    t.index ["visibility"], name: "index_entry_sheets_on_visibility"
   end
 
   create_table "follows", force: :cascade do |t|

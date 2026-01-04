@@ -26,13 +26,19 @@
       .profile-header__actions
         - if user_signed_in?
           - if @user == current_user
-            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-outline-primary"
+            = link_to "プロフィール編集", edit_profile_path, class: "btn btn-sm btn-outline-primary profile-header__action-primary"
           - else
-            = turbo_frame_tag dom_id(@user, "follow_button") do
-              = render "profiles/follow_button", user: @user
-            = button_to rooms_path(user_id: @user.id), method: :post, class: "btn btn-sm btn-outline-secondary" do
-              i.fas.fa-comment.me-1
-              | DM
+            .profile-header__action-group
+              .profile-header__action-primary
+                = turbo_frame_tag dom_id(@user, "follow_button") do
+                  = render "profiles/follow_button", user: @user
+              - if @user.content_visible_to?(current_user)
+                = link_to vault_path(@user.account_id), class: "btn btn-sm profile-header__vault-button", title: "#{@user.name}のVaultを見る", aria: { label: "Vaultを見る" } do
+                  | Vaultを見る
+              .profile-header__action-icons.profile-header__action-icons--solo
+                = button_to rooms_path(user_id: @user.id), method: :post, class: "btn profile-header__icon-button", form_class: "inline-button-form", aria: { label: "#{@user.name}にDMを送る" } do
+                  i.fas.fa-comment
+                  span.visually-hidden DM
 
     - if @user.personal_message.present?
       .profile-header__bio

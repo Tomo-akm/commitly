@@ -59,6 +59,28 @@ class User < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :llm_usages, dependent: :destroy
 
+  # 公開ES数を取得
+  def public_entry_sheets_count
+    entry_sheets.publicly_visible.count
+  end
+
+  # 投稿やVaultが指定したユーザーに対して閲覧可能かを判定
+  # post_visibilityはPostだけでなくVaultにも適用される
+  def content_visible_to?(viewer)
+    return true if viewer == self # 本人は常に閲覧可能
+
+    case post_visibility
+    when "everyone"
+      true
+    when "mutual_followers"
+      viewer&.mutual_follow?(self)
+    when "only_me"
+      false
+    else
+      false
+    end
+  end
+
   ACCOUNT_ID_MIN_LENGTH = 3
   ACCOUNT_ID_MAX_LENGTH = 20
   ACCOUNT_ID_DEFAULT_LENGTH = 12

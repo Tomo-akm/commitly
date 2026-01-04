@@ -1,106 +1,57 @@
 - content_for :title, "Dashboard"
 / ヘッダー
-.d-flex.flex-column.flex-md-row.justify-content-md-between.align-items-start.gap-3.mb-5
-  div
-    h1.fw-bold.mb-1
-      i.fas.fa-home.me-2.text-primary
-      | ダッシュボード
-    p.text-muted.mb-0 就活の進捗とESを一元管理
-  .d-flex.flex-wrap.gap-2
-    = link_to new_vault_entry_sheet_path, class: "btn btn-primary" do
-      i.fas.fa-plus.me-2
-      | 新規ES作成
-    = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-outline-primary" do
-      i.fas.fa-file-alt.me-2
-      | テンプレート作成
+= render "vault/partials/header", title: "ダッシュボード", subtitle: "就活の進捗とESを一元管理", icon: "home" do
+  = link_to new_vault_entry_sheet_path, class: "btn btn-primary" do
+    i.fas.fa-plus.me-2
+    | 新規ES作成
+  = link_to new_vault_entry_sheet_item_template_path, class: "btn btn-outline-primary" do
+    i.fas.fa-file-alt.me-2
+    | テンプレート作成
+  - if current_user.post_visibility != "only_me"
+    = link_to new_post_path(share: "vault"), class: "btn btn-outline-secondary" do
+      i.fas.fa-share-alt.me-2
+      | Vaultを共有
 
 / 企業別選考進捗
-.card.mb-5
-  = vault_card_header "企業別選考進捗", icon: "chart-line"
-  .card-body.p-4
-    - if @company_progress.any?
-      .table-responsive
-        table.table.align-middle
-          thead.table-light
-            tr
-              th.fw-bold 企業名
-              th.fw-bold 選考段階
-              th.fw-bold 結果
-              th.fw-bold 最終更新
-          tbody
-            - @company_progress.each do |company|
-              tr
-                td
-                  .fw-bold = company[:company_name]
-                td
-                  span.badge.rounded-pill.bg-light.text-dark = company[:selection_stage_ja]
-                td
-                  - case company[:result]
-                  - when 'passed'
-                    span.badge.rounded-pill.bg-success.text-white
-                      i.fas.fa-check.me-1
-                      |
-                      = company[:result_ja]
-                  - when 'failed'
-                    span.badge.rounded-pill.bg-danger.text-white
-                      i.fas.fa-times.me-1
-                      |
-                      = company[:result_ja]
-                  - when 'pending'
-                    span.badge.rounded-pill.bg-warning.text-dark
-                      i.fas.fa-clock.me-1
-                      |
-                      = company[:result_ja]
-                td
-                  small.text-muted = company[:updated_at].strftime('%Y/%m/%d')
-    - else
-      / 完全に空の状態：中央に大きく表示
-      .text-center.py-5
-        .mb-4
-          i.fas.fa-rocket.fa-4x.text-primary.mb-3
-          h3.fw-bold.text-primary 就活記録を始めましょう！
-          p.text-muted.mb-4
-            | commit logで就活の進捗を記録すると、
-            br
-            | 企業別の選考状況がここに表示されます。
+= render "vault/partials/company_progress", company_progress: @company_progress do
+  / 完全に空の状態：中央に大きく表示
+  .text-center.py-5
+    .mb-4
+      i.fas.fa-rocket.fa-4x.text-primary.mb-3
+      h3.fw-bold.text-primary 就活記録を始めましょう！
+      p.text-muted.mb-4
+        | commit logで就活の進捗を記録すると、
+        br
+        | 企業別の選考状況がここに表示されます。
 
-        = link_to posts_path, class: "btn btn-primary btn-lg" do
-          i.fas.fa-clipboard-list.me-2
-          | commit logから記録
+    = link_to posts_path, class: "btn btn-primary btn-lg" do
+      i.fas.fa-clipboard-list.me-2
+      | commit logから記録
 
 / ES一覧
 .row.g-4
   / 締切が近いES
   .col-lg-6
-    .card.h-100
-      = vault_card_header_warning "締切が近いES", icon: "clock"
-      .card-body.p-0
-        - if @upcoming_entry_sheets.any?
-          .list-group.list-group-flush
-            - @upcoming_entry_sheets.each do |es|
-              = link_to vault_entry_sheet_path(es), class: "list-group-item list-group-item-action border-0 py-3 px-4" do
-                .d-flex.justify-content-between.align-items-center
-                  div
-                    .fw-bold.mb-1.text-primary-dark = es.company_name
-                    - if es.deadline
-                      = vault_datetime_with_icon es.deadline, icon: "calendar-alt"
-                  = entry_sheet_status_badge(es)
-        - else
-          = vault_empty_state icon: "clock", title: "直近2週間の締切はありません", message: "", size: :sm
+    = render "vault/partials/entry_sheet_section",
+      title: "締切が近いES",
+      icon: "clock",
+      entries: @upcoming_entry_sheets,
+      header_style: :warning,
+      layout: :list,
+      item_partial: "vault/partials/entry_sheet_list_item_deadline",
+      card_class: "h-100",
+      body_class: "p-0",
+      empty_state: { icon: "clock", title: "直近2週間の締切はありません", message: "", size: :sm }
 
   / 最近のES
   .col-lg-6
-    .card.h-100
-      = vault_card_header_success "最近のES", icon: "file-alt"
-      .card-body.p-0
-        - if @recent_entry_sheets.any?
-          .list-group.list-group-flush
-            - @recent_entry_sheets.each do |es|
-              = link_to vault_entry_sheet_path(es), class: "list-group-item list-group-item-action border-0 py-3 px-4" do
-                .d-flex.justify-content-between.align-items-center
-                  div
-                    .fw-bold.mb-1.text-primary-dark = es.company_name
-                    = vault_datetime_with_icon es.created_at.to_date, icon: "calendar-plus"
-                  = entry_sheet_status_badge(es)
-        - else
-          = vault_empty_state icon: "folder-open", title: "ESがまだありません", message: "", button_text: "新規作成", button_path: new_vault_entry_sheet_path, size: :sm
+    = render "vault/partials/entry_sheet_section",
+      title: "最近のES",
+      icon: "file-alt",
+      entries: @recent_entry_sheets,
+      header_style: :success,
+      layout: :list,
+      item_partial: "vault/partials/entry_sheet_list_item_recent",
+      card_class: "h-100",
+      body_class: "p-0",
+      empty_state: { icon: "folder-open", title: "ESがまだありません", message: "", button_text: "新規作成", button_path: new_vault_entry_sheet_path, size: :sm }

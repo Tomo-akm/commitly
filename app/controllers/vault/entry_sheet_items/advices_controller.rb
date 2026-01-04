@@ -1,10 +1,9 @@
 module Vault
   module EntrySheetItems
-    class AdvicesController < ApplicationController
+    class AdvicesController < Vault::BaseController
       MAX_TITLE_LENGTH = 100
       MAX_CONTENT_LENGTH = 2000
 
-      before_action :authenticate_user!
       before_action :set_entry_sheet_item
       before_action :validate_advice_params, only: :create
       before_action :check_usage_limit, only: :create

@@ -1,7 +1,6 @@
-class Vault::EntrySheetsController < ApplicationController
-  before_action :authenticate_user!
+class Vault::EntrySheetsController < Vault::BaseController
   before_action :set_entry_sheet, only: [ :show, :edit, :update, :destroy ]
-  layout "vault"
+  before_action :authorize_owner!, only: [ :edit, :update, :destroy ]
 
   def index
     @entry_sheets = current_user.entry_sheets
@@ -30,7 +29,7 @@ class Vault::EntrySheetsController < ApplicationController
     @entry_sheet = current_user.entry_sheets.build(entry_sheet_params)
 
     if @entry_sheet.save
-      redirect_to vault_entry_sheet_path(@entry_sheet), notice: "ESを作成しました"
+      redirect_to vault_entry_sheet_path(@entry_sheet), notice: "ESを作成しました。つぶやきで共有してレビューをもらおう！"
     else
       flash.now[:alert] = "ESの作成に失敗しました: #{@entry_sheet.errors.full_messages.join(', ')}"
       @templates = current_user.entry_sheet_item_templates.order(:tag, :created_at)
@@ -58,7 +57,19 @@ class Vault::EntrySheetsController < ApplicationController
   private
 
   def set_entry_sheet
-    @entry_sheet = current_user.entry_sheets.includes(entry_sheet_items: :chat).find(params[:id])
+    @entry_sheet = EntrySheet.includes(entry_sheet_items: :chat).find(params[:id])
+
+    # 閲覧権限チェック（showアクション用）
+    unless @entry_sheet.viewable_by?(current_user)
+      redirect_to vault_root_path, alert: "このESは公開されていません"
+    end
+  end
+
+  # 所有者チェック（edit/update/destroyアクション用）
+  def authorize_owner!
+    unless @entry_sheet.user_id == current_user.id
+      redirect_to vault_root_path, alert: "他のユーザーのESは編集できません"
+    end
   end
 
   def entry_sheet_params
@@ -67,6 +78,7 @@ class Vault::EntrySheetsController < ApplicationController
       :deadline,
       :status,
       :submitted_at,
+      :visibility,
       entry_sheet_items_attributes: [
         :id,
         :title,
