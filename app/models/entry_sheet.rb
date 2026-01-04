@@ -23,6 +23,9 @@ class EntrySheet < ApplicationRecord
   validates :status, presence: true
   validates :visibility, presence: true
 
+  before_validation :set_shared_at_on_create, on: :create
+  before_update :set_shared_at_on_publish
+
   # スコープ
   scope :upcoming_deadline, lambda {
     where.not(deadline: nil)
@@ -45,4 +48,16 @@ class EntrySheet < ApplicationRecord
   accepts_nested_attributes_for :entry_sheet_items,
                                 allow_destroy: true,
                                 reject_if: :all_blank
+
+  private
+
+  def set_shared_at_on_create
+    self.shared_at ||= Time.current if visibility_shared?
+  end
+
+  def set_shared_at_on_publish
+    return unless will_save_change_to_visibility? && visibility_shared?
+
+    self.shared_at ||= Time.current
+  end
 end
