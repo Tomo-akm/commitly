@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_02_013252) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_013252) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_entry_sheet_item_templates_on_created_at"
+    t.index ["updated_at"], name: "index_entry_sheet_item_templates_on_updated_at"
     t.index ["user_id", "tag"], name: "index_entry_sheet_item_templates_on_user_id_and_tag"
     t.index ["user_id"], name: "index_entry_sheet_item_templates_on_user_id"
   end
@@ -113,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_013252) do
     t.integer "visibility", default: 0, null: false
     t.index ["deadline"], name: "index_entry_sheets_on_deadline"
     t.index ["shared_at"], name: "index_entry_sheets_on_shared_at"
+    t.index ["updated_at"], name: "index_entry_sheets_on_updated_at"
     t.index ["user_id", "company_name"], name: "index_entry_sheets_on_user_id_and_company_name"
     t.index ["user_id", "status"], name: "index_entry_sheets_on_user_id_and_status"
     t.index ["user_id"], name: "index_entry_sheets_on_user_id"
@@ -195,6 +198,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_02_013252) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
+    t.index ["created_at"], name: "index_posts_on_created_at"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end

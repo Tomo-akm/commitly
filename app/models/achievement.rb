@@ -52,7 +52,8 @@ class Achievement < ActiveHash::Base
   end
 
   # 表示用の実績を取得（達成済みでリミット適用）
+  # 最新の実績から表示するため last を使用
   def self.for_display(achievement_flags, limit: 3)
-    achieved_by(achievement_flags).first(limit)
+    achieved_by(achievement_flags).last(limit)
   end
 end
