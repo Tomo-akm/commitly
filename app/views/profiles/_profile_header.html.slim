@@ -55,14 +55,10 @@
           i.fas.fa-code
           span = @user.favorite_language
 
-      - if @user.internship_count.present? && @user.internship_count > 0
+      - if @user.intern_participations_count > 0
         .profile-header__meta-item
           i.fas.fa-briefcase
-          span = "インターン #{@user.internship_count}回"
-
-      .profile-header__meta-item
-        i.fas.fa-briefcase
-        span = "インターン・説明会参加 #{@user.intern_participations_count}回"
+          span = "インターン・説明会参加 #{@user.intern_participations_count}回"
 
       .profile-header__meta-item
         i.fas.fa-calendar-check
