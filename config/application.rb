@@ -28,6 +28,9 @@ module Commitly
     config.i18n.default_locale = :ja
     config.i18n.available_locales = [ :ja, :en ]
 
+    # Set week start to Sunday (Japanese standard)
+    config.beginning_of_week = :sunday
+
     # Configure generators to use Slim
     config.generators do |g|
       g.template_engine :slim
