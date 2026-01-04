@@ -44,7 +44,27 @@ export default class extends Controller {
 
     if (this.badgeValue) badgeEl.src = this.badgeValue;
     badgeEl.alt = this.labelValue ? `${this.labelValue}バッジ` : '実績バッジ';
+
+    // アニメーションをトリガー
+    this.triggerBadgeAnimation(badgeEl);
   }
+
+  triggerBadgeAnimation(badgeEl) {
+    // 既存のアニメーションクラスを削除（リセット）
+    badgeEl.classList.remove('is-animating');
+
+    // リフローを強制してアニメーションを再トリガー
+    void badgeEl.offsetWidth;
+
+    // アニメーションクラスを追加
+    badgeEl.classList.add('is-animating');
+
+    // アニメーション終了後にクラスを削除
+    badgeEl.addEventListener('animationend', () => {
+      badgeEl.classList.remove('is-animating');
+    }, { once: true });
+  }
+
 
   updateTitle(modalElement) {
     const titleEl = this.getTarget(modalElement, 'title');
