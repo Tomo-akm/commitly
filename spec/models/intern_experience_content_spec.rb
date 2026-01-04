@@ -89,7 +89,7 @@ RSpec.describe InternExperienceContent, type: :model do
         }.to change { Tag.count }.by(1)
 
         expect(post.tags.count).to eq(1)
-        expect(post.tags.first.name).to eq("テスト".downcase)
+        expect(post.tags.first.name).to eq("テスト")
       end
 
       it '企業名から株式会社などの法人格が除去される' do
@@ -98,17 +98,17 @@ RSpec.describe InternExperienceContent, type: :model do
         # 株式会社
         intern_content1 = build(:intern_experience_content, company_name: "株式会社サンプル")
         post1 = create(:post, user: user, contentable: intern_content1)
-        expect(post1.tags.pluck(:name)).to include("サンプル".downcase)
+        expect(post1.tags.pluck(:name)).to include("サンプル")
 
         # 有限会社
         intern_content2 = build(:intern_experience_content, company_name: "有限会社テスト")
         post2 = create(:post, user: user, contentable: intern_content2)
-        expect(post2.tags.pluck(:name)).to include("テスト".downcase)
+        expect(post2.tags.pluck(:name)).to include("テスト")
 
         # 合同会社
         intern_content3 = build(:intern_experience_content, company_name: "合同会社デモ")
         post3 = create(:post, user: user, contentable: intern_content3)
-        expect(post3.tags.pluck(:name)).to include("デモ".downcase)
+        expect(post3.tags.pluck(:name)).to include("デモ")
       end
 
       it '(株)などの省略形も除去される' do
@@ -116,8 +116,8 @@ RSpec.describe InternExperienceContent, type: :model do
         intern_content = build(:intern_experience_content, company_name: "(株)サンプル")
         post = create(:post, user: user, contentable: intern_content)
 
-        expect(post.tags.pluck(:name)).to include("サンプル".downcase)
-        expect(post.tags.pluck(:name)).not_to include("(株)サンプル".downcase)
+        expect(post.tags.pluck(:name)).to include("サンプル")
+        expect(post.tags.pluck(:name)).not_to include("(株)サンプル")
       end
     end
 
@@ -127,14 +127,14 @@ RSpec.describe InternExperienceContent, type: :model do
         intern_content = create(:intern_experience_content, company_name: "株式会社テスト")
         post = create(:post, user: user, contentable: intern_content)
 
-        expect(post.tags.first.name).to eq("テスト".downcase)
+        expect(post.tags.first.name).to eq("テスト")
 
         # 企業名を更新してPostを保存（after_saveをトリガー）
         intern_content.update!(company_name: "株式会社別会社")
         post.save!
 
         expect(post.reload.tags.count).to eq(1)
-        expect(post.tags.first.name).to eq("別会社".downcase)
+        expect(post.tags.first.name).to eq("別会社")
       end
     end
 
@@ -148,7 +148,7 @@ RSpec.describe InternExperienceContent, type: :model do
         post2 = create(:post, user: user, contentable: intern_content2)
 
         expect(post1.tags.pluck(:name)).to match_array(post2.tags.pluck(:name))
-        expect(Tag.where(name: "テスト".downcase).count).to eq(1)
+        expect(Tag.where(name: "テスト").count).to eq(1)
       end
     end
 
