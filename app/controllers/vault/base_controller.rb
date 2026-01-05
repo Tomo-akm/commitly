@@ -23,7 +23,7 @@ class Vault::BaseController < ApplicationController
       # まだその企業のデータがない、または既存データより新しい場合に更新
       if company_data[company_name].nil? || company_data[company_name][:updated_at] < post.created_at
         company_data[company_name] = {
-          company_name: content.company_name,
+          company_name: content.display_company_name,
           normalized_name: company_name,
           selection_stage: content.selection_stage,
           selection_stage_ja: content.selection_stage_ja,
