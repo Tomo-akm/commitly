@@ -49,7 +49,7 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
         .d-flex.flex-wrap.gap-2.align-items-center
           span.intern-experience-badge.company
             i.fas.fa-building.me-1
-            = post.contentable.company_name
+            = post.contentable.display_company_name
           - if post.contentable.event_name.present?
             span.intern-experience-badge.event
               i.fas.fa-calendar-check.me-1
