@@ -1,4 +1,6 @@
 class JobHuntingContent < ApplicationRecord
+  include CompanyNameNormalizable
+
   has_one :post, as: :contentable, dependent: :destroy
 
   # プレゼンテーション用の定数

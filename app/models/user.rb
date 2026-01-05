@@ -140,6 +140,16 @@ class User < ApplicationRecord
     super && provider.blank?
   end
 
+  # インターン参加回数を企業名とイベント名の組み合わせでユニークカウント
+  def intern_participations_count
+    InternExperienceContent
+      .joins(:post)
+      .where(posts: { user_id: id })
+      .select("company_name || '|' || event_name")
+      .distinct
+      .count
+  end
+
   # 全未読メッセージ数
   def total_unread_messages_count
     entries.sum(&:unread_count)

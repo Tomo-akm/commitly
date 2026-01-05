@@ -1,4 +1,9 @@
-- card_class = post.job_hunting? ? "card card-hover card-decorative shadow-sm transition-all job-hunting-card clickable-card" : "card card-hover card-decorative shadow-sm transition-all general-card clickable-card"
+- if post.job_hunting?
+  - card_class = "card card-hover card-decorative shadow-sm transition-all job-hunting-card clickable-card"
+- elsif post.intern_experience?
+  - card_class = "card card-hover card-decorative shadow-sm transition-all intern-experience-card clickable-card"
+- else
+  - card_class = "card card-hover card-decorative shadow-sm transition-all general-card clickable-card"
 div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=post_path(post) data-action="click->post-card#navigate" style="cursor: pointer;"
   .card-body.p-4
     / ヘッダー：ユーザー情報、タイムスタンプ、3点メニュー
@@ -37,6 +42,24 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
           span class="job-hunting-badge result #{result_class}"
             i class="fas #{result_icon} me-1"
             = post.contentable.result_ja
+
+    / インターン体験記の場合は企業情報を表示
+    - if post.intern_experience?
+      .intern-experience-info.mb-3
+        .d-flex.flex-wrap.gap-2.align-items-center
+          span.intern-experience-badge.company
+            i.fas.fa-building.me-1
+            = post.contentable.company_name
+          - if post.contentable.event_name.present?
+            span.intern-experience-badge.event
+              i.fas.fa-calendar-check.me-1
+              = post.contentable.event_name
+          span.intern-experience-badge.duration
+            i.fas.fa-clock.me-1
+            - if post.contentable.duration_type.present?
+              = post.contentable.formatted_duration
+            - else
+              | 期間未設定
 
     .card-text.mb-3.line-height-relaxed
       = PostDecorator.new(post).highlighted_content

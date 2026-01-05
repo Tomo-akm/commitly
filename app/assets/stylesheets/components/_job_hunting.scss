@@ -22,6 +22,16 @@
   }
 }
 
+// インターン体験記カードのボーダーカラー
+.intern-experience-card {
+  border-top: 4px solid #cddc39;
+
+  // .card-decorativeの::beforeによるグラデーションボーダーを無効化
+  &.card-decorative::before {
+    display: none;
+  }
+}
+
 // 就活情報エリア
 .job-hunting-info {
   padding: 8px 0;
@@ -76,6 +86,46 @@
   }
 }
 
+// インターン体験記情報エリア
+.intern-experience-info {
+  padding: 8px 0;
+}
+
+// インターン体験記用バッジスタイル
+.intern-experience-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  // 企業名
+  &.company {
+    background-color: #fff9c4;
+    color: #f57f17;
+    border: 1px solid #ffd54f;
+  }
+
+  // イベント名
+  &.event {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+  }
+
+  // 期間
+  &.duration {
+    background-color: #e1f5fe;
+    color: #01579b;
+    border: 1px solid #4fc3f7;
+  }
+}
+
 // レスポンシブ対応
 @media (max-width: 576px) {
   .job-hunting-badge {
@@ -85,5 +135,26 @@
     i {
       font-size: 0.7rem;
     }
+  }
+
+  .intern-experience-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+
+    i {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// 期間選択のカスタム入力フィールド
+.duration-selector-wrapper {
+  .custom-duration-input {
+    display: none;
+  }
+
+  // セレクトで"custom"が選択された時にカスタム入力を表示
+  &:has(.duration-select option[value="custom"]:checked) .custom-duration-input {
+    display: block;
   }
 }

@@ -1,0 +1,15 @@
+.form-group
+  = form.label :company_name, class: "form-label required"
+  = form.text_field :company_name, class: "form-input", placeholder: "例：株式会社〇〇", required: true
+
+.form-group
+  = form.label :event_name, class: "form-label required"
+  = form.text_field :event_name, class: "form-input", placeholder: "例：サマーインターンシップ2024", required: true
+
+.form-group
+  = form.label :duration_type, "期間", class: "form-label required"
+  = form.select :duration_type, InternExperienceContent.duration_types_for_select, { prompt: "選択してください" }, class: "form-select", required: true
+
+.form-group
+  = form.label :content, class: "form-label required"
+  = form.text_area :content, class: "form-textarea", rows: 5, placeholder: "インターン体験記のcommitメッセージを書いてください", required: true
