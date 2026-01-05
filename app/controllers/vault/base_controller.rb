@@ -11,7 +11,7 @@ class Vault::BaseController < ApplicationController
     # JobHuntingContentから企業別の選考状況を取得
     job_hunting_posts = user.posts.job_hunting
     job_hunting_posts = job_hunting_posts.visible_to(current_user) if public_only
-    job_hunting_posts = job_hunting_posts.includes(:contentable).order(created_at: :desc)
+    job_hunting_posts = job_hunting_posts.includes(:contentable, :tags).order(created_at: :desc)
 
     # 企業名でグループ化して、最新の選考段階とresultを取得
     company_data = {}
