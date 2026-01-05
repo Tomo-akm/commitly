@@ -18,15 +18,17 @@ class Post < ApplicationRecord
   # Contentableタイプのマッピング
   CONTENTABLE_TYPES = {
     "general" => GeneralContent,
-    "job_hunting" => JobHuntingContent
+    "job_hunting" => JobHuntingContent,
+    "intern_experience" => InternExperienceContent
   }.freeze
 
-  # 就活投稿の場合、企業名を自動でタグ化（create/update両方）
-  after_save :update_company_tag_for_job_hunting, if: :job_hunting?
+  # 企業名を持つ投稿の場合、企業名を自動でタグ化（create/update両方）
+  after_save :update_company_tag, if: :has_company_name?
 
   # スコープ
   scope :general, -> { where(contentable_type: "GeneralContent") }
   scope :job_hunting, -> { where(contentable_type: "JobHuntingContent") }
+  scope :intern_experience, -> { where(contentable_type: "InternExperienceContent") }
   scope :with_tag, ->(tag_name) { joins(:tags).where(tags: { name: tag_name }) }
   scope :top_level, -> { where(parent_id: nil) } # リプライを除外（親投稿のみ）
 
@@ -46,6 +48,8 @@ class Post < ApplicationRecord
         THEN (SELECT content FROM general_contents WHERE general_contents.id = posts.contentable_id)
       WHEN posts.contentable_type = 'JobHuntingContent'
         THEN (SELECT content FROM job_hunting_contents WHERE job_hunting_contents.id = posts.contentable_id)
+      WHEN posts.contentable_type = 'InternExperienceContent'
+        THEN (SELECT content FROM intern_experience_contents WHERE intern_experience_contents.id = posts.contentable_id)
     END")
   end
 
@@ -123,6 +127,15 @@ class Post < ApplicationRecord
     contentable_type == "JobHuntingContent"
   end
 
+  def intern_experience?
+    contentable_type == "InternExperienceContent"
+  end
+
+  # 企業名を持つ投稿かどうか
+  def has_company_name?
+    job_hunting? || intern_experience?
+  end
+
   # リプライかどうかを判定
   def reply?
     parent_id.present?
@@ -168,8 +181,8 @@ class Post < ApplicationRecord
 
   private
 
-  # 就活投稿の場合、企業名をタグとして更新（create/update両方）
-  def update_company_tag_for_job_hunting
+  # 企業名を持つ投稿の場合、企業名をタグとして更新（create/update両方）
+  def update_company_tag
     return unless contentable.respond_to?(:normalized_company_name)
 
     normalized_name = contentable.normalized_company_name

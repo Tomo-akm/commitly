@@ -11,6 +11,10 @@ FactoryBot.define do
       association :contentable, factory: :job_hunting_content
     end
 
+    trait :intern_experience do
+      association :contentable, factory: :intern_experience_content
+    end
+
     trait :with_tags do
       after(:create) do |post|
         create_list(:tag, 3, posts: [ post ])
