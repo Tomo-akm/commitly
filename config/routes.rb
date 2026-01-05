@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   resources :tags, only: [ :index, :show ] do
     collection do
       get :autocomplete
+      get :company_autocomplete
     end
   end
   get "home/index"

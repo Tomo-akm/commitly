@@ -1,16 +1,24 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["textarea", "list"]
-  static values = { url: String }
+  static targets = ["textarea", "input", "list"]
+  static values = {
+    url: String,
+    mode: { type: String, default: "hashtag" }  // "hashtag" or "simple"
+  }
 
   connect() {
     this.activeRange = null
     this.selectedIndex = -1
   }
 
+  // textarea または input を取得
+  get fieldTarget() {
+    return this.hasInputTarget ? this.inputTarget : this.textareaTarget
+  }
+
   onInput() {
-    const match = this.currentHashtag()
+    const match = this.modeValue === "simple" ? this.currentSimpleInput() : this.currentHashtag()
     if (!match) {
       this.hide()
       return
@@ -98,29 +106,50 @@ export default class extends Controller {
   applyTag(tag) {
     if (!tag || !this.activeRange) return
 
-    const textarea = this.textareaTarget
+    const field = this.fieldTarget
     const { start, end } = this.activeRange
 
-    const before = textarea.value.slice(0, start)
-    const after  = textarea.value.slice(end)
+    if (this.modeValue === "simple") {
+      // simpleモード: フィールド全体を置き換え（#なし）
+      field.value = tag
+      field.focus()
+    } else {
+      // hashtagモード: ハッシュタグとして挿入（#あり）
+      const before = field.value.slice(0, start)
+      const after  = field.value.slice(end)
 
-    textarea.value = `${before}#${tag} ${after}`
-    textarea.focus()
+      field.value = `${before}#${tag} ${after}`
+      field.focus()
 
-    // カーソルを補完後の末尾へ
-    const cursor = before.length + tag.length + 2
-    textarea.setSelectionRange(cursor, cursor)
+      // カーソルを補完後の末尾へ
+      const cursor = before.length + tag.length + 2
+      field.setSelectionRange(cursor, cursor)
+    }
 
     this.hide()
 
     // text-highlighter を即時更新
-    textarea.dispatchEvent(new Event("input", { bubbles: true }))
+    field.dispatchEvent(new Event("input", { bubbles: true }))
   }
 
+  // simpleモード用: フィールド全体の値を検索クエリにする
+  currentSimpleInput() {
+    const field = this.fieldTarget
+    const query = field.value.trim()
+
+    if (query.length === 0) return null
+
+    return {
+      query,
+      range: { start: 0, end: field.value.length }
+    }
+  }
+
+  // hashtagモード用: 直前のハッシュタグを検出
   currentHashtag() {
-    const textarea = this.textareaTarget
-    const pos = textarea.selectionStart
-    const text = textarea.value.slice(0, pos)
+    const field = this.fieldTarget
+    const pos = field.selectionStart
+    const text = field.value.slice(0, pos)
 
     // 直前の #xxxx を検出
     const match = text.match(/(?:^|[\s\u3000])#([\p{Letter}\p{Number}_]*)$/u)
@@ -147,13 +176,15 @@ export default class extends Controller {
       li.className = "tag-autocomplete__item d-flex justify-content-between align-items-center"
 
       const label = document.createElement("span")
-      label.textContent = `#${name}`
+      // simpleモードでは#を付けない
+      label.textContent = this.modeValue === "simple" ? name : `#${name}`
       li.appendChild(label)
 
       if (typeof count === "number") {
         const badge = document.createElement("span")
         badge.className = "badge bg-light text-dark"
-        badge.textContent = count
+        // simpleモードでは「件」を追加
+        badge.textContent = this.modeValue === "simple" ? `${count}件` : count
         li.appendChild(badge)
       }
 
@@ -165,6 +196,11 @@ export default class extends Controller {
     })
 
     this.listTarget.hidden = false
+  }
+
+  // フォーカスが外れたときにリストを非表示（simpleモード用）
+  onBlur() {
+    setTimeout(() => this.hide(), 200)
   }
 
   hide() {
