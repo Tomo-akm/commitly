@@ -27,14 +27,14 @@ class TagsController < ApplicationController
     render json: tags
   end
 
-  # 企業名オートコンプリート（就活投稿のタグのみ）
+  # 企業名オートコンプリート（就活投稿とインターン体験記のタグ）
   def company_autocomplete
     q = params[:q].to_s
 
-    # 就活投稿に紐づくタグのみを取得
+    # 就活投稿とインターン体験記に紐づくタグのみを取得
     tags = Tag
       .joins(:posts)
-      .where(posts: { contentable_type: "JobHuntingContent" })
+      .where(posts: { contentable_type: [ "JobHuntingContent", "InternExperienceContent" ] })
       .where("tags.name ILIKE ?", "#{q}%")
       .group("tags.id", "tags.name")
       .order("COUNT(posts.id) DESC")
