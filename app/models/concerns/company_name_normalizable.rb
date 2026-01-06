@@ -15,4 +15,10 @@ module CompanyNameNormalizable
     normalized = normalized.gsub(/\s*\(株\)$/, "")
     normalized.strip
   end
+
+  # 表示用の企業名（正規化されたタグ名を優先、なければ正規化して返す）
+  def display_company_name
+    # タグが保存されていればそれを使用（計算不要で高速）
+    post&.tags&.first&.name || normalized_company_name
+  end
 end
