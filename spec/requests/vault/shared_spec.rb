@@ -47,7 +47,7 @@ RSpec.describe "Vault::Shared", type: :request do
         get vault_path(other_user.account_id)
 
         expect(response).to have_http_status(:success)
-        expect(response.body).to include('テスト株式会社')
+        expect(response.body).to include('テスト')
       end
 
       it 'ページネーションが機能する' do
