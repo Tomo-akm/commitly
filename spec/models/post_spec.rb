@@ -58,10 +58,11 @@ RSpec.describe Post, type: :model do
   end
 
   describe 'CONTENTABLE_TYPES' do
-    it 'general と job_hunting のマッピングが定義されている' do
+    it 'general、job_hunting、intern_experience のマッピングが定義されている' do
       expect(Post::CONTENTABLE_TYPES).to eq({
         'general' => GeneralContent,
-        'job_hunting' => JobHuntingContent
+        'job_hunting' => JobHuntingContent,
+        'intern_experience' => InternExperienceContent
       })
     end
   end
@@ -83,6 +84,15 @@ RSpec.describe Post, type: :model do
         post = user.posts.build_with_type('job_hunting')
         expect(post).to be_a(Post)
         expect(post.contentable).to be_a(JobHuntingContent)
+        expect(post.contentable).to be_new_record
+      end
+    end
+
+    context 'type が intern_experience の場合' do
+      it 'InternExperienceContent を持つ Post を返す' do
+        post = user.posts.build_with_type('intern_experience')
+        expect(post).to be_a(Post)
+        expect(post.contentable).to be_a(InternExperienceContent)
         expect(post.contentable).to be_new_record
       end
     end

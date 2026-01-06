@@ -125,7 +125,7 @@ RSpec.describe JobHuntingContent, type: :model do
         }.to change { Tag.count }.by(1)
 
         expect(post.tags.count).to eq(1)
-        expect(post.tags.first.name).to eq("テスト".downcase)
+        expect(post.tags.first.name).to eq("テスト")
       end
 
       it '企業名から株式会社などの法人格が除去される' do
@@ -134,17 +134,17 @@ RSpec.describe JobHuntingContent, type: :model do
         # 株式会社
         job_content1 = build(:job_hunting_content, company_name: "株式会社サンプル")
         post1 = create(:post, user: user, contentable: job_content1)
-        expect(post1.tags.pluck(:name)).to include("サンプル".downcase)
+        expect(post1.tags.pluck(:name)).to include("サンプル")
 
         # 有限会社
         job_content2 = build(:job_hunting_content, company_name: "有限会社テスト")
         post2 = create(:post, user: user, contentable: job_content2)
-        expect(post2.tags.pluck(:name)).to include("テスト".downcase)
+        expect(post2.tags.pluck(:name)).to include("テスト")
 
         # 合同会社
         job_content3 = build(:job_hunting_content, company_name: "合同会社デモ")
         post3 = create(:post, user: user, contentable: job_content3)
-        expect(post3.tags.pluck(:name)).to include("デモ".downcase)
+        expect(post3.tags.pluck(:name)).to include("デモ")
       end
 
       it '(株)などの省略形も除去される' do
@@ -221,6 +221,32 @@ RSpec.describe JobHuntingContent, type: :model do
 
     it 'success_messageで就活投稿用の成功メッセージを返すこと' do
       expect(job_hunting_content.success_message).to eq("就活記録をpushしました")
+    end
+  end
+
+  describe '#display_company_name' do
+    context 'タグが保存されている場合' do
+      it 'タグ名を返すこと' do
+        user = create(:user)
+        job_content = build(:job_hunting_content, company_name: "株式会社テスト")
+        post = create(:post, user: user, contentable: job_content)
+
+        expect(post.contentable.display_company_name).to eq("テスト")
+      end
+    end
+
+    context 'タグがまだ保存されていない場合' do
+      it 'normalized_company_nameを返すこと' do
+        job_content = build(:job_hunting_content, company_name: "株式会社テスト")
+        expect(job_content.display_company_name).to eq("テスト")
+      end
+    end
+
+    context '企業名が空の場合' do
+      it '空文字を返すこと' do
+        job_content = build(:job_hunting_content, company_name: "")
+        expect(job_content.display_company_name).to eq("")
+      end
     end
   end
 end

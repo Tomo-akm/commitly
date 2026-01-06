@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   include StreamChannels
   include Notifiable
+  include ActivityTrackable
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
@@ -58,6 +59,7 @@ class User < ApplicationRecord
   has_many :liked_posts, through: :likes, source: :post
   has_many :chats, dependent: :destroy
   has_many :llm_usages, dependent: :destroy
+  has_many :user_achievements, dependent: :destroy
 
   # 公開ES数を取得
   def public_entry_sheets_count
@@ -136,6 +138,16 @@ class User < ApplicationRecord
 
   def email_required?
     super && provider.blank?
+  end
+
+  # インターン参加回数を企業名とイベント名の組み合わせでユニークカウント
+  def intern_participations_count
+    InternExperienceContent
+      .joins(:post)
+      .where(posts: { user_id: id })
+      .select("company_name || '|' || event_name")
+      .distinct
+      .count
   end
 
   # 全未読メッセージ数

@@ -1,0 +1,25 @@
+.modal.fade#achievementModal tabindex="-1" aria-labelledby="achievementModalLabel" aria-hidden="true" data-achievement-modal-target="modal"
+  .modal-dialog.modal-dialog-centered.modal-lg
+    .modal-content.achievement-modal
+      .modal-header.achievement-modal__header
+        h5.modal-title#achievementModalLabel
+          span.achievement-modal__eyebrow 実績
+          span.achievement-modal__title data-achievement-modal-target="title" 実績名
+        button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+      .modal-body
+        .achievement-modal__hero
+          .achievement-modal__badge-wrap
+            = image_tag "badges/first_post.png", class: "achievement-modal__badge", alt: "実績バッジ", data: { achievement_modal_target: "badge" }
+          .achievement-modal__heading
+            span.achievement-modal__kicker 達成条件
+            p.achievement-modal__hint data-achievement-modal-target="hint"
+            span.achievement-modal__series data-achievement-modal-target="series"
+        .achievement-modal__meta
+          .achievement-modal__meta-item
+            span.achievement-modal__meta-label 達成状況
+            span.achievement-modal__status data-achievement-modal-target="status" 未達成
+          .achievement-modal__meta-item
+            span.achievement-modal__meta-label 取得日
+            span.achievement-modal__meta-value data-achievement-modal-target="date" 未達成
+      .modal-footer
+        button.btn.btn-outline-secondary type="button" data-bs-dismiss="modal" 閉じる
