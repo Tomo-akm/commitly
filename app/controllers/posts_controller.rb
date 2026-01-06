@@ -125,7 +125,7 @@ class PostsController < ApplicationController
       @post = Post.includes(
         :contentable, :parent,
         replies: [ :contentable, :user, :tags, :likes,
-                   replies: [ :contentable, :user, :tags, :likes, :replies ] ]
+                   replies: [ :contentable, :user, :tags, :likes, replies: [ :contentable, :user, :tags, :likes ]] ]
       ).find(params.expect(:id))
     end
 

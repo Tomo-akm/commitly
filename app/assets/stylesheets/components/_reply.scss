@@ -226,24 +226,3 @@
   }
 }
 
-// 6. PC/スマホ切り替え（メディアクエリ）
-// ============================================
-
-// スマホ用リンク: スマホで表示、PCで非表示
-.reply-link-mobile {
-  display: flex;
-
-
-  @media (max-width: $breakpoint-lg) {
-    display: none;
-  }
-}
-
-// PC用階層表示: スマホで非表示、PCで表示
-.reply-tree-desktop {
-  display: none;
-
-  @media (min-width: $breakpoint-lg) {
-    display: block;
-  }
-}
