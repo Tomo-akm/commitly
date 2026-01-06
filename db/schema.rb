@@ -215,9 +215,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
 
   create_table "rooms", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "room_type", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index ["room_type"], name: "index_rooms_on_room_type"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
