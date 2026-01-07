@@ -1,39 +1,30 @@
-/ reply_tree パーシャル（PC/スマホ両対応・階層表示）
+/ reply_tree パーシャル（階層表示）
 / locals: reply, depth, viewer (current_user)
 
-- case depth
-- when 1
+- if depth == 1
   / 直接リプライ: 通常表示
-  = render 'posts/components/reply_item', reply: reply
-
-  / 第二階層があれば表示
   - grandchildren = reply.replies.select { |r| r.visible_to?(viewer) }
-  - if grandchildren.present?
-    .ms-5.ps-3.border-start.border-2.border-primary.mt-2
-      / 階層表示
-      div data-controller="reply-pagination"
+  div data-controller="reply-pagination"
+    = render 'posts/components/reply_item', reply: reply, replies_count: grandchildren.size
+
+    / 第二階層があれば表示
+    - if grandchildren.any?
+      .ms-5.ps-3.border-start.border-2.border-primary.mt-2
         / 返信アイテム（最初は非表示、20件ずつ表示）
         - grandchildren.each do |grandchild|
           div data-reply-pagination-target="item"
             = render 'posts/components/reply_tree', reply: grandchild, depth: 2, viewer: viewer
 
-        / 「○件の返信」→「他の返信を表示」ボタン
-        button.reply-toggle-btn.d-inline-flex.align-items-center.bg-transparent.border-0.p-2.text-primary.small type="button" data-reply-pagination-target="showMore" data-action="click->reply-pagination#showMore"
+        / 「他の返信を表示」ボタン（部分表示時に出現）
+        button.reply-toggle-btn.d-none.d-inline-flex.align-items-center.bg-transparent.border-0.p-2.text-primary.small type="button" data-reply-pagination-target="showMore" data-action="click->reply-pagination#showMore"
           i.fa-solid.fa-chevron-down.me-1
-          span data-reply-pagination-target="showMoreLabel" #{grandchildren.size}件の返信
+          | 他の返信を表示
 
         / 「返信を非表示」ボタン（全件表示後に出現）
         button.reply-toggle-btn.d-none.d-inline-flex.align-items-center.bg-transparent.border-0.p-2.text-primary.small type="button" data-reply-pagination-target="hideAll" data-action="click->reply-pagination#hideAll"
           i.fa-solid.fa-chevron-up.me-1
           | 返信を非表示
 
-- when 2
+- elsif depth == 2
   / 第二階層: 折りたたみ内に表示
   = render 'posts/components/reply_item', reply: reply
-
-  / 第三階層以降があれば「この返信を表示」リンク
-  - if reply.replies.exists?
-    .mt-2.ms-4
-      = link_to post_path(reply), class: "show-reply-link d-inline-flex align-items-center p-2 text-primary small text-decoration-none" do
-        i.fa-solid.fa-comments.me-1
-        | この返信を表示

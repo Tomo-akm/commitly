@@ -4,17 +4,13 @@ import { Controller } from "@hotwired/stimulus"
 // 20件ずつ表示し、全件表示後に「返信を非表示」ボタンを表示
 // 一度全件表示したら、次回以降は一気に全件表示
 export default class extends Controller {
-  static targets = ["item", "showMore", "showMoreLabel", "hideAll"]
+  static targets = ["item", "initialShowMore", "showMore", "hideAll"]
   static values = { perPage: { type: Number, default: 20 } }
 
   connect() {
     this.currentCount = 0
     this.totalCount = this.itemTargets.length
     this.hasShownAll = false // 一度全件表示したかどうか
-    // 初期ラベルを保存
-    if (this.hasShowMoreLabelTarget) {
-      this.originalLabel = this.showMoreLabelTarget.textContent
-    }
     this.hideAllItems()
     this.updateButtons()
   }
@@ -59,28 +55,26 @@ export default class extends Controller {
   hideAll() {
     this.hideAllItems()
     this.currentCount = 0
-    // ラベルを初期状態に戻す
-    if (this.hasShowMoreLabelTarget && this.originalLabel) {
-      this.showMoreLabelTarget.textContent = this.originalLabel
-    }
     this.updateButtons()
   }
 
   // ボタンの表示状態を更新
   updateButtons() {
+    const noneShown = this.currentCount === 0
     const allShown = this.currentCount >= this.totalCount
-    const hasPartiallyShown = this.currentCount > 0 && !allShown
+    const partiallyShown = this.currentCount > 0 && !allShown
 
-    // 「○件の返信」→「他の返信を表示」ボタン
-    if (this.hasShowMoreTarget) {
-      this.showMoreTarget.classList.toggle("d-none", allShown)
-
-      if (this.hasShowMoreLabelTarget && hasPartiallyShown) {
-        this.showMoreLabelTarget.textContent = "他の返信を表示"
-      }
+    // 「○件の返信」ボタン（投稿内）: 初期状態のみ表示
+    if (this.hasInitialShowMoreTarget) {
+      this.initialShowMoreTarget.classList.toggle("d-none", !noneShown)
     }
 
-    // 「返信を非表示」ボタン: 全件表示された時
+    // 「他の返信を表示」ボタン（コンテナ内）: 部分表示時に表示
+    if (this.hasShowMoreTarget) {
+      this.showMoreTarget.classList.toggle("d-none", !partiallyShown)
+    }
+
+    // 「返信を非表示」ボタン: 全件表示時に表示
     if (this.hasHideAllTarget) {
       this.hideAllTarget.classList.toggle("d-none", !allShown)
     }

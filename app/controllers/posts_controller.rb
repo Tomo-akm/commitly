@@ -123,9 +123,9 @@ class PostsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.includes(
-        :contentable, :parent,
+        :contentable, :parent, :user, :tags, :likes,
         replies: [ :contentable, :user, :tags, :likes,
-                   replies: [ :contentable, :user, :tags, :likes, replies: [ :contentable, :user, :tags, :likes ] ] ]
+                   replies: [ :contentable, :user, :tags, :likes ] ]
       ).find(params.expect(:id))
     end
 

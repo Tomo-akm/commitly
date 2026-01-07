@@ -226,11 +226,5 @@
     outline: 2px solid $primary;
     outline-offset: 2px;
   }
-
-  // スマホ: 押した時
-  &:active {
-    color: white !important;
-    background-color: $primary !important;
-  }
 }
 
