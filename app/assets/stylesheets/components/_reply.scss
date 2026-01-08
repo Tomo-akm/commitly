@@ -197,3 +197,34 @@
     cursor: not-allowed;
   }
 }
+
+// 5. 階層リプライ用スタイル
+// ============================================
+
+// 展開ボタン: 展開時は非表示（Bootstrapのd-flexが!importantのため上書き）
+.expand-replies-btn:not(.collapsed) {
+  display: none !important;
+}
+
+// 返信トグルボタン・リンク共通: インタラクション時にスタイル変更
+.reply-toggle-btn,
+.show-reply-link {
+  border-radius: $border-radius-base;
+
+  // PC: ホバー時
+  @media (hover: hover) {
+    &:hover {
+      color: white !important;
+      background-color: $primary !important;
+    }
+  }
+
+  // PC: Tabキーフォーカス時
+  &:focus-visible {
+    color: white !important;
+    background-color: $primary !important;
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+  }
+}
+
