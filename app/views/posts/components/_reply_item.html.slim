@@ -29,3 +29,10 @@
         = render 'posts/components/like_button', post: reply
         = render 'posts/components/fork_button', post: reply
         = render 'posts/components/reply_button', post: reply
+
+      / 返信展開ボタン（初回用：○件の返信）
+      - if defined?(replies_count) && replies_count&.positive?
+        .mt-2
+          button.reply-toggle-btn.d-inline-flex.align-items-center.bg-transparent.border-0.p-2.text-primary.small type="button" data-reply-pagination-target="initialShowMore" data-action="click->reply-pagination#showMore"
+            i.fa-solid.fa-chevron-down.me-1
+            | #{replies_count}件の返信
