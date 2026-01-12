@@ -1,0 +1,36 @@
+/ アバターアップロードコンポーネント
+/ 必須変数: form:ユーザがアイコン設定するフォームを生成するために使用, user:どのユーザがアイコン設定しているか識別に必要
+
+.form-group data-controller="avatar-preview" data-avatar-preview-delete-url-value="#{profile_path(avatar_purge: true)}" data-avatar-preview-has-original-value="#{user.avatar.attached?}"
+  = form.label :avatar, "アバター画像", class: "form-label"
+
+  .avatar-upload
+    / プレビューエリア（クリックでメニュー表示）
+    .avatar-upload__preview data-action="click->avatar-preview#toggleMenu" data-avatar-preview-target="previewArea"
+      - if user.avatar.attached?
+        = image_tag user.avatar.variant(resize_to_limit: [200, 200]).processed, class: "avatar-upload__image", data: { avatar_preview_target: "image" }
+      - else
+        .avatar-upload__placeholder data-avatar-preview-target="placeholder"
+          i.fas.fa-user
+      .avatar-upload__overlay
+        i.fas.fa-camera
+
+    / 非表示のファイル入力（Bootstrap visually-hidden）
+    = form.file_field :avatar, class: "visually-hidden", accept: "image/png, image/jpeg", data: { avatar_size_validator_target: "input", avatar_preview_target: "input", action: "change->avatar-size-validator#validate change->avatar-preview#openCropper" }
+
+    / アクションメニュー
+    .avatar-upload__menu data-avatar-preview-target="menu" style="display: none;"
+      button.avatar-upload__menu-item type="button" data-action="click->avatar-preview#triggerFileInput"
+        i.fas.fa-upload.me-2
+        | 画像をアップロード
+      button.avatar-upload__menu-item.avatar-upload__menu-item--danger type="button" data-action="click->avatar-preview#resetToDefault" data-avatar-preview-target="resetButton" style="#{'display: none;' unless user.avatar.attached?}"
+        i.fas.fa-undo.me-2
+        | デフォルトに戻す
+
+  .form-help.mt-2 クリックして画像を選択（PNG, JPEG、5MBまで）
+
+  / クロッピングモーダル
+  = render "profiles/avatar_cropper_modal"
+
+  / ファイルサイズエラー表示
+  .text-danger.mt-1 style="display:none;" data-avatar-size-validator-target="error"

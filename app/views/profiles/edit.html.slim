@@ -27,26 +27,7 @@
               = form.number_field :graduation_year, class: "form-input", min: 2000, max: 2100, placeholder: "2026"
               .form-help 卒業予定の年度を入力してください（例: 2026）
 
-            .form-group data-controller="avatar-preview"
-              = form.label :avatar, "アバター画像", class: "form-label"
-              .avatar-upload
-                .avatar-upload__preview data-action="click->avatar-preview#triggerFileInput"
-                  = turbo_frame_tag "avatar-preview" do
-                    - if @user.avatar.attached?
-                      = image_tag @user.avatar.variant(resize_to_limit: [200, 200]).processed, class: "avatar-upload__image", data: { avatar_preview_target: "image" }
-                    - else
-                      .avatar-upload__placeholder data-avatar-preview-target="placeholder"
-                        i.fas.fa-user
-                  .avatar-upload__overlay
-                    i.fas.fa-camera
-                = form.file_field :avatar, class: "avatar-upload__input", accept: "image/png, image/jpeg", data: { avatar_size_validator_target: "input", avatar_preview_target: "input", action: "change->avatar-size-validator#validate change->avatar-preview#preview" }
-                .avatar-upload__actions
-                  - if @user.avatar.attached?
-                    = link_to profile_path(avatar_purge: true), data: { turbo_method: :patch, turbo_confirm: "アバター画像を削除してもよろしいですか？" }, class: "avatar-upload__delete" do
-                      i.fas.fa-trash-alt.me-1
-                      | 削除
-              .form-help.mt-2 クリックして画像を選択（PNG, JPEG、5MBまで）
-              .text-danger.mt-1 style="display:none;" data-avatar-size-validator-target="error"
+            = render "profiles/avatar_upload", form: form, user: @user
 
             .form-group
               = form.label :favorite_language, "好きな言語", class: "form-label"
