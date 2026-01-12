@@ -1,0 +1,11 @@
+.forked-post-preview.border.rounded-3.p-3.mt-2
+  .d-flex.align-items-start.gap-2
+    = render "shared/avatar", user: post.user, size: 20, class_name: ""
+    .flex-grow-1.overflow-hidden
+      .d-flex.align-items-center.gap-1.mb-1
+        span.fw-semibold.text-dark.small= post.user.name
+        span.text-muted.small= "@#{post.user.account_id}"
+        span.text-muted.small ·
+        span.text-muted.small= japanese_time_ago(post.created_at)
+      .text-dark.small.forked-post-content
+        = truncate(post.content, length: 100)

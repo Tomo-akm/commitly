@@ -1,0 +1,38 @@
+/ 共通フォークモーダル（ページに1つだけ）
+#forkModal.modal.fade tabindex="-1" aria-labelledby="forkModalLabel" aria-hidden="true" data-controller="fork"
+  .modal-dialog.modal-dialog-centered.x-reply-modal
+    .modal-content
+      .modal-header.border-0.pb-2
+        button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+
+      .modal-body.pt-0.pb-4
+        / フォークフォーム
+        = form_with(url: posts_path, method: :post, class: "x-reply-modal-form") do |f|
+          input type="hidden" name="post[forked_post_id]" data-fork-target="forkedPostIdInput"
+
+          / 入力エリア全体を1つの枠で囲む
+          .d-flex.gap-3.mb-3
+            / ユーザーアイコン
+            - if user_signed_in?
+              = render "shared/avatar", user: current_user, size: 40
+
+            / 入力コンテンツエリア（テキスト + 引用投稿）
+            .flex-grow-1.fork-input-container.border.rounded-3.p-3
+              / テキストエリア
+              = text_area_tag 'general_content[content]', '', class: 'form-control border-0 p-0 mb-3', rows: 3, placeholder: 'Add your thoughts', required: true, data: { controller: 'autosize-textarea', action: 'input->autosize-textarea#resize' }, style: 'resize: none; min-height: 60px;'
+
+              / 引用元の投稿をカード表示（入力枠内）
+              .forked-post-preview.border.rounded-3.p-3
+                .d-flex.align-items-start.gap-2
+                  / ユーザーアイコン（投稿者のアバター - JSで動的に設定）
+                  img.rounded-circle.avatar-circle data-fork-target="userAvatar" width="20" height="20" alt="投稿者のアバター"
+
+                  .flex-grow-1.overflow-hidden
+                    .d-flex.align-items-center.gap-1.mb-1
+                      span.fw-semibold.text-dark.small data-fork-target="userName"
+                      span.text-muted.small data-fork-target="userAccountId"
+                    .text-dark.small.forked-post-content data-fork-target="postContent"
+
+          / ボタンエリア
+          .d-flex.justify-content-end.pt-3.border-top
+            = f.submit 'Fork', class: 'btn btn-reply-modal'

@@ -517,4 +517,115 @@ RSpec.describe "Posts", type: :request do
       end
     end
   end
+
+  describe "フォーク機能" do
+    let!(:original_post) { create(:post, user: user) }
+
+    describe "POST /posts (フォーク投稿の作成)" do
+      context "通常投稿のフォーク" do
+        let(:valid_fork_attributes) do
+          {
+            general_content: {
+              content: "フォークしてコメントを追加しました #フォーク #テスト"
+            },
+            post: {
+              forked_post_id: original_post.id
+            }
+          }
+        end
+
+        it "フォーク投稿が作成される" do
+          expect {
+            post posts_path, params: valid_fork_attributes
+          }.to change(Post, :count).by(1)
+
+          forked_post = Post.last
+          expect(forked_post.forked_post).to eq(original_post)
+          expect(forked_post.forked_post_id).to eq(original_post.id)
+          expect(forked_post.general?).to be true
+        end
+
+        it "元投稿のforksに追加される" do
+          post posts_path, params: valid_fork_attributes
+          forked_post = Post.last
+
+          expect(original_post.forks).to include(forked_post)
+        end
+
+        it "フォークもタグを持つことができる" do
+          post posts_path, params: valid_fork_attributes
+          forked_post = Post.last
+
+          expect(forked_post.tags.pluck(:name)).to contain_exactly("フォーク", "テスト")
+        end
+
+        it "posts_pathにリダイレクトする" do
+          post posts_path, params: valid_fork_attributes
+          expect(response).to redirect_to(posts_path)
+        end
+
+        it "フォークされた投稿のforks_countが増える" do
+          expect {
+            post posts_path, params: valid_fork_attributes
+          }.to change { original_post.forks.count }.by(1)
+        end
+      end
+
+      context "存在しない投稿のフォーク" do
+        let(:invalid_fork_attributes) do
+          {
+            general_content: {
+              content: "これはフォークです"
+            },
+            post: {
+              forked_post_id: 999999
+            }
+          }
+        end
+
+        it "エラーになる" do
+          expect {
+            post posts_path, params: invalid_fork_attributes
+          }.not_to change(Post, :count)
+        end
+      end
+    end
+
+    describe "フォーク投稿の表示" do
+      let!(:forked_post) { create(:post, user: user, forked_post: original_post) }
+
+      it "フォーク元の投稿情報が表示される" do
+        get posts_path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(original_post.content)
+      end
+    end
+
+    describe "GET /posts/:id/forks (フォーク一覧)" do
+      let(:post_owner) { create(:user, post_visibility: :everyone) }
+      let(:original_post) { create(:post, user: post_owner) }
+      let!(:fork1) { create(:post, user: user, forked_post: original_post) }
+      let!(:fork2) { create(:post, user: user, forked_post: original_post) }
+
+      context "全体公開の投稿のフォーク一覧" do
+        it "フォーク一覧が表示される" do
+          get forks_post_path(original_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("フォーク一覧")
+          expect(response.body).to include(fork1.content)
+          expect(response.body).to include(fork2.content)
+        end
+      end
+
+      context "フォークが存在しない場合" do
+        let(:no_fork_post) { create(:post, user: post_owner) }
+
+        it "空の状態が表示される" do
+          get forks_post_path(no_fork_post)
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("まだフォークされていません")
+        end
+      end
+    end
+  end
 end

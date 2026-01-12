@@ -1,0 +1,23 @@
+- is_detail_page = controller_name == 'posts' && action_name == 'show'
+
+- if is_detail_page
+  / 投稿詳細画面：ドロップダウンメニュー
+  .dropdown
+    button.fork-button type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Forkメニュー"
+      i.fas.fa-code-fork
+      span.ms-1= post.forks_count
+    ul.dropdown-menu
+      li
+        span.dropdown-item data-controller="fork" data-fork-post-id-value=post.id data-fork-post-content-value=post.content data-fork-user-name-value=post.user.name data-fork-user-avatar-url-value=post.user.avatar_url(size: 40) data-fork-user-account-id-value=post.user.account_id data-action="click->fork#openModal" style="cursor: pointer;"
+          i.fas.fa-code-fork.me-2
+          | フォーク
+      li
+        = link_to forks_post_path(post), class: "dropdown-item"
+          i.fas.fa-list.me-2
+          | フォークを表示
+- else
+  / 通常表示：モーダルを開くボタン
+  span id="fork_button_#{post.id}" data-controller="fork" data-fork-post-id-value=post.id data-fork-post-content-value=post.content data-fork-user-name-value=post.user.name data-fork-user-avatar-url-value=post.user.avatar_url(size: 40) data-fork-user-account-id-value=post.user.account_id
+    button.fork-button type="button" data-action="click->fork#openModal" aria-label="Forkする"
+      i.fas.fa-code-fork
+      span.ms-1= post.forks_count

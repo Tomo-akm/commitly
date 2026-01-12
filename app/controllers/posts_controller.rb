@@ -1,14 +1,14 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, except: [ :index, :show ]
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!, except: [ :index, :show, :forks ]
+  before_action :set_post, only: %i[ show edit update destroy forks ]
   before_action :check_post_ownership, only: %i[ edit update destroy ]
-  before_action :set_right_nav_data, only: %i[ index show new edit ]
+  before_action :set_right_nav_data, only: %i[ index show new edit forks ]
 
   # GET /posts or /posts.json
   def index
     @q = Post.top_level.visible_to(current_user).ransack(params[:q])  # リプライを除外し、公開範囲フィルタを適用
     @posts = @q.result(distinct: true)
-            .preload(:contentable, :likes, :user, :tags, :replies)  # N+1対策（preloadを使用してポリモーフィック関連に対応）
+            .preload(:contentable, :likes, :user, :tags, :replies, forked_post: [:contentable, :user])  # N+1対策（preloadを使用してポリモーフィック関連に対応）
             .order(created_at: :desc)
             .page(params[:page])
             .per(POSTS_PER_PAGE)
@@ -27,11 +27,15 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    # リプライの場合は強制的にGeneralContentに
-    type = params[:parent_id].present? ? "general" : params[:type]
+    # リプライまたはForkの場合は強制的にGeneralContentに
+    type = (params[:parent_id].present? || params[:forked_post_id].present?) ? "general" : params[:type]
     type = "general" if params[:share].present? && params[:parent_id].blank?
     @post = current_user.posts.build_with_type(type)
     @post.parent_id = params[:parent_id]
+    @post.forked_post_id = params[:forked_post_id] if params[:forked_post_id].present?
+
+    # Fork元の投稿を取得
+    @forked_post = Post.find_by(id: params[:forked_post_id]) if params[:forked_post_id].present?
 
     prefill_share_content if params[:share].present? && params[:parent_id].blank?
   end
@@ -81,6 +85,21 @@ class PostsController < ApplicationController
     end
   end
 
+  # GET /posts/1/forks
+  def forks
+    # 投稿の可視性チェック
+    unless @post.visible_to?(current_user)
+      redirect_to posts_path, alert: "この投稿を閲覧する権限がありません。" and return
+    end
+
+    # この投稿をフォークした投稿一覧を取得
+    @forks = @post.forks.visible_to(current_user)
+                   .preload(:contentable, :user, :tags, :likes)
+                   .order(created_at: :desc)
+                   .page(params[:page])
+                   .per(POSTS_PER_PAGE)
+  end
+
   private
     # リプライ作成処理
     def create_reply(parent_id)
@@ -108,10 +127,13 @@ class PostsController < ApplicationController
     # 通常投稿作成処理
     def create_post
       @post = current_user.posts.build_with_type(params[:type])
+      @post.forked_post_id = params.dig(:post, :forked_post_id) if params.dig(:post, :forked_post_id).present?
 
       if @post.update_with_form_params(contentable_params, params[:post] || {})
         redirect_to posts_path, notice: @post.contentable.success_message
       else
+        # Fork元の投稿を再取得（エラー時に表示するため）
+        @forked_post = Post.find_by(id: @post.forked_post_id) if @post.forked_post_id.present?
         flash.now[:alert] = "入力内容に誤りがあります。確認してください。"
         render :new, status: :unprocessable_entity
       end

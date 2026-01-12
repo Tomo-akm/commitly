@@ -233,3 +233,45 @@
     font-size: $font-size-sm;
   }
 }
+
+// ============================================
+// Fork投稿プレビュー
+// ============================================
+
+.forked-post-preview {
+  border: 1px solid $neutral-300;
+  border-radius: $border-radius-lg;
+  background-color: white;
+  transition: background-color $transition-speed-base $transition-timing-ease;
+  cursor: default;
+
+  &:hover {
+    background-color: rgba($neutral-100, 0.5);
+  }
+
+  .forked-post-content {
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.4;
+  }
+}
+
+// Fork入力コンテナ（モーダル用）
+.fork-input-container {
+  border: 1px solid $neutral-300;
+  background-color: $neutral-100;
+  transition: border-color $transition-speed-base $transition-timing-ease;
+
+  &:focus-within {
+    border-color: $primary;
+    background-color: white;
+  }
+
+  .form-control {
+    background-color: transparent;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
