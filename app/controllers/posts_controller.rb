@@ -8,7 +8,7 @@ class PostsController < ApplicationController
   def index
     @q = Post.top_level.visible_to(current_user).ransack(params[:q])  # リプライを除外し、公開範囲フィルタを適用
     @posts = @q.result(distinct: true)
-            .preload(:contentable, :likes, :user, :tags, :replies, forked_post: [:contentable, :user])  # N+1対策（preloadを使用してポリモーフィック関連に対応）
+            .preload(:contentable, :likes, :user, :tags, :replies, forked_post: [ :contentable, :user ])  # N+1対策（preloadを使用してポリモーフィック関連に対応）
             .order(created_at: :desc)
             .page(params[:page])
             .per(POSTS_PER_PAGE)
