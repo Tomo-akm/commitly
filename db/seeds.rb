@@ -3,7 +3,16 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
 # 追加したい seed ファイルの一覧
-seed_files = []
+# 順番が重要：依存関係のあるファイルは後に配置
+seed_files = [
+  "demo_users.rb",        # ユーザー作成（最初に実行）
+  "demo_follows.rb",      # フォロー関係
+  "demo_posts.rb",        # 投稿（つぶやき/就活記録/インターン）
+  "demo_entry_sheets.rb", # ES・テンプレート
+  "demo_interactions.rb", # ES共有投稿・リプライ・いいね
+  "demo_dms.rb",          # DM
+  "demo_achievements.rb"  # バッジ付与
+]
 
 seed_files.each do |file|
   seed_path = Rails.root.join("db", "seeds", file)
