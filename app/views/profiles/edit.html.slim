@@ -27,16 +27,7 @@
               = form.number_field :graduation_year, class: "form-input", min: 2000, max: 2100, placeholder: "2026"
               .form-help 卒業予定の年度を入力してください（例: 2026）
 
-            .form-group
-              = form.label :avatar, "アバター画像", class: "form-label"
-              = form.file_field :avatar, class: "form-input", accept: "image/png, image/jpeg", data: { avatar_size_validator_target: "input", action: "change->avatar-size-validator#validate" }
-              = turbo_frame_tag "avatar-preview" do
-                - if @user.avatar.attached?
-                  .current-avatar.mt-2
-                    = image_tag @user.avatar.variant(resize_to_limit: [200, 200]).processed, class: "rounded-circle avatar-circle", size: "100x100"
-                    = link_to "削除", profile_path(avatar_purge: true), data: { turbo_method: :patch, turbo_confirm: "アバター画像を削除してもよろしいですか？" }, class: "btn btn-danger btn-sm ms-2"
-              .form-help 画像ファイル（PNG, JPEG）のみ、5MBまで
-              .text-danger.mt-1 style="display:none;" data-avatar-size-validator-target="error"
+            = render "profiles/avatar_upload", form: form, user: @user
 
             .form-group
               = form.label :favorite_language, "好きな言語", class: "form-label"

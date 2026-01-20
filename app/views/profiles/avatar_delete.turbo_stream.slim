@@ -1,7 +1,3 @@
-/ アバター画像プレビューを更新（空にする）
-= turbo_stream.update "avatar-preview" do
-  / アバターが削除されたので空
-
 / フラッシュメッセージを表示
 = turbo_stream.prepend "flash-messages" do
   .toast.show.text-bg-success role="alert" aria-live="assertive" aria-atomic="true" data-controller="toast"

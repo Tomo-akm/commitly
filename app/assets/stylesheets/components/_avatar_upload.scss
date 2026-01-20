@@ -1,0 +1,192 @@
+// ============================================
+// アバターアップロード - モダンUI
+// ============================================
+
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+
+  &__preview {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+    background: linear-gradient(135deg, $neutral-100 0%, $neutral-300 100%);
+    border: 3px solid $neutral-300;
+    transition: all $transition-speed-base $transition-timing-ease;
+
+    &:hover {
+      border-color: $primary;
+      transform: scale(1.02);
+
+      .avatar-upload__overlay {
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $primary;
+      outline-offset: 2px;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $neutral-900;
+    font-size: 3rem;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($neutral-900, 0.5);
+    color: white;
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: opacity $transition-speed-base $transition-timing-ease;
+  }
+
+  // アクションメニュー（アイコンクリックで表示）
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: $border-radius-base;
+    box-shadow: $shadow-md;
+    border: 1px solid $neutral-300;
+    overflow: hidden;
+    min-width: 180px;
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-sm;
+    color: $neutral-700;
+    background: white;
+    border: none;
+    cursor: pointer;
+    transition: all $transition-speed-fast $transition-timing-ease;
+    text-align: left;
+
+    &:hover {
+      background: $neutral-100;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $neutral-300;
+    }
+
+    &--danger {
+      color: $error;
+
+      &:hover {
+        background: rgba($error, 0.1);
+      }
+    }
+  }
+}
+
+// ============================================
+// クロッパーコントロール（Bootstrap Modal内で使用）
+// ============================================
+
+.avatar-cropper {
+  // モーダルボディの暗い背景
+  &__body {
+    background: $neutral-900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    position: relative;
+  }
+
+  // ローディングスピナー（コンテナの上にオーバーレイ）
+  &__loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: $neutral-900;
+  }
+
+  &__container {
+    width: 100%;
+    max-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__container img,
+  &__image {
+    display: block;
+    max-width: 100%;
+  }
+
+  // Cropper.jsが作成するコンテナを中央に配置
+  &__container .cropper-container {
+    margin: 0 auto;
+  }
+
+  // 透過画像の背景（チェッカーボード模様）
+  &__container .cropper-canvas > img {
+    background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    font-weight: 500;
+    color: $neutral-700;
+    min-width: 80px;
+    white-space: nowrap;
+  }
+}
+
+// ============================================
+// Cropper.js 円形マスクのカスタマイズ
+// ============================================
+
+.modal {
+  .cropper-view-box,
+  .cropper-face {
+    border-radius: 50%;
+  }
+
+  .cropper-view-box {
+    outline: 2px solid $primary;
+    outline-offset: -2px;
+  }
+
+  .cropper-dashed {
+    border-color: rgba(white, 0.5);
+  }
+
+  .cropper-point {
+    background-color: $primary;
+  }
+
+  .cropper-line {
+    background-color: $primary;
+  }
+}
