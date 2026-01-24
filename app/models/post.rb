@@ -4,9 +4,11 @@ class Post < ApplicationRecord
   belongs_to :user
   belongs_to :contentable, polymorphic: true
   belongs_to :parent, class_name: "Post", optional: true
+  belongs_to :forked_post, class_name: "Post", optional: true
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags
   has_many :likes, dependent: :destroy
+  has_many :forks, class_name: "Post", foreign_key: :forked_post_id, dependent: :nullify
   has_many :replies, class_name: "Post", foreign_key: :parent_id, dependent: :destroy
 
   # contentable へのdelegation
@@ -71,6 +73,16 @@ class Post < ApplicationRecord
 
   def likes_count
     likes.count
+  end
+
+  # このポストがFork(引用)されているか
+  def fork?
+    forked_post_id.present?
+  end
+
+  # このポストを引用している投稿数
+  def forks_count
+    forks.count
   end
 
   # 再帰的に全てのリプライ（子孫）をカウント（効率的なSQL CTEを使用）

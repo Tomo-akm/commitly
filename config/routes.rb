@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   end
   resources :posts do
     resources :likes, only: [ :create, :destroy ]
+    member do
+      get :forks
+    end
   end
   resources :tags, only: [ :index, :show ] do
     collection do

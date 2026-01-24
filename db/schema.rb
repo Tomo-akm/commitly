@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_06_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -132,6 +132,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
     t.index ["follower_id"], name: "index_follows_on_follower_id"
   end
 
+  create_table "forks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "post_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["post_id"], name: "index_forks_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_forks_on_user_id_and_post_id", unique: true
+    t.index ["user_id"], name: "index_forks_on_user_id"
+  end
+
   create_table "general_contents", force: :cascade do |t|
     t.text "content", null: false
     t.datetime "created_at", null: false
@@ -204,18 +214,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
     t.bigint "contentable_id", null: false
     t.string "contentable_type", null: false
     t.datetime "created_at", null: false
+    t.bigint "forked_post_id"
     t.bigint "parent_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["contentable_type", "contentable_id"], name: "index_posts_on_contentable"
     t.index ["created_at"], name: "index_posts_on_created_at"
+    t.index ["forked_post_id"], name: "index_posts_on_forked_post_id"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "rooms", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "room_type", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["room_type"], name: "index_rooms_on_room_type"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -403,12 +417,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_04_145557) do
   add_foreign_key "entry_sheet_items", "entry_sheet_item_templates"
   add_foreign_key "entry_sheet_items", "entry_sheets"
   add_foreign_key "entry_sheets", "users"
+  add_foreign_key "forks", "posts"
+  add_foreign_key "forks", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
   add_foreign_key "llm_usages", "users"
   add_foreign_key "messages", "chats"
   add_foreign_key "post_tags", "posts"
   add_foreign_key "post_tags", "tags"
+  add_foreign_key "posts", "posts", column: "forked_post_id"
   add_foreign_key "posts", "posts", column: "parent_id"
   add_foreign_key "posts", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

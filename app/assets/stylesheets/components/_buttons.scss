@@ -235,6 +235,39 @@
   }
 }
 
+.fork-button {
+  @extend %interaction-button;
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba($success, 0.1);
+    color: darken($success, 10%);
+    text-decoration: none;
+
+    i {
+      color: $success;
+      transform: scale(1.1);
+    }
+  }
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  &.forked {
+    background-color: rgba($success, 0.15);
+    color: $success-dark;
+
+    i {
+      color: $success-dark;
+    }
+
+    &:hover {
+      background-color: rgba($success, 0.2);
+    }
+  }
+}
+
 // ============================================
 // 戻るボタン
 // ============================================

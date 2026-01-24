@@ -1,0 +1,34 @@
+- content_for :title, "Forks"
+- content_for :right_nav do
+  = render "shared/right_nav"
+
+
+/ 戻るボタン
+= render "shared/back_button"
+
+/ 元の投稿を表示
+.mb-4
+  = render 'shared/post', post: @post
+
+/ フォーク一覧のヘッダー
+.card.mb-4
+  .card-body
+    h5.mb-0
+      i.fas.fa-code-fork.me-2
+      | フォーク一覧 (#{@forks.total_count}件)
+
+/ フォーク投稿一覧
+- if @forks.any?
+  .card-list#forks
+    = render 'shared/posts_page', posts: @forks, next_page_path: forks_post_path(@post, page: @forks.next_page)
+- else
+  .card
+    .card-body.text-center.py-5
+      i.fas.fa-code-fork.display-4.text-muted.mb-3
+      p.text-muted.mb-0 まだフォークされていません
+
+/ 共通リプライモーダル（ページに1つだけ）
+= render 'posts/components/shared_reply_modal'
+
+/ 共通フォークモーダル（ページに1つだけ）
+= render 'posts/components/shared_fork_modal'

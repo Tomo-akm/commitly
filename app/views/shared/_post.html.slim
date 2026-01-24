@@ -64,7 +64,13 @@ div class=card_class id=dom_id(post) data-controller="post-card" data-post-url=p
     .card-text.mb-3.line-height-relaxed
       = PostDecorator.new(post).highlighted_content
 
-    / フッター（Starボタンとリプライボタン）
+    / Fork元の投稿を表示
+    - if post.fork? && post.forked_post.present?
+      .mt-3.mb-2
+        = render "posts/components/forked_post_preview", post: post.forked_post
+
+    / フッター（Starボタン、Forkボタン、リプライボタン）
     .d-flex.align-items-center.gap-2.pt-2.border-top
       = render 'posts/components/like_button', post: post
+      = render 'posts/components/fork_button', post: post
       = render 'posts/components/reply_button', post: post

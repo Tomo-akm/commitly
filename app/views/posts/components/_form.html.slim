@@ -10,9 +10,17 @@
     / リプライの場合、parent_idを渡す
     - if post.parent_id.present?
       = hidden_field_tag 'post[parent_id]', post.parent_id
+    / Forkの場合、forked_post_idを渡す
+    - if post.forked_post_id.present?
+      = hidden_field_tag 'post[forked_post_id]', post.forked_post_id
 
   / contentable用のフィールドを動的に読み込み
   = render "posts/components/#{contentable.class.name.underscore}_fields", form: form, post: post
 
-  .text-center
+  / Fork元の投稿を表示
+  - if post.forked_post_id.present? && defined?(@forked_post) && @forked_post.present?
+    .mt-3
+      = render "posts/components/forked_post_preview", post: @forked_post
+
+  .text-center.mt-3
     = form.submit (post.new_record? ? "push する" : "merge する"), class: "btn btn-gradient-primary btn-lg"
